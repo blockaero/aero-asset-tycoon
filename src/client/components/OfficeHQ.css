@@ -159,24 +159,24 @@
 }
 
 .officehq-screen--left {
-  top: 30%;
-  left: 27.5%;
+  top: 27.8%;
+  left: 28.2%;
   width: 12.5%;
-  height: 34%;
+  height: 40.4%;
 }
 
 .officehq-screen--centre {
   top: 27%;
-  left: 42%;
-  width: 16%;
-  height: 40%;
+  left: 43.3%;
+  width: 13.4%;
+  height: 42.5%;
 }
 
 .officehq-screen--right {
-  top: 30%;
-  left: 60.5%;
+  top: 27.8%;
+  left: 59.3%;
   width: 12.5%;
-  height: 34%;
+  height: 40.4%;
 }
 
 .officehq-screen--side {
@@ -199,34 +199,34 @@
 }
 
 .officehq-glow--left {
-  top: 27%;
-  left: 25%;
-  width: 17%;
-  height: 40%;
+  top: 25%;
+  left: 26.2%;
+  width: 16.5%;
+  height: 46%;
 }
 
 .officehq-glow--centre {
-  top: 24%;
-  left: 39%;
-  width: 22%;
-  height: 46%;
+  top: 24.2%;
+  left: 41.2%;
+  width: 17.6%;
+  height: 48%;
   animation-delay: -7s;
 }
 
 .officehq-glow--right {
-  top: 27%;
-  left: 58%;
-  width: 17%;
-  height: 40%;
+  top: 25%;
+  left: 57.3%;
+  width: 16.5%;
+  height: 46%;
   animation-delay: -13s;
 }
 
 .officehq-chart {
   position: absolute;
-  top: 33%;
-  left: 43%;
-  width: 14%;
-  height: 9%;
+  top: 28.2%;
+  left: 44.5%;
+  width: 11%;
+  height: 8%;
   overflow: visible;
 }
 
@@ -244,13 +244,13 @@
 
 .officehq-readout {
   position: absolute;
-  top: 44%;
-  left: 43%;
+  top: 36.8%;
+  left: 44.5%;
   display: grid;
   align-content: start;
   gap: 0.4cqw;
-  width: 14%;
-  height: 12%;
+  width: 11%;
+  height: 10%;
   overflow: hidden;
   color: var(--paper);
   font-family: var(--font-data);
@@ -288,16 +288,16 @@
   content: "";
   position: absolute;
   bottom: 0;
-  left: 42%;
-  width: 16%;
-  height: 44%;
+  left: 42.3%;
+  width: 15.5%;
+  height: 53%;
   border-radius: 44% 44% 0 0;
   background: linear-gradient(180deg, var(--graphite-600) 0%, var(--graphite-800) 100%);
 }
 
 .officehq-portrait {
   position: absolute;
-  top: 55%;
+  top: 46.8%;
   left: 46.6%;
   width: 6.8%;
   height: 11%;
@@ -433,24 +433,26 @@
 }
 
 .officehq-hotspot--finance {
-  top: 29%;
-  left: 26.8%;
-  width: 14%;
-  height: 36%;
+  top: 26.5%;
+  left: 27.5%;
+  width: 13.9%;
+  height: 43%;
 }
 
+/* The centre panel is taller than its neighbours and the founder stands in
+   front of its lower edge, so this rectangle stops at the shoulder line. */
 .officehq-hotspot--fleet {
-  top: 26%;
-  left: 41.3%;
-  width: 17.4%;
-  height: 42%;
+  top: 26.5%;
+  left: 42.6%;
+  width: 14.8%;
+  height: 35.5%;
 }
 
 .officehq-hotspot--intel {
-  top: 29%;
-  left: 59.8%;
-  width: 14%;
-  height: 36%;
+  top: 26.5%;
+  left: 58.6%;
+  width: 13.9%;
+  height: 43%;
 }
 
 .officehq-hotspot--wall {

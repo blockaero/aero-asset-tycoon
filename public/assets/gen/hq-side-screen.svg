@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="2560" height="1440" viewBox="0 0 2560 1440">
 <!-- aero-asset-tycoon procedural stand-in: hq-side-screen -->
 <defs><linearGradient id="sideGlass" x1="1920" y1="462" x2="2216" y2="848" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#161d24"/><stop offset="1" stop-color="#0c1115"/></linearGradient><linearGradient id="armG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e2e6ea"/><stop offset="0.5" stop-color="#aab3bb"/><stop offset="1" stop-color="#6f7982"/></linearGradient><clipPath id="sideClip"><polygon points="1920,462 2216,470 2216,848 1920,840"/></clipPath></defs>
-<rect x="2234" y="951" width="72" height="44" rx="6" fill="#2b333a"/>
-<rect x="2224" y="943" width="92" height="14" rx="5" fill="url(#armG)"/>
-<rect x="2257" y="636" width="26" height="321" fill="url(#armG)"/>
-<rect x="2257" y="636" width="6" height="321" fill="#ffffff" opacity="0.35"/>
+<rect x="2234" y="1009" width="72" height="44" rx="6" fill="#2b333a"/>
+<rect x="2224" y="1001" width="92" height="14" rx="5" fill="url(#armG)"/>
+<rect x="2257" y="636" width="26" height="379" fill="url(#armG)"/>
+<rect x="2257" y="636" width="6" height="379" fill="#ffffff" opacity="0.35"/>
 <g transform="rotate(28 2270 640)"><rect x="2174" y="627" width="108" height="26" rx="13" fill="url(#armG)"/></g>
 <circle cx="2270" cy="640" r="21" fill="#39424b"/>
 <circle cx="2270" cy="640" r="8" fill="#8f99a2"/>

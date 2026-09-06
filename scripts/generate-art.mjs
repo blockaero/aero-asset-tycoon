@@ -1341,45 +1341,72 @@ function cssBox(leftPct, topPct, wPct, hPct) {
 }
 
 const HQ = {
-  screenLeft: cssBox(27.5, 30, 12.5, 34),
-  screenCentre: cssBox(42, 27, 16, 40),
-  screenRight: cssBox(60.5, 30, 12.5, 34),
+  screenLeft: cssBox(28.2, 27.8, 12.5, 40.4),
+  screenCentre: cssBox(43.3, 27, 13.4, 42.5),
+  screenRight: cssBox(59.3, 27.8, 12.5, 40.4),
   screenSide: cssBox(75.5, 33, 10.5, 25),
-  head: cssBox(46.6, 55, 6.8, 11),
+  head: cssBox(46.6, 46.8, 6.8, 11),
   wall: cssBox(20, 5, 58, 21),
   window: { x: 1920, y: py(12), w: px(22), h: py(52), x2: 1920 + px(22), y2: py(12) + py(52) },
   foregroundTop: py(87),
   cup: { cx: px(68) + px(2.4) / 2, rimY: py(87) + 4, r: px(2.4) * 0.78 },
   phoneLight: { cx: px(24) + px(0.7) / 2, cy: HQ_H - py(7.5) - px(0.7) / 2 },
-  floorY: 1010,
-  deskBackY: 985,
-  deskFrontY: 1052,
-  deskLipY: 1082,
+  // The desk sits low in frame on purpose: a standing desk whose surface is well
+  // below the founder's shoulders, so the figure reads as standing at it.
+  floorY: 1068,
+  deskBackY: 1043,
+  deskFrontY: 1110,
+  deskLipY: 1140,
   deskBackX0: 660,
   deskBackX1: 2300,
   deskFrontX0: 596,
   deskFrontX1: 2380,
+  // The founder, from behind, standing. Shoulder tips land 121px above the back
+  // edge of the desk; the widest point (196) stays inside the centre monitor's
+  // bezel, so the figure never touches the flanking panels.
+  founder: {
+    neckTopY: 806,
+    neckHalf: 40,
+    collarY: 858,
+    shoulderTipX: 178,
+    shoulderTipY: 922,
+    shoulderDrop: 8,
+    armpitX: 138,
+    armpitY: 972,
+    waistX: 96,
+    waistY: 1156,
+    hipX: 116,
+    hipY: 1252,
+    armOuterX: 196,
+    armInnerX: 130,
+  },
 };
 
-/** Monitor faces, angled toward the viewer. Each quad contains its CSS rect. */
+/**
+ * Monitor faces: three portrait panels, 9:16 each, angled toward the viewer.
+ * The outer edge of each flanking panel is the near edge, so it is drawn taller
+ * than the inner edge; the centre panel faces the camera square on. Each quad
+ * contains its CSS rect, and every quad's width:height sits on 9:16 (0.5625).
+ *   left/right  320 x 570 (0.561)   centre  344 x 612 (0.562)
+ */
 const MON = {
   left: [
-    [690, 418],
-    [1032, 428],
-    [1032, 926],
-    [690, 936],
+    [722, 400],
+    [1042, 412],
+    [1042, 970],
+    [722, 982],
   ],
   centre: [
-    [1064, 380],
-    [1496, 380],
-    [1496, 972],
-    [1064, 972],
+    [1108, 388],
+    [1452, 388],
+    [1452, 1000],
+    [1108, 1000],
   ],
   right: [
-    [1528, 428],
-    [1870, 418],
-    [1870, 936],
-    [1528, 926],
+    [1518, 412],
+    [1838, 400],
+    [1838, 982],
+    [1518, 970],
   ],
   side: [
     [1920, 462],
@@ -1467,7 +1494,7 @@ function renderHqRoom() {
       [0, "#ffffff", 0],
       [1, "#ffffff", 0.10],
     ], true),
-    linGrad("pool", 1200, 1440, 2400, 1010, [
+    linGrad("pool", 1200, 1440, 2400, HQ.floorY, [
       [0, "#cfe0f0", 0],
       [1, "#dcebf8", 0.13],
     ], true),
@@ -1527,14 +1554,14 @@ function renderHqRoom() {
   body.push(rect(0, 0, 132, HQ.floorY, "#191e23", 'opacity="0.85"'));
   body.push(rect(130, 0, 2, HQ.floorY, "#0f1316", 'opacity="0.7"'));
 
-  // A low credenza against the back wall.
-  body.push(rect(170, 872, 430, 138, "#232a31"));
-  body.push(rect(170, 866, 430, 10, P.aluDark, 'opacity="0.75"'));
-  body.push(rect(316, 872, 4, 138, "#161b20", 'opacity="0.8"'));
-  body.push(circle(300, 940, 6, P.blueBright, 'opacity="0.55"'));
+  // A low credenza against the back wall, standing on the floor line.
+  body.push(rect(170, HQ.floorY - 138, 430, 138, "#232a31"));
+  body.push(rect(170, HQ.floorY - 144, 430, 10, P.aluDark, 'opacity="0.75"'));
+  body.push(rect(316, HQ.floorY - 138, 4, 138, "#161b20", 'opacity="0.8"'));
+  body.push(circle(300, HQ.floorY - 70, 6, P.blueBright, 'opacity="0.55"'));
 
   // Skirting and the wall/floor junction.
-  body.push(rect(0, 996, HQ_W, 14, "#2c343c"));
+  body.push(rect(0, HQ.floorY - 14, HQ_W, 14, "#2c343c"));
   body.push(rect(0, HQ.floorY, HQ_W, 3, "#0d1114", 'opacity="0.8"'));
 
   // Floor, the window light pool, and the long shadow the desk throws left.
@@ -1606,7 +1633,7 @@ function renderHqRoom() {
   );
   body.push(rect(HQ.deskFrontX0, HQ.deskFrontY, HQ.deskFrontX1 - HQ.deskFrontX0, 30, "url(#deskFace)"));
   body.push(rect(HQ.deskFrontX0, HQ.deskFrontY, HQ.deskFrontX1 - HQ.deskFrontX0, 3, "#ffffff", 'opacity="0.5"'));
-  body.push(rect(880, 1090, 1160, 20, "#171c21", 'opacity="0.75"'));
+  body.push(rect(880, HQ.deskLipY + 8, 1160, 20, "#171c21", 'opacity="0.75"'));
   for (const lx of [790, 2090]) {
     body.push(poly([[lx, HQ.deskLipY], [lx + 62, HQ.deskLipY], [lx + 70, 1292], [lx - 8, 1292]], "#39424b"));
     body.push(rect(lx - 8, HQ.deskLipY, 12, 210, "#5a636c", 'opacity="0.55"'));
@@ -1696,14 +1723,17 @@ function bezel(quad, id) {
   ].join("");
 }
 
+/** A slim neck on a flat oval foot: the low stand a portrait panel sits on. */
 function monitorStand(quad, deskY) {
   const b = quadBounds(quad);
   const cx = (b.x + b.x2) / 2;
+  const neckTop = b.y2 + 4;
+  const neckH = Math.max(16, deskY - 26 - neckTop);
   return [
-    rect(cx - 17, b.y2 + 18, 34, deskY - b.y2 - 30, "#39424b"),
-    rect(cx - 17, b.y2 + 18, 8, deskY - b.y2 - 30, "#5d666f", 'opacity="0.7"'),
-    ellipse(cx, deskY - 8, 96, 18, "#2b333a"),
-    ellipse(cx, deskY - 12, 88, 14, "#4a545e"),
+    rect(cx - 19, neckTop, 38, neckH, "#39424b"),
+    rect(cx - 19, neckTop, 9, neckH, "#5d666f", 'opacity="0.7"'),
+    ellipse(cx, deskY - 10, 96, 18, "#2b333a"),
+    ellipse(cx, deskY - 14, 88, 14, "#4a545e"),
     ellipse(cx, deskY + 6, 120, 16, "#05070a", 'opacity="0.32"'),
   ].join("");
 }
@@ -1719,46 +1749,63 @@ function screenContent(kind, quad, lit, rng) {
   const w = b.w - pad * 2;
 
   if (kind === "dashboard") {
-    out.push(rect(x, b.y + 34, w, 10, acc, `opacity="${f(dim * 0.8)}"`));
-    for (let i = 0; i < 5; i += 1) {
-      const y = b.y + 78 + i * 62;
-      out.push(rrect(x, y, w * rng.range(0.42, 0.94), 30, 6, acc, `opacity="${f(dim * rng.range(0.30, 0.62))}"`));
+    // Tall stack: header, six rows, a ring, a footer rule.
+    out.push(rect(x, b.y + b.h * 0.05, w, 10, acc, `opacity="${f(dim * 0.8)}"`));
+    for (let i = 0; i < 6; i += 1) {
+      const y = b.y + b.h * 0.115 + i * (b.h * 0.062);
+      out.push(
+        rrect(x, y, w * rng.range(0.42, 0.94), b.h * 0.036, 6, acc, `opacity="${f(dim * rng.range(0.3, 0.62))}"`),
+      );
     }
     const dcx = b.x + b.w * 0.5;
-    const dcy = b.y2 - 150;
-    out.push(circle(dcx, dcy, 88, "none", `stroke="${acc}" stroke-width="20" opacity="${f(dim * 0.35)}"`));
+    const dcy = b.y2 - b.h * 0.245;
+    const dr = b.w * 0.26;
+    out.push(circle(dcx, dcy, dr, "none", `stroke="${acc}" stroke-width="20" opacity="${f(dim * 0.35)}"`));
     out.push(
-      `<path d="${d(`M ${f(dcx)} ${f(dcy - 88)} A 88 88 0 0 1 ${f(dcx + 76)} ${f(dcy + 44)}`)}" fill="none" stroke="${acc}" stroke-width="20" opacity="${f(dim)}" stroke-linecap="round"/>`,
+      `<path d="${d(
+        `M ${f(dcx)} ${f(dcy - dr)} A ${f(dr)} ${f(dr)} 0 0 1 ${f(dcx + dr * 0.87)} ${f(dcy + dr * 0.5)}`,
+      )}" fill="none" stroke="${acc}" stroke-width="20" opacity="${f(dim)}" stroke-linecap="round"/>`,
     );
-    out.push(rect(x, b.y2 - 34, w * 0.5, 8, acc, `opacity="${f(dim * 0.5)}"`));
+    out.push(rect(x, b.y2 - b.h * 0.055, w * 0.5, 8, acc, `opacity="${f(dim * 0.5)}"`));
   } else if (kind === "grid") {
-    // Sparse at the top and bottom: the app paints its chart and ATA readout
-    // across the middle of this screen.
-    out.push(rect(x, b.y + 26, w * 0.55, 12, acc, `opacity="${f(dim * 0.8)}"`));
-    out.push(rect(x, b.y + 52, w, 3, acc, `opacity="${f(dim * 0.4)}"`));
-    const gy = b.y2 - 190;
-    for (let r = 0; r < 4; r += 1) {
-      for (let c = 0; c < 8; c += 1) {
+    // The app paints its demand chart and ATA readout across the upper middle of
+    // this panel and the founder stands in front of the lower middle, so the art
+    // holds the top strip and the two gutters either side of the figure.
+    out.push(rect(x, b.y + b.h * 0.03, w * 0.55, 12, acc, `opacity="${f(dim * 0.8)}"`));
+    out.push(rect(x, b.y + b.h * 0.062, w, 3, acc, `opacity="${f(dim * 0.4)}"`));
+    const railW = b.w * 0.16;
+    const railY = b.y + b.h * 0.5;
+    for (let c = 0; c < 2; c += 1) {
+      const rx0 = c === 0 ? x : b.x2 - pad - railW;
+      for (let r = 0; r < 7; r += 1) {
         const on = rng() > 0.42;
         out.push(
-          rect(x + c * (w / 8) + 4, gy + r * 40, w / 8 - 10, 26, acc, `opacity="${f(dim * (on ? 0.55 : 0.18))}"`),
+          rect(
+            rx0,
+            railY + r * (b.h * 0.052),
+            railW * rng.range(0.55, 1),
+            b.h * 0.032,
+            acc,
+            `opacity="${f(dim * (on ? 0.55 : 0.18))}"`,
+          ),
         );
       }
     }
-    out.push(rect(x, b.y2 - 30, w, 6, acc, `opacity="${f(dim * 0.35)}"`));
   } else {
     // node tree
-    const nx = b.x + b.w * 0.30;
-    out.push(rect(x, b.y + 34, w * 0.7, 10, acc, `opacity="${f(dim * 0.7)}"`));
-    let prevY = b.y + 96;
+    const nx = b.x + b.w * 0.26;
+    out.push(rect(x, b.y + b.h * 0.055, w * 0.7, 10, acc, `opacity="${f(dim * 0.7)}"`));
+    let prevY = b.y + b.h * 0.13;
     out.push(circle(nx, prevY, 16, acc, `opacity="${f(dim)}"`));
     for (let i = 0; i < 5; i += 1) {
-      const y = b.y + 170 + i * 92;
-      const bx = nx + 96 + (i % 2) * 60;
+      const y = b.y + b.h * 0.22 + i * (b.h * 0.135);
+      const bx = nx + b.w * 0.24 + (i % 2) * (b.w * 0.13);
       out.push(line(nx, prevY, nx, y, acc, 5, `opacity="${f(dim * 0.55)}"`));
       out.push(line(nx, y, bx, y, acc, 5, `opacity="${f(dim * 0.55)}"`));
       out.push(circle(bx, y, 13, acc, `opacity="${f(dim * rng.range(0.5, 1))}"`));
-      out.push(rect(bx + 26, y - 7, rng.range(40, 110), 14, acc, `opacity="${f(dim * 0.3)}"`));
+      out.push(
+        rect(bx + b.w * 0.075, y - 7, rng.range(b.w * 0.1, b.w * 0.28), 14, acc, `opacity="${f(dim * 0.3)}"`),
+      );
       prevY = y;
     }
   }
@@ -1771,19 +1818,19 @@ function screenDefs(lit) {
     `<clipPath id="dashboardClip"><polygon points="${pts(MON.left)}"/></clipPath>`,
     `<clipPath id="gridClip"><polygon points="${pts(MON.centre)}"/></clipPath>`,
     `<clipPath id="treeClip"><polygon points="${pts(MON.right)}"/></clipPath>`,
-    linGrad("glassL", 690, 418, 1032, 936, [
+    linGrad("glassL", 722, 400, 1042, 982, [
       [0, lit ? "#12283f" : "#131a20"],
       [1, lit ? "#0d1c2e" : "#0d1216"],
     ], true),
-    linGrad("glassC", 1064, 380, 1496, 972, [
+    linGrad("glassC", 1108, 388, 1452, 1000, [
       [0, lit ? "#13304a" : "#141b22"],
       [1, lit ? "#0d1f34" : "#0d1217"],
     ], true),
-    linGrad("glassR", 1528, 418, 1870, 936, [
+    linGrad("glassR", 1518, 400, 1838, 982, [
       [0, lit ? "#12283f" : "#131a20"],
       [1, lit ? "#0d1c2e" : "#0d1216"],
     ], true),
-    radGrad("screenBloom", 1280, 690, 780, [
+    radGrad("screenBloom", 1280, 700, 820, [
       [0, P.blueBright, a],
       [1, P.blueBright, 0],
     ], true),
@@ -1797,9 +1844,9 @@ function renderHqMonitors(lit) {
   const body = [];
 
   if (!lit) {
-    body.push(monitorStand(MON.left, HQ.deskBackY + 40));
-    body.push(monitorStand(MON.centre, HQ.deskBackY + 46));
-    body.push(monitorStand(MON.right, HQ.deskBackY + 40));
+    body.push(monitorStand(MON.left, HQ.deskBackY + 20));
+    body.push(monitorStand(MON.centre, HQ.deskBackY + 28));
+    body.push(monitorStand(MON.right, HQ.deskBackY + 20));
     body.push(bezel(MON.left, "l"));
     body.push(bezel(MON.centre, "c"));
     body.push(bezel(MON.right, "r"));
@@ -1832,7 +1879,7 @@ function renderHqMonitors(lit) {
   }
 
   if (lit) {
-    body.push(rect(560, 300, 1440, 780, "url(#screenBloom)", 'style="mix-blend-mode:screen"'));
+    body.push(rect(540, 300, 1480, 820, "url(#screenBloom)", 'style="mix-blend-mode:screen"'));
   } else {
     // A single status dot per monitor. Navigation green, nothing else.
     body.push(circle(quadBounds(MON.left).x2 + 8, quadBounds(MON.left).y2 + 6, 5, P.green, 'opacity="0.8"'));
@@ -1843,85 +1890,158 @@ function renderHqMonitors(lit) {
   return hqDoc(id, defs, body.join("\n"));
 }
 
-/* --- hq-founder-idle: the founder from behind. The head is an opening, because
-   OfficeHQ.tsx renders the chosen portrait behind this layer. --------------- */
+/* --- hq-founder-idle: the founder standing at the desk, seen from behind. The
+   head is an opening, because OfficeHQ.tsx renders the chosen portrait behind
+   this layer.
+
+   Nothing here may read as furniture. The silhouette is a head, a neck, a
+   sloping trapezius, two deltoids, two upper arms modelled as rounded masses,
+   and a ribcage that pinches to a waist before it flares into the hips — with
+   real daylight between each arm and the waist, which no chair back has. The
+   right shoulder sits a little lower than the left, because a body at rest is
+   never symmetrical. The shoulder tips land 121px above the back edge of the
+   desk, so the figure plainly stands at the surface. ------------------------ */
 function renderHqFounder() {
   const h = HQ.head;
+  const g = HQ.founder;
   const cx = h.cx;
   const cy = h.cy;
   const rx = h.w / 2;
   const ry = h.h / 2;
-  const shoulderY = cy + ry * 1.66;
-  const halfW = rx * 2.48;
   const bottom = HQ_H;
+
+  /** Signed offset from the spine: side -1 is camera-left, +1 camera-right. */
+  const X = (side, dx) => cx + side * dx;
+  /** Camera-right is the window side, and it carries the lower shoulder. */
+  const tipY = (side) => g.shoulderTipY + (side > 0 ? g.shoulderDrop : 0);
+
   const defs = [
-    linGrad("founderG", cx - halfW, shoulderY, cx + halfW, bottom, [
+    linGrad("founderG", cx - g.armOuterX, g.shoulderTipY, cx + g.armOuterX, bottom, [
       [0, "#1c2229"],
       [0.42, "#2d363f"],
       [1, "#161b20"],
     ], true),
-    linGrad("founderRim", cx, 0, cx + halfW, 0, [
-      [0, "#ffffff", 0],
-      [1, "#ffffff", 0.18],
+    linGrad("founderHead", cx, cy - ry * 1.3, cx, cy + ry * 1.3, [
+      [0, "#333c45"],
+      [1, "#161b21"],
+    ], true),
+    // One gradient per arm, dark where it meets the ribs and light on the
+    // outside, so each upper arm reads as a round mass rather than a rail.
+    linGrad("founderArmL", cx - g.armOuterX, 0, cx - g.armInnerX, 0, [
+      [0, "#232b33"],
+      [1, "#0f141a"],
+    ], true),
+    linGrad("founderArmR", cx + g.armInnerX, 0, cx + g.armOuterX, 0, [
+      [0, "#151b21"],
+      [1, "#3a444d"],
     ], true),
   ];
-  const body = [];
-  // Neck, trapezius, then the shoulder line: a back, not a chair.
-  const neckHalf = rx * 0.46;
-  const torso = d(`M ${f(cx - halfW)} ${f(bottom)}
-    C ${f(cx - halfW - 8)} ${f(shoulderY + 150)}, ${f(cx - halfW)} ${f(shoulderY + 34)}, ${f(cx - halfW * 0.94)} ${f(shoulderY + 6)}
-    C ${f(cx - halfW * 0.86)} ${f(shoulderY - 26)}, ${f(cx - halfW * 0.62)} ${f(shoulderY - 44)}, ${f(cx - halfW * 0.4)} ${f(shoulderY - 56)}
-    C ${f(cx - halfW * 0.22)} ${f(shoulderY - 68)}, ${f(cx - neckHalf * 1.5)} ${f(shoulderY - 78)}, ${f(cx - neckHalf)} ${f(cy + ry * 0.9)}
-    L ${f(cx + neckHalf)} ${f(cy + ry * 0.9)}
-    C ${f(cx + neckHalf * 1.5)} ${f(shoulderY - 78)}, ${f(cx + halfW * 0.22)} ${f(shoulderY - 68)}, ${f(cx + halfW * 0.4)} ${f(shoulderY - 56)}
-    C ${f(cx + halfW * 0.62)} ${f(shoulderY - 44)}, ${f(cx + halfW * 0.86)} ${f(shoulderY - 26)}, ${f(cx + halfW * 0.94)} ${f(shoulderY + 6)}
-    C ${f(cx + halfW)} ${f(shoulderY + 34)}, ${f(cx + halfW + 8)} ${f(shoulderY + 150)}, ${f(cx + halfW)} ${f(bottom)} Z`);
 
-  body.push(ellipse(cx, bottom - 40, halfW * 1.1, 120, "#05070a", 'opacity="0.22"'));
+  /** Head, neck, trapezius, ribcage, waist, hips. One closed contour. */
+  function torsoPath() {
+    // Written top-to-bottom for one side; the right side is the same list of
+    // control points walked back up, so the two halves cannot drift.
+    const down = (side) => {
+      const t = tipY(side);
+      return [
+        [g.neckHalf + 2, g.neckTopY + 40, g.neckHalf + 4, g.collarY - 18, g.neckHalf + 12, g.collarY],
+        [g.neckHalf * 2.2, g.collarY + 10, g.shoulderTipX * 0.72, t - 44, g.shoulderTipX, t],
+        [g.shoulderTipX - 6, t + 18, g.armpitX + 10, g.armpitY - 16, g.armpitX, g.armpitY],
+        [g.armpitX - 16, g.armpitY + 62, g.waistX + 6, g.waistY - 70, g.waistX, g.waistY],
+        [g.waistX + 2, g.waistY + 44, g.hipX - 4, g.hipY - 44, g.hipX, g.hipY],
+        [g.hipX + 5, g.hipY + 70, g.hipX + 8, bottom - 60, g.hipX + 8, bottom],
+      ];
+    };
+    const curve = (side, [ax, ay, bx, by, ex, ey]) =>
+      `C ${f(X(side, ax))} ${f(ay)}, ${f(X(side, bx))} ${f(by)}, ${f(X(side, ex))} ${f(ey)}`;
+    const up = (side, seg, prev) => {
+      // Same segment reversed: end point becomes the previous segment's end.
+      const [ax, ay, bx, by] = seg;
+      return `C ${f(X(side, bx))} ${f(by)}, ${f(X(side, ax))} ${f(ay)}, ${f(X(side, prev[0]))} ${f(prev[1])}`;
+    };
+    const left = down(-1);
+    const right = down(1);
+    const parts = [`M ${f(X(-1, g.neckHalf))} ${f(g.neckTopY)}`];
+    for (const seg of left) parts.push(curve(-1, seg));
+    parts.push(`L ${f(X(1, g.hipX + 8))} ${f(bottom)}`);
+    for (let i = right.length - 1; i >= 0; i -= 1) {
+      const prev = i === 0 ? [g.neckHalf, g.neckTopY] : [right[i - 1][4], right[i - 1][5]];
+      parts.push(up(1, right[i], prev));
+    }
+    parts.push("Z");
+    return d(parts.join(" "));
+  }
+
+  /** One upper arm: a deltoid cap over a long rounded mass. */
+  function armPath(side) {
+    const t = tipY(side);
+    return d(`M ${f(X(side, g.shoulderTipX - 14))} ${f(t - 6)}
+      C ${f(X(side, g.armOuterX - 2))} ${f(t + 20)}, ${f(X(side, g.armOuterX))} ${f(t + 52)}, ${f(X(side, g.armOuterX))} ${f(g.armpitY + 40)}
+      C ${f(X(side, g.armOuterX))} ${f(g.waistY - 20)}, ${f(X(side, g.armOuterX - 4))} ${f(g.hipY - 40)}, ${f(X(side, g.armOuterX - 10))} ${f(bottom)}
+      L ${f(X(side, g.armInnerX + 4))} ${f(bottom)}
+      C ${f(X(side, g.armInnerX + 2))} ${f(g.hipY - 40)}, ${f(X(side, g.armInnerX - 2))} ${f(g.waistY - 40)}, ${f(X(side, g.armInnerX))} ${f(g.armpitY + 30)}
+      C ${f(X(side, g.armInnerX + 4))} ${f(g.armpitY - 20)}, ${f(X(side, g.shoulderTipX - 44))} ${f(t + 4)}, ${f(X(side, g.shoulderTipX - 14))} ${f(t - 6)} Z`);
+  }
+
+  // A skull that tapers into the neck instead of ringing the portrait, so
+  // nothing up here can read as a headrest.
+  const skull = d(`M ${f(X(-1, rx + 10))} ${f(cy + ry * 0.14)}
+    C ${f(X(-1, rx + 10))} ${f(cy - ry * 0.92)}, ${f(X(-1, rx * 0.64))} ${f(cy - ry * 1.22)}, ${f(cx)} ${f(cy - ry * 1.22)}
+    C ${f(X(1, rx * 0.64))} ${f(cy - ry * 1.22)}, ${f(X(1, rx + 10))} ${f(cy - ry * 0.92)}, ${f(X(1, rx + 10))} ${f(cy + ry * 0.14)}
+    C ${f(X(1, rx + 10))} ${f(cy + ry * 0.74)}, ${f(X(1, rx * 0.8))} ${f(cy + ry * 1.12)}, ${f(X(1, g.neckHalf))} ${f(cy + ry * 1.2)}
+    L ${f(X(-1, g.neckHalf))} ${f(cy + ry * 1.2)}
+    C ${f(X(-1, rx * 0.8))} ${f(cy + ry * 1.12)}, ${f(X(-1, rx + 10))} ${f(cy + ry * 0.74)}, ${f(X(-1, rx + 10))} ${f(cy + ry * 0.14)} Z`);
+
+  const torso = torsoPath();
+  const armL = armPath(-1);
+  const armR = armPath(1);
+
+  const body = [];
+
+  body.push(path(skull, "url(#founderHead)"));
   body.push(path(torso, "url(#founderG)"));
-  body.push(path(torso, "url(#founderRim)", 'opacity="0.35"'));
-  // Warm rim on the window side, a whisper of the accent on the other.
+  // Definition where the body meets the room, and a shadow where the arm sits
+  // against the ribs.
+  body.push(path(torso, "none", `stroke="#0b0f13" stroke-width="4" opacity="0.45"`));
+  // A small collar notch at the base of the neck. No arcs across the back.
+  body.push(
+    path(
+      `M ${f(X(-1, g.neckHalf * 1.7))} ${f(g.collarY + 22)} C ${f(X(-1, g.neckHalf * 0.9))} ${f(g.collarY - 2)}, ${f(X(1, g.neckHalf * 0.9))} ${f(g.collarY - 2)}, ${f(X(1, g.neckHalf * 1.7))} ${f(g.collarY + 22)}`,
+      "none",
+      `stroke="#465059" stroke-width="9" opacity="0.55"`,
+    ),
+  );
+
+  body.push(path(armL, "url(#founderArmL)"));
+  body.push(path(armR, "url(#founderArmR)"));
+
+  // Window light picks out the right arm and the right of the skull; a whisper
+  // of the accent finds the left.
   body.push(`<g clip-path="url(#rimWindow)">`);
-  body.push(path(torso, "none", `stroke="${P.alu}" stroke-width="9" opacity="0.42"`));
+  body.push(path(armR, "none", `stroke="${P.alu}" stroke-width="7" opacity="0.34"`));
+  body.push(path(skull, "none", `stroke="${P.alu}" stroke-width="5" opacity="0.22"`));
   body.push("</g>");
   body.push(`<g clip-path="url(#rimAccent)">`);
-  body.push(path(torso, "none", `stroke="${P.blueBright}" stroke-width="6" opacity="0.26"`));
+  body.push(path(armL, "none", `stroke="${P.blueBright}" stroke-width="5" opacity="0.22"`));
+  body.push(path(skull, "none", `stroke="${P.blueBright}" stroke-width="4" opacity="0.2"`));
   body.push("</g>");
-  // A shoulder seam and a collar, so the back reads as a jacket and not a blob.
-  body.push(
-    path(
-      `M ${f(cx - rx * 1.02)} ${f(cy + ry * 1.62)} C ${f(cx - rx * 0.5)} ${f(cy + ry * 1.28)}, ${f(cx + rx * 0.5)} ${f(cy + ry * 1.28)}, ${f(cx + rx * 1.02)} ${f(cy + ry * 1.62)}`,
-      "none",
-      `stroke="#39424b" stroke-width="10" opacity="0.8"`,
-    ),
+
+  defs.push(
+    `<clipPath id="rimWindow"><rect x="${f(cx + g.armInnerX * 0.45)}" y="0" width="${f(g.armOuterX * 1.4)}" height="${f(bottom)}"/></clipPath>`,
+    `<clipPath id="rimAccent"><rect x="${f(cx - g.armOuterX - 20)}" y="0" width="${f(g.armOuterX * 0.62)}" height="${f(bottom)}"/></clipPath>`,
   );
-  body.push(line(cx, cy + ry * 1.8, cx, bottom, "#0d1114", 6, 'opacity="0.35"'));
-  // The rim that seats the portrait opening. Inside stays transparent.
-  body.push(ellipse(cx, cy, rx + 17, ry + 17, "#232a31"));
-  body.push(
-    path(
-      `M ${f(cx - rx - 17)} ${f(cy)} A ${f(rx + 17)} ${f(ry + 17)} 0 0 1 ${f(cx + rx + 17)} ${f(cy)}`,
-      "none",
-      `stroke="${P.aluDark}" stroke-width="5" opacity="0.30"`,
-    ),
-  );
+
   // The opening itself is cut with a mask, so every renderer agrees.
   defs.push(
-    `<clipPath id="rimWindow"><rect x="${f(cx + halfW * 0.34)}" y="0" width="${f(halfW)}" height="${f(bottom)}"/></clipPath>`,
-    `<clipPath id="rimAccent"><rect x="${f(cx - halfW - 20)}" y="0" width="${f(halfW * 0.66)}" height="${f(bottom)}"/></clipPath>`,
+    [
+      `<mask id="headHole">`,
+      rect(0, 0, HQ_W, HQ_H, "#ffffff"),
+      ellipse(cx, cy, rx, ry, "#000000"),
+      `</mask>`,
+    ].join(""),
   );
-  const masked = [
-    `<mask id="headHole">`,
-    rect(0, 0, HQ_W, HQ_H, "#ffffff"),
-    ellipse(cx, cy, rx, ry, "#000000"),
-    `</mask>`,
-  ].join("");
-  defs.push(masked);
-  return hqDoc(
-    "hq-founder-idle",
-    defs,
-    `<g mask="url(#headHole)">${body.join("\n")}</g>`,
-  );
+
+  return hqDoc("hq-founder-idle", defs, `<g mask="url(#headHole)">${body.join("\n")}</g>`);
 }
 
 /* --- hq-foreground: the near desk edge the camera looks over, plus the two

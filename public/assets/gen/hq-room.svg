@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="2560" height="1440" viewBox="0 0 2560 1440">
 <!-- aero-asset-tycoon procedural stand-in: hq-room -->
-<defs><linearGradient id="wallG" x1="0" y1="0" x2="0" y2="1010" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#20262c"/><stop offset="0.42" stop-color="#2a323a"/><stop offset="1" stop-color="#222930"/></linearGradient><linearGradient id="wallLight" x1="0" y1="0" x2="2560" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#000000" stop-opacity="0.34"/><stop offset="0.44" stop-color="#000000" stop-opacity="0.1"/><stop offset="0.82" stop-color="#ffffff" stop-opacity="0.07"/><stop offset="1" stop-color="#ffffff" stop-opacity="0.13"/></linearGradient><linearGradient id="floorG" x1="0" y1="1010" x2="0" y2="1440" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1b2126"/><stop offset="0.5" stop-color="#171c21"/><stop offset="1" stop-color="#12161a"/></linearGradient><linearGradient id="floorLight" x1="900" y1="0" x2="2560" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffffff" stop-opacity="0"/><stop offset="1" stop-color="#ffffff" stop-opacity="0.1"/></linearGradient><linearGradient id="pool" x1="1200" y1="1440" x2="2400" y2="1010" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#cfe0f0" stop-opacity="0"/><stop offset="1" stop-color="#dcebf8" stop-opacity="0.13"/></linearGradient><linearGradient id="deskTop" x1="0" y1="985" x2="0" y2="1052" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#aeb7bf"/><stop offset="0.35" stop-color="#d2d8dd"/><stop offset="1" stop-color="#b7c0c7"/></linearGradient><linearGradient id="deskFace" x1="0" y1="1052" x2="0" y2="1082" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#8e979f"/><stop offset="1" stop-color="#4a545e"/></linearGradient><linearGradient id="ceilGlow" x1="0" y1="70" x2="0" y2="420" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffffff" stop-opacity="0.1"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></linearGradient><linearGradient id="panelG" x1="0" y1="40" x2="0" y2="440" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2e363e"/><stop offset="1" stop-color="#262d34"/></linearGradient><radialGradient id="roomVig" cx="1280" cy="662.4" r="1587.2" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#000000" stop-opacity="0"/><stop offset="0.66" stop-color="#000000" stop-opacity="0.08"/><stop offset="1" stop-color="#05070a" stop-opacity="0.42"/></radialGradient></defs>
-<path fill-rule="evenodd" d="M 0 0 H 2560 V 1010 H 0 Z M 1938 190.8 H 2465.2 V 903.6 H 1938 Z" fill="url(#wallG)"/>
-<path fill-rule="evenodd" d="M 0 0 H 2560 V 1010 H 0 Z M 1938 190.8 H 2465.2 V 903.6 H 1938 Z" fill="url(#wallLight)"/>
+<defs><linearGradient id="wallG" x1="0" y1="0" x2="0" y2="1068" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#20262c"/><stop offset="0.42" stop-color="#2a323a"/><stop offset="1" stop-color="#222930"/></linearGradient><linearGradient id="wallLight" x1="0" y1="0" x2="2560" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#000000" stop-opacity="0.34"/><stop offset="0.44" stop-color="#000000" stop-opacity="0.1"/><stop offset="0.82" stop-color="#ffffff" stop-opacity="0.07"/><stop offset="1" stop-color="#ffffff" stop-opacity="0.13"/></linearGradient><linearGradient id="floorG" x1="0" y1="1068" x2="0" y2="1440" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1b2126"/><stop offset="0.5" stop-color="#171c21"/><stop offset="1" stop-color="#12161a"/></linearGradient><linearGradient id="floorLight" x1="900" y1="0" x2="2560" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffffff" stop-opacity="0"/><stop offset="1" stop-color="#ffffff" stop-opacity="0.1"/></linearGradient><linearGradient id="pool" x1="1200" y1="1440" x2="2400" y2="1068" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#cfe0f0" stop-opacity="0"/><stop offset="1" stop-color="#dcebf8" stop-opacity="0.13"/></linearGradient><linearGradient id="deskTop" x1="0" y1="1043" x2="0" y2="1110" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#aeb7bf"/><stop offset="0.35" stop-color="#d2d8dd"/><stop offset="1" stop-color="#b7c0c7"/></linearGradient><linearGradient id="deskFace" x1="0" y1="1110" x2="0" y2="1140" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#8e979f"/><stop offset="1" stop-color="#4a545e"/></linearGradient><linearGradient id="ceilGlow" x1="0" y1="70" x2="0" y2="420" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffffff" stop-opacity="0.1"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></linearGradient><linearGradient id="panelG" x1="0" y1="40" x2="0" y2="440" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2e363e"/><stop offset="1" stop-color="#262d34"/></linearGradient><radialGradient id="roomVig" cx="1280" cy="662.4" r="1587.2" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#000000" stop-opacity="0"/><stop offset="0.66" stop-color="#000000" stop-opacity="0.08"/><stop offset="1" stop-color="#05070a" stop-opacity="0.42"/></radialGradient></defs>
+<path fill-rule="evenodd" d="M 0 0 H 2560 V 1068 H 0 Z M 1938 190.8 H 2465.2 V 903.6 H 1938 Z" fill="url(#wallG)"/>
+<path fill-rule="evenodd" d="M 0 0 H 2560 V 1068 H 0 Z M 1938 190.8 H 2465.2 V 903.6 H 1938 Z" fill="url(#wallLight)"/>
 <rect x="0" y="0" width="2560" height="108" fill="#1a1f24"/>
 <rect x="0" y="106" width="2560" height="3" fill="#39424b" opacity="0.7"/>
 <rect x="420" y="42" width="1560" height="26" rx="6" fill="#e8ecef"/>
@@ -11,32 +11,32 @@
 <rect x="452" y="40" width="1438" height="400" rx="4" fill="url(#panelG)"/>
 <rect x="452" y="40" width="1438" height="2" fill="#4a545e" opacity="0.65"/>
 <rect x="452" y="438" width="1438" height="2" fill="#0f1316" opacity="0.6"/>
-<rect x="0" y="0" width="132" height="1010" fill="#191e23" opacity="0.85"/>
-<rect x="130" y="0" width="2" height="1010" fill="#0f1316" opacity="0.7"/>
-<rect x="170" y="872" width="430" height="138" fill="#232a31"/>
-<rect x="170" y="866" width="430" height="10" fill="#9aa4ad" opacity="0.75"/>
-<rect x="316" y="872" width="4" height="138" fill="#161b20" opacity="0.8"/>
-<circle cx="300" cy="940" r="6" fill="#3f8ee8" opacity="0.55"/>
-<rect x="0" y="996" width="2560" height="14" fill="#2c343c"/>
-<rect x="0" y="1010" width="2560" height="3" fill="#0d1114" opacity="0.8"/>
-<rect x="0" y="1010" width="2560" height="430" fill="url(#floorG)"/>
-<rect x="0" y="1010" width="2560" height="430" fill="url(#floorLight)"/>
-<polygon points="2560,1010 2560,1440 1120,1440 1810,1010" fill="url(#pool)"/>
-<polygon points="596,1082 2380,1082 1880,1440 60,1440" fill="#05070a" opacity="0.34"/>
+<rect x="0" y="0" width="132" height="1068" fill="#191e23" opacity="0.85"/>
+<rect x="130" y="0" width="2" height="1068" fill="#0f1316" opacity="0.7"/>
+<rect x="170" y="930" width="430" height="138" fill="#232a31"/>
+<rect x="170" y="924" width="430" height="10" fill="#9aa4ad" opacity="0.75"/>
+<rect x="316" y="930" width="4" height="138" fill="#161b20" opacity="0.8"/>
+<circle cx="300" cy="998" r="6" fill="#3f8ee8" opacity="0.55"/>
+<rect x="0" y="1054" width="2560" height="14" fill="#2c343c"/>
+<rect x="0" y="1068" width="2560" height="3" fill="#0d1114" opacity="0.8"/>
+<rect x="0" y="1068" width="2560" height="372" fill="url(#floorG)"/>
+<rect x="0" y="1068" width="2560" height="372" fill="url(#floorLight)"/>
+<polygon points="2560,1068 2560,1440 1120,1440 1810,1068" fill="url(#pool)"/>
+<polygon points="596,1140 2380,1140 1880,1440 60,1440" fill="#05070a" opacity="0.34"/>
 <path fill-rule="evenodd" d="M 1920 172.8 H 2483.2 V 921.6 H 1920 Z M 1938 190.8 H 2465.2 V 903.6 H 1938 Z" fill="#9aa4ad"/>
 <path fill-rule="evenodd" d="M 1920 172.8 H 2483.2 V 180.8 H 1920 Z M 1920 172.8 H 1928 V 921.6 H 1920 Z" fill="#eef1f3" opacity="0.7"/>
 <rect x="2196" y="190.8" width="14" height="712.8" fill="#9aa4ad" opacity="0.92"/>
 <rect x="1938" y="556" width="527.2" height="12" fill="#9aa4ad" opacity="0.92"/>
 <polygon points="1938,903.6 2128,190.8 2268,190.8 2078,903.6" fill="#ffffff" opacity="0.05"/>
-<polygon points="660,985 2300,985 2380,1052 596,1052" fill="url(#deskTop)"/>
-<rect x="596" y="1052" width="1784" height="30" fill="url(#deskFace)"/>
-<rect x="596" y="1052" width="1784" height="3" fill="#ffffff" opacity="0.5"/>
-<rect x="880" y="1090" width="1160" height="20" fill="#171c21" opacity="0.75"/>
-<polygon points="790,1082 852,1082 860,1292 782,1292" fill="#39424b"/>
-<rect x="782" y="1082" width="12" height="210" fill="#5a636c" opacity="0.55"/>
+<polygon points="660,1043 2300,1043 2380,1110 596,1110" fill="url(#deskTop)"/>
+<rect x="596" y="1110" width="1784" height="30" fill="url(#deskFace)"/>
+<rect x="596" y="1110" width="1784" height="3" fill="#ffffff" opacity="0.5"/>
+<rect x="880" y="1148" width="1160" height="20" fill="#171c21" opacity="0.75"/>
+<polygon points="790,1140 852,1140 860,1292 782,1292" fill="#39424b"/>
+<rect x="782" y="1140" width="12" height="210" fill="#5a636c" opacity="0.55"/>
 <rect x="750" y="1288" width="148" height="16" rx="4" fill="#2b333a"/>
-<polygon points="2090,1082 2152,1082 2160,1292 2082,1292" fill="#39424b"/>
-<rect x="2082" y="1082" width="12" height="210" fill="#5a636c" opacity="0.55"/>
+<polygon points="2090,1140 2152,1140 2160,1292 2082,1292" fill="#39424b"/>
+<rect x="2082" y="1140" width="12" height="210" fill="#5a636c" opacity="0.55"/>
 <rect x="2050" y="1288" width="148" height="16" rx="4" fill="#2b333a"/>
 <circle cx="1618.87" cy="869.98" r="2.76" fill="#ffffff" opacity="0.11"/>
 <circle cx="1774.61" cy="1127.61" r="1.82" fill="#ffffff" opacity="0.09"/>
