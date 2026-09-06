@@ -31,6 +31,11 @@ test("founder names a company, works the desk, and reaches every surface", async
   await wheel.click();
   await expect(page.getByRole("status").filter({ hasText: "Purchase accepted" }).first()).toBeVisible();
 
+  // The post-pulse beat is a notification about the pulse just resolved; moving to
+  // another surface must clear it rather than covering what you navigated to.
+  await page.getByRole("button", { name: "Finance", exact: true }).click();
+  await expect(page.getByText("The market moved while you slept.")).toHaveCount(0);
+
   // --- Network map: fog of war and the ATA filter bar ------------------------
   await page.getByRole("button", { name: "Network Map", exact: true }).click();
   await expect(page.getByText(/TAM/).first()).toBeVisible();

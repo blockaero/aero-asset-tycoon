@@ -530,8 +530,8 @@ function BreakdownChart({ pulses, headingId }: { pulses: readonly AccPulse[]; he
             Weekly pulse breakdown
           </h3>
           <p className="fin-chart-sub">
-            Where each pulse&rsquo;s ACC came from and went. Money in above the zero line, money out below it. Last{" "}
-            {Math.min(BREAKDOWN_WINDOW, Math.max(recent.length, 1))} pulses.
+            Where each pulse&rsquo;s ACC came from and went. Money in above the zero line, money out below it.
+            {recent.length > 0 ? ` Last ${recent.length} ${recent.length === 1 ? "pulse" : "pulses"}.` : ""}
           </p>
         </div>
       </div>
@@ -912,7 +912,7 @@ function Tile({
 
 /** 12-point trend line. De-emphasis hue with the current period marked in the accent. */
 function Sparkline({ values, label }: { values: readonly number[]; label: string }) {
-  if (values.length < 2) return <div className="fin-spark fin-spark--empty" aria-hidden="true" />;
+  if (values.length < 2) return null;
   const w = 120;
   const h = 26;
   const lo = Math.min(...values);

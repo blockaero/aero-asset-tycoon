@@ -55,6 +55,10 @@ export function App() {
   const feedbackKey = useRef("");
 
   useEffect(() => {
+    setPulseBeat(null);
+  }, [view]);
+
+  useEffect(() => {
     if (!snapshot?.id) return;
     return subscribeCampaign(
       snapshot.id,

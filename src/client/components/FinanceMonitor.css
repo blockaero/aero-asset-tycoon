@@ -234,9 +234,11 @@
    KPI tiles
    ========================================================================== */
 
+/* Seven tiles, one of them two rows tall — 8 cells over 4 columns fills exactly
+   two rows, so the grid never ends on an empty cell. */
 .fin-kpis {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.15fr) repeat(3, minmax(0, 1fr));
   gap: 1px;
   border: 1px solid var(--hairline);
   background: var(--hairline);
@@ -260,7 +262,7 @@
 
 .fin-tile--hero {
   grid-row: span 2;
-  grid-column: span 1;
+  align-content: space-between;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(233, 238, 243, 0.9));
 }
 
@@ -326,11 +328,6 @@
   max-width: 150px;
   height: auto;
   overflow: visible;
-}
-
-.fin-spark--empty {
-  height: 26px;
-  border-bottom: 1px solid var(--fin-grid);
 }
 
 .fin-spark-line {
@@ -873,16 +870,16 @@
    ========================================================================== */
 
 @media (max-width: 1300px) {
-  .fin-kpis {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .fin-asset-kpis {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .fin-tile--hero .fin-tile-value {
-    font-size: 40px;
+    font-size: 38px;
+  }
+
+  .fin-tile {
+    padding: 10px 11px 11px;
+  }
+
+  .fin-chart-sub {
+    max-width: 52ch;
   }
 }
 
