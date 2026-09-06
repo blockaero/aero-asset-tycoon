@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+coverage/
+experiments-out/
+.aat/
+test-results/
+playwright-report/
+logs/
+tmp-audio/
