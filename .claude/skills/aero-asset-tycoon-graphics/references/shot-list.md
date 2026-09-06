@@ -1,4 +1,4 @@
-# Shot list v1 (34 images)
+# Shot list v1 (42 images)
 
 Status column: `todo`, `done <date>`, `redo <reason>`.
 
@@ -26,6 +26,7 @@ Acceptance: identical framing and light across all eight; swap-in tested at 96 p
 | hq-monitors-idle.webp | Three monitors lit dim: left dashboard shapes, center chip grid, right node tree; transparent elsewhere | todo |
 | hq-monitors-lit.webp | Same monitors at full brightness for hover state | todo |
 | hq-founder-idle.webp | Founder silhouette from behind at the desk, transparent elsewhere (portrait swapped in code) | todo |
+| hq-wall-mount.webp | Wall region above the desk left empty for the Tribal Knowledge wall layer | todo |
 | hq-foreground.webp | Desk edge, coffee cup, phone, transparent elsewhere | todo |
 
 Acceptance: layers align pixel-exact when stacked; no baked-in text on monitors.
@@ -77,3 +78,26 @@ Acceptance: readable at 96 px on graphite; consistent isometric angle.
 | card-idle-shop.webp | Empty engine test cell, lights on | todo |
 | card-restructuring.webp | Parked airframes at dawn | todo |
 | card-favor.webp | Two people shaking hands at a hangar door | todo |
+
+## Tribal Knowledge wall (2) — ratio 16:9, 2560x1440, transparent outside the wall
+
+| File | State | Status |
+| --- | --- | --- |
+| hq-wall-empty.webp | Graphite wall behind the desk with 12 empty aluminum frames in a loose grid, picture lights on | todo |
+| hq-wall-filled.webp | Same frames holding blank certificates, plaques, and a small award; no legible text | todo |
+
+Acceptance: frame positions identical between states so individual frames can be revealed in code.
+
+## Team side screen and portraits (7) — screen 9:16 at 720x1280, portraits 3:4 at 900x1200
+
+| File | Subject | Status |
+| --- | --- | --- |
+| hq-side-screen.webp | Portrait monitor on an articulated arm, blank dark screen, transparent elsewhere | todo |
+| team-buyer.webp | Buyer on a video call, headset, warehouse racking behind | todo |
+| team-sales.webp | Sales manager on a video call, trade-show backdrop | todo |
+| team-records.webp | Technical records specialist, shelves of binders and a scanner | todo |
+| team-repair.webp | Repair manager in a shop, engine stand behind | todo |
+| team-regional.webp | Regional director, airport office window at dusk | todo |
+| team-analyst.webp | Analyst, dual monitors with chart shapes, no legible text | todo |
+
+Acceptance: video-call framing (chest up, slight webcam angle) distinct from founder portraits; diverse across the six.

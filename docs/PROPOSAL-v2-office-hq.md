@@ -17,7 +17,9 @@ Today's eight tabs collapse like this:
 | Sales Office | Same card, sell side (mechanic, not an office) |
 | Asset Control | Center monitor: Fleet Manager, assets as chip groups |
 | KPI Index | Left monitor: Finance & KPI dashboard |
-| PBH | A contract card that unlocks from the right monitor's research tree |
+| PBH | A contract card that unlocks from Tribal Knowledge |
+| (new) | Tribal Knowledge: the framed wall of certificates and awards behind the desk |
+| (new) | Team: a portrait video-call monitor beside the three-monitor set |
 
 Sim engine stays deterministic, weekly ticks, seed-reproducible. The kernel is not rewritten; it is scaled and wrapped.
 
@@ -51,7 +53,28 @@ Unspent time does not roll over. Unspent RC decays slowly. This is what makes a 
 
 - **Left monitor — Finance & KPIs.** Idle state shows a live miniature dashboard with light Block Aero branding. Opens to charts: ACC balance over time, weekly pulse breakdown, inventory value, turn rate, utilization, DSO-like receivables, and asset KPIs (serviceable ratio, average TAT, BER rate). Rebuild of today's KPI Index using the `pulses` array already in the observation.
 - **Center monitor — Fleet Manager.** Assets shown as **chip-like resource groups**: one chip per part master and condition, with a count badge, so 3,000 units read as 40 chips. Click a chip to expand to serialized units. Bulk actions on a chip: send to shop, list for sale, set standing order. Buying and sales strategy live here as a "Standing orders" drawer (see section 5).
-- **Right monitor — Research tree.** Company capabilities bought with ACC and time over several pulses: regional access (unlocks SAM in a region), asset-class access (engines, then LLPs, then APUs), commercial instruments (exchange, PBH, consignment), operational skills (faster TAT, better BER calls, lower logistics cost), and intelligence (shock early warning, price index history). Research is how the fog thins.
+- **Right monitor — Market intelligence.** With research moved to the wall (below), the right monitor becomes the intelligence screen: price and demand indices per region and asset class, shock early warnings once unlocked, the TAM/SAM/SOM funnel, and the opportunity feed from the map. It is the read-only screen; the other two are where you act.
+
+**The wall — Tribal Knowledge.** Behind and above the desk hangs a wall of framed certificates, memberships, and awards. Empty frames show what can be earned. Clicking the wall opens Tribal Knowledge, the game's capability tree, in three panels:
+
+1. **Certifications and memberships.** ASA-100, AFRA BMP, ISO 9001, AS9120, ISO 27001, ISTAT, ACPC. Each costs ACC and founder time over several pulses, some require a prerequisite (AS9120 needs ISO 9001 first), and each unlocks concrete mechanics: ASA-100 and AS9120 raise the ceiling on who will buy from you and cut quote rejection rates; AFRA BMP opens teardown yards and end-of-life packages; ISO 27001 unlocks lessor and OEM data-sharing deals; ISTAT and ACPC surface conference events on the map where introductions cost less RC.
+2. **Asset knowledge.** A tree per asset family: airframes, engines, then sub-components by ATA chapter. Each node grants a buying, selling, or repairing edge: tighter anchor-price estimates, better BER calls, lower repair TAT through shop familiarity, first look at listings in that family. Knowledge is earned two ways: paid study, or organically by transacting in the family, so a company that trades CFM56 for a year learns CFM56.
+3. **Company operations.** Three branches. Sales and marketing unlocks events (trade shows, customer days, sponsored ISTAT sessions) that appear on the map as time-limited opportunities. Operations improves logistics cost, receiving throughput, and warehouse capacity. AI unlocks automation: auto-quoting with better pricing, demand forecasting on the intelligence monitor, and records review that shortens receiving inspection.
+
+Sim: a `knowledge` array on the player firm with node ids, progress, and unlock tick. Effects are applied as multipliers read by the existing market, repair, and network functions, so the kernel grows a lookup, not a subsystem.
+
+**The side screen — Team.** A portrait-oriented monitor mounted on an arm to the side of the three-monitor set shows a live video call with a team member, idle-animated. Clicking it opens Team. The founder starts alone. Each hire costs a monthly salary in ACC and returns capacity and capability:
+
+| Role | What they add |
+| --- | --- |
+| Buyer | More founder time back each week; auto-purchase standing orders execute without a time cost |
+| Sales manager | RFQs answered automatically; RC earned faster from on-time deliveries |
+| Technical records specialist | Faster receiving, fewer trace disputes, feeds the AI branch |
+| Repair manager | Shop TAT bonus and better BER calls on the families they know |
+| Regional director | Extends SAM into one region without a certification |
+| Analyst | Unlocks charts and indices on the intelligence monitor early |
+
+Candidates surface through the map and through Tribal Knowledge (an ISTAT membership yields better candidates). Team members carry a portrait from the same eight-plus set as the founder, so the art library serves both. Team size is capped by an operations node in Tribal Knowledge, which gives the wall and the side screen a reason to talk to each other.
 
 ---
 
@@ -74,7 +97,7 @@ Sim change: `CampaignConfig` gains `companyName`, `founderName`, `founderPortrai
 **Proposal.** Create the skill inside the repo at `.claude/skills/aero-asset-tycoon-graphics/` so every future session picks it up. It wraps the brand-imagery workflow with a game-specific style bible, a shot list, and a catalog. The scaffold is included in this branch. It contains:
 
 - `SKILL.md`: when to trigger, the style block (aero corporate near-future, graphite and aluminum, one accent, soft global illumination, no text in image, no real airline liveries, no flight boards), the guardrails, and the output pipeline (webp, named by role, cataloged in `public/assets/manifest.json`).
-- `references/shot-list.md`: the first 34 images in generation order: 8 founder portraits, the standing-desk scene split into parallax layers (room, desk, monitors idle, monitors lit, founder idle, window), 6 facility icon families at two sizes, 6 map region tiles, 4 seasonal sky plates, the pulse wheel face, and 4 easter-egg event cards.
+- `references/shot-list.md`: the first 42 images in generation order: 8 founder portraits, the standing-desk scene split into parallax layers (room, desk, monitors idle, monitors lit, founder idle, window), 6 facility icon families at two sizes, 6 map region tiles, 4 seasonal sky plates, the pulse wheel face, 4 easter-egg event cards, the certificate wall in empty and filled states, and 6 team-member portraits.
 - `references/prompt-templates.md`: one flattened prompt per image class.
 
 **First generation run** happens in a desktop session with Chrome automation, or through an image API if one is approved. Until then the client uses placeholder gradients that match the palette, so layout work does not wait on art.
@@ -123,7 +146,7 @@ All keyframes are multiples of 360 s so the loop closes cleanly. Reduced-motion 
   - **TAM**: exists in the cohorts, invisible on the map. Appears only as aggregate numbers in the left monitor.
   - **SAM**: the fog lifts. Facilities render on the map with kind and rough size. Opportunities there are known but not established; opening one costs time and RC. Maps to today's `lead` and `known` node states.
   - **SOM**: business is ready to be established. Full detail, listings, RFQs, standing orders allowed. Maps to today's `partner` state.
-  - Research (right monitor) and relationship capital move facilities inward ring by ring. Reputation still gates the outer edge.
+  - Tribal Knowledge, team hires, and relationship capital move facilities inward ring by ring. Reputation still gates the outer edge.
 - **Performance.** Observation to the client is sliced to SAM plus SOM. Cohort math is O(regions × classes) per tick, so the weekly pulse stays under the current budget even with 500 facilities.
 
 ---
@@ -135,7 +158,7 @@ Four phases. Each ends with tests, typecheck, build, and the e2e suite green.
 1. **Shell and identity (1 to 2 weeks).** New game screen, company and founder in config and saves, Office HQ rename, Pulse wheel, tabs collapse into three monitors with the existing content moved as-is. Standing orders drawer replaces the two strategy tabs. Placeholder art.
 2. **Market engine (2 to 3 weeks).** Cohorts, growth and retirement, shock process, seasonality unified, materialization on SOM entry, TAM/SAM/SOM state machine over the existing node states. Balance suite extended so the evolve and balance CLI commands still run headless.
 3. **Map and opportunities (2 weeks).** Larger procedural map, regions, facility kinds, opportunity slots, easter eggs, time and RC budgets, Deal Desk overlay.
-4. **Art and polish (parallel, 2 weeks).** First graphics run through the skill, parallax Office HQ with the six-minute cycle, chip-based Fleet Manager, finance charts, research tree UI, three music variants.
+4. **Art and polish (parallel, 2 weeks).** First graphics run through the skill, parallax Office HQ with the six-minute cycle, chip-based Fleet Manager, finance charts, Tribal Knowledge wall and tree UI, Team screen, three music variants.
 
 ## Decisions I need from you
 
