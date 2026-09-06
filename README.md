@@ -2,6 +2,8 @@
 
 Deterministic aviation aftermarket strategy prototype. Run an asset-management company, buy single assets or packages, stock and repair components, fulfill airline demand, expand a supplier/customer network, and protect the ACC balance.
 
+Playable build: [https://blockaero.github.io/aero-asset-tycoon/](https://blockaero.github.io/aero-asset-tycoon/). The simulation kernel runs in the browser; saves use `localStorage`.
+
 ## Run the playable prototype
 
 ```powershell
@@ -9,16 +11,22 @@ npm install
 npm run dev
 ```
 
-Open `http://127.0.0.1:5173`. The sim API runs on `http://127.0.0.1:8787`.
+Open `http://127.0.0.1:5173`. The weekly pulse, pause/resume/step, and save/load all run in the Vite page — no Node sim server is required.
 
-Production build and local server:
+Optional Node HTTP API (experiments, `/v1`, SSE) still lives on `http://127.0.0.1:8787`:
+
+```powershell
+npm run serve
+npm run dev:stack
+```
+
+Production build (GitHub Pages base path `/aero-asset-tycoon/`):
 
 ```powershell
 npm run build
-npm run serve
 ```
 
-Then open `http://127.0.0.1:8787`.
+The static site is `dist/client`. Push to `main` deploys it with GitHub Actions.
 
 ## Verification
 

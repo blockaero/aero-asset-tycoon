@@ -1,4 +1,4 @@
-const TRACK_URL = "/audio/hangar-theme.m4a";
+const TRACK_URL = `${import.meta.env.BASE_URL}audio/hangar-theme.m4a`;
 const DEFAULT_VOLUME = 0.42;
 
 let audio: HTMLAudioElement | null = null;

@@ -5,6 +5,7 @@ import { extname, join, normalize, resolve } from "node:path";
 import { evolve, type EvolveRequest } from "../experiment/evolve.ts";
 import { runSequence } from "../experiment/sequence.ts";
 import { LiveCampaignManager } from "../live/runner.ts";
+import { SaveStore } from "../live/save-store.ts";
 import { defaultConfig, runCampaign } from "../sim/campaign.ts";
 import { inspectSnippet } from "../sim/tick.ts";
 import type { CampaignConfig, LivePace } from "../sim/types.ts";
@@ -54,7 +55,7 @@ function parseJson(text: string): Record<string, unknown> {
   return parsed as Record<string, unknown>;
 }
 
-export function startServer(port = 8787, manager = new LiveCampaignManager()): Server {
+export function startServer(port = 8787, manager = new LiveCampaignManager(new SaveStore())): Server {
   const server = createServer(async (req, res) => {
     try {
       if (req.method === "OPTIONS") {

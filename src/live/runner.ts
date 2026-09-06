@@ -10,7 +10,7 @@ import type {
   StandingPolicy,
 } from "../sim/types.ts";
 import { DEFAULT_POLICY } from "../sim/world.ts";
-import { SaveStore } from "./save-store.ts";
+import type { SaveBackend, SaveSummary } from "./save-backend.ts";
 
 export type LiveStatus = "running" | "paused" | "finished";
 export type LiveSnapshot = {
@@ -27,7 +27,7 @@ export class LiveCampaign {
   readonly state: GameState;
   pace: LivePace;
   status: LiveStatus = "paused";
-  private timer: NodeJS.Timeout | null = null;
+  private timer: ReturnType<typeof setTimeout> | null = null;
   private deadline = 0;
   private remainingMs: number;
   private listeners = new Set<Listener>();
@@ -192,11 +192,11 @@ export class LiveCampaign {
 }
 
 export class LiveCampaignManager {
-  readonly saves: SaveStore;
+  readonly saves: SaveBackend;
   private sessions = new Map<string, LiveCampaign>();
   private nextSession = 1;
 
-  constructor(saveStore = new SaveStore()) {
+  constructor(saveStore: SaveBackend) {
     this.saves = saveStore;
   }
 
@@ -224,7 +224,7 @@ export class LiveCampaignManager {
     return [...this.sessions.values()].map((campaign) => campaign.snapshot());
   }
 
-  async saveCampaign(campaignId: string, saveId?: string): Promise<Awaited<ReturnType<SaveStore["save"]>>> {
+  async saveCampaign(campaignId: string, saveId?: string): Promise<SaveSummary> {
     const campaign = this.sessions.get(campaignId);
     if (!campaign) throw new Error("Campaign not found");
     return this.saves.save(saveId ?? `save-${campaignId}`, campaign.state);

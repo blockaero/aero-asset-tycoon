@@ -53,7 +53,7 @@ export function App() {
           }
         }
       },
-      () => setError("Live link interrupted. The server will reconnect automatically."),
+      () => setError("Campaign session lost. Reload to start again."),
     );
   }, [snapshot?.id]);
 
@@ -1238,7 +1238,7 @@ function EndSheet({ observation }: { observation: GameObservation }) {
             </div>
           ))}
         </div>
-        <p>Reload the page to establish a new seeded world. Your latest save remains on the server.</p>
+        <p>Reload the page to establish a new seeded world. Your latest save stays in this browser.</p>
       </section>
     </div>
   );

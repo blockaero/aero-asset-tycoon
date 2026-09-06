@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "concurrently -k -n sim,web \"npm:serve\" \"npm:client\"",
+    "dev": "vite",
+    "dev:stack": "concurrently -k -n sim,web \"npm:serve\" \"npm:client\"",
     "serve": "tsx src/cli.ts serve",
     "client": "vite",
     "build": "npm run typecheck && vite build",
