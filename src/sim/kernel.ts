@@ -21,6 +21,16 @@ import {
   submitQuote,
   type PulseAccumulator,
 } from "./market.ts";
+import {
+  hireTeamMember,
+  investKnowledge,
+  openCompanyWeek,
+  openOpportunity,
+  releaseTeamMember,
+  setIdentity,
+  settleCompanyWeek,
+  visitNode,
+} from "./company.ts";
 import { reservePbhDemand, settlePbhContracts, signPbhContract } from "./pbh.ts";
 import { Rng } from "./rng.ts";
 import type {
@@ -73,6 +83,7 @@ export function openWeek(state: GameState): GameState {
   const rng = Rng.fromState(state.rngState);
   const world = state.world;
   world.tick += 1;
+  openCompanyWeek(world, rng);
   processArrivalsAndJobs(world, rng);
   advanceDemandEnvironment(world, rng);
   tickNetworkAgreements(world, rng);
@@ -126,6 +137,7 @@ export function resolveWeek(state: GameState): GameState {
     world.rfqs.filter((rfq) => rfq.expireTick >= world.tick),
   );
   applyWeeklyCosts(world, pulse);
+  settleCompanyWeek(world, pulse);
   updateNetworkReach(world);
 
   const closing = player?.accBalance ?? 0;
@@ -220,6 +232,40 @@ function applyCommand(
       break;
     case "sign_pbh":
       result = signPbhContract(world, firm.id, command.contractId);
+      break;
+    case "open_opportunity":
+      result =
+        firm.id === "firm-0"
+          ? openOpportunity(world, command.opportunityId, pulse)
+          : { ok: false, reason: "player_only" };
+      break;
+    case "visit_node":
+      result =
+        firm.id === "firm-0" ? visitNode(world, command.nodeId) : { ok: false, reason: "player_only" };
+      break;
+    case "invest_knowledge":
+      result =
+        firm.id === "firm-0"
+          ? investKnowledge(world, command.nodeId, pulse)
+          : { ok: false, reason: "player_only" };
+      break;
+    case "hire_team_member":
+      result =
+        firm.id === "firm-0"
+          ? hireTeamMember(world, command.candidateId)
+          : { ok: false, reason: "player_only" };
+      break;
+    case "release_team_member":
+      result =
+        firm.id === "firm-0"
+          ? releaseTeamMember(world, command.memberId)
+          : { ok: false, reason: "player_only" };
+      break;
+    case "set_identity":
+      result =
+        firm.id === "firm-0"
+          ? setIdentity(world, command.companyName, command.founderName, command.portraitId)
+          : { ok: false, reason: "player_only" };
       break;
   }
   if (!result.ok) rejectCommand(world, envelope, result.reason ?? "command_rejected");

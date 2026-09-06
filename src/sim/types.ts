@@ -13,8 +13,19 @@ export type DemandKind = "hardtime" | "overhaul" | "oncondition" | "conditionmon
 export type Procurement = "oem_loyal" | "cost_driven" | "balanced";
 export type TxKind = "outright" | "exchange";
 export type LivePace = "fast" | "medium" | "slow";
-export type OrganizationKind = "asset_manager" | "airline" | "mro" | "manufacturer";
-export type FacilityKind = "warehouse" | "hangar" | "repair_shop" | "factory";
+export type OrganizationKind = "asset_manager" | "airline" | "mro" | "manufacturer" | "lessor" | "broker" | "association";
+export type FacilityKind =
+  | "warehouse"
+  | "hangar"
+  | "repair_shop"
+  | "factory"
+  | "engine_shop"
+  | "component_shop"
+  | "teardown"
+  | "lessor"
+  | "broker"
+  | "distribution"
+  | "conference";
 export type NodeState = "locked" | "lead" | "known" | "partner";
 export type AgreementKind = "supplier_allocation" | "preferred_vendor" | "repair_capacity";
 
@@ -66,6 +77,11 @@ export type Facility = {
   capacity: number;
   baseTatTicks: number;
   logisticsTatTicks: number;
+  /** v2 */
+  regionCode: RegionCode;
+  /** ATA chapters this facility can work or trade. */
+  ataCapabilities: number[];
+  scale: number;
 };
 
 export type FleetGroup = {
@@ -264,18 +280,46 @@ export type NetworkNode = {
   relationshipRequired: number;
   logisticsTatTicks: number;
   hiddenDetail: string;
+  /** v2 */
+  regionCode: RegionCode;
+  reach: MarketReach;
+  /** ATA chapters this node deals in. Drives map filters. */
+  ataFocus: number[];
+  /** 1 (single component bench) .. 5 (mega overhaul / OEM). */
+  scale: number;
+  /** How many opportunity slots this node can hold at once. */
+  slots: number;
 };
 
 export type NetworkOpportunity = {
   id: number;
   nodeId: string;
-  kind: "listing" | "buyer_need" | "introduction" | "agreement";
+  kind:
+    | "listing"
+    | "buyer_need"
+    | "introduction"
+    | "agreement"
+    | "easter_egg"
+    | "conference"
+    | "candidate"
+    | "teardown"
+    | "intel";
   title: string;
   description: string;
   referenceId: number | null;
   agreementKind: AgreementKind | null;
   expiresTick: number;
   accepted: boolean;
+  /** v2 costs paid from the turn budget when the player opens it. */
+  timeCost: number;
+  rcCost: number;
+  accCost: number;
+  /** ATA chapters involved, for filters and knowledge bonuses. */
+  ataFocus: number[];
+  /** Seeded rare finds that meaningfully boost the company. */
+  easterEgg: boolean;
+  /** Free-text reward summary shown on the card. */
+  reward: string;
 };
 
 export type NetworkAgreement = {
@@ -430,6 +474,11 @@ export type World = {
   events: EventLog[];
   pulses: AccPulse[];
   removalHistory: Record<string, number[]>;
+  /** v2 */
+  calendar: GameCalendar;
+  regions: Region[];
+  globalMarket: GlobalMarket;
+  company: CompanyState;
 };
 
 export type StandingPolicy = {
@@ -443,6 +492,248 @@ export type StandingPolicy = {
   exchangeBias: number;
 };
 
+/* ------------------------------------------------------------------ *
+ * v2 contract — calendar, ATA, geography, cohort market, fog of war,
+ * turn budgets, Tribal Knowledge, Team, and founder identity.
+ * ------------------------------------------------------------------ */
+
+export type Season = "winter" | "spring" | "summer" | "autumn";
+
+export type GameCalendar = {
+  /** Calendar year, e.g. 2027. */
+  year: number;
+  /** 1-based period inside the year. */
+  period: number;
+  /** Periods in a year. One tick is one week, so 52. */
+  periodsPerYear: number;
+  /** 1..4 */
+  quarter: number;
+  season: Season;
+  /** 0..1 through the year. Drives the seasonal palette. */
+  yearFraction: number;
+  /** Seasonal demand multiplier applied on top of the economic baseline. */
+  seasonalDemand: number;
+  /** Seasonal price multiplier. Inventory held into a strong season is worth more. */
+  seasonalPrice: number;
+};
+
+/** ATA 100 chapter grouping used for map filters, knowledge, and chip rollups. */
+export type AtaGroup =
+  | "general"
+  | "airframe_systems"
+  | "structures"
+  | "propulsion"
+  | "avionics"
+  | "utilities";
+
+export type AtaChapter = {
+  code: number;
+  title: string;
+  group: AtaGroup;
+  /** One-line plain description shown in the UI. */
+  blurb: string;
+  /** Rough share of aftermarket value. Used to weight cohorts and demand. */
+  valueWeight: number;
+};
+
+export type RegionCode =
+  | "NA"
+  | "CARIB"
+  | "LATAM"
+  | "EUW"
+  | "EUE"
+  | "CIS"
+  | "MEA"
+  | "AFR"
+  | "SASIA"
+  | "SEA"
+  | "GCHINA"
+  | "NEASIA"
+  | "OCE"
+  | "CASIA";
+
+export type Region = {
+  code: RegionCode;
+  name: string;
+  /** ISO-ish country names. The union across regions is 190+. */
+  countries: string[];
+  /** Map rectangle in 0..100 space. */
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  /** Relative number of facilities placed here. */
+  facilityDensity: number;
+  /** Baseline demand index, 1.0 is world average. */
+  demandBase: number;
+  /** Shop labour cost index, 1.0 is world average. */
+  labourIndex: number;
+  /** Weeks of extra logistics from the player HQ. */
+  logisticsPenalty: number;
+};
+
+/** Fog-of-war ring. TAM is statistical only; SAM is visible; SOM is tradeable. */
+export type MarketReach = "tam" | "sam" | "som";
+
+export type AssetClass = "airframe" | "engine" | "component" | "llp";
+
+/**
+ * A statistical slice of the global fleet. Everything outside the player's SOM
+ * lives here as counts, never as serialized units.
+ */
+export type MarketCohort = {
+  id: string;
+  regionCode: RegionCode;
+  ata: number;
+  assetClass: AssetClass;
+  ownerKind: OrganizationKind;
+  /** Serialized high-value assets in this slice. */
+  count: number;
+  meanAgeYears: number;
+  /** 1.0 baseline. */
+  priceIndex: number;
+  demandIndex: number;
+  /** How many units of this cohort have been materialized into world.units. */
+  materialized: number;
+};
+
+export type MarketShockKind =
+  | "fuel_spike"
+  | "type_grounding"
+  | "lessor_default"
+  | "variant_launch"
+  | "supply_squeeze"
+  | "traffic_boom"
+  | "credit_crunch";
+
+export type MarketShock = {
+  id: number;
+  kind: MarketShockKind;
+  label: string;
+  startTick: number;
+  peakTick: number;
+  endTick: number;
+  /** Signed multiplicative impact at peak, e.g. -0.18. */
+  priceImpact: number;
+  demandImpact: number;
+  regionCode: RegionCode | null;
+  ata: number | null;
+  /** Revealed to the player by intel capability. */
+  known: boolean;
+};
+
+export type MarketHistoryPoint = {
+  tick: number;
+  count: number;
+  priceIndex: number;
+  demandIndex: number;
+};
+
+export type GlobalMarket = {
+  cohorts: MarketCohort[];
+  /** Serialized high-value asset count at world creation. */
+  baselineCount: number;
+  /** Annual growth, 0.06. */
+  growthRate: number;
+  /** Annual retirement, 0.02. */
+  retireRate: number;
+  priceIndex: number;
+  demandIndex: number;
+  shocks: MarketShock[];
+  history: MarketHistoryPoint[];
+};
+
+/** Per-pulse founder budgets. Time does not roll over; RC decays. */
+export type TurnBudget = {
+  timeTotal: number;
+  timeSpent: number;
+  rcTotal: number;
+  rcSpent: number;
+};
+
+export type KnowledgeBranch = "certification" | "asset" | "operations";
+
+export type KnowledgeEffect =
+  | { kind: "buy_discount"; value: number; ata?: number; assetClass?: AssetClass }
+  | { kind: "sell_premium"; value: number; ata?: number; assetClass?: AssetClass }
+  | { kind: "repair_tat"; value: number; ata?: number }
+  | { kind: "ber_accuracy"; value: number }
+  | { kind: "reach_region"; regionCode: RegionCode }
+  | { kind: "unlock_facility"; facilityKind: FacilityKind }
+  | { kind: "rc_income"; value: number }
+  | { kind: "time_income"; value: number }
+  | { kind: "team_cap"; value: number }
+  | { kind: "intel"; value: number }
+  | { kind: "event_access"; value: number }
+  | { kind: "logistics_cost"; value: number }
+  | { kind: "warehouse_capacity"; value: number }
+  | { kind: "quote_quality"; value: number }
+  | { kind: "buyer_ceiling"; value: number };
+
+export type KnowledgeNode = {
+  id: string;
+  branch: KnowledgeBranch;
+  title: string;
+  /** Short label for the frame on the wall, e.g. "ISO 9001". */
+  shortTitle: string;
+  blurb: string;
+  requires: string[];
+  accCost: number;
+  /** Founder hours consumed each pulse while in progress. */
+  timeCost: number;
+  ticksToComplete: number;
+  /** ATA chapters this node covers. Empty for non-asset branches. */
+  ataCodes: number[];
+  effects: KnowledgeEffect[];
+  /** Position on the certificate wall, 0-based. */
+  frameSlot: number;
+};
+
+export type KnowledgeProgress = {
+  nodeId: string;
+  investedTicks: number;
+  completedTick: number | null;
+};
+
+export type TeamRole = "buyer" | "sales" | "records" | "repair" | "regional" | "analyst";
+
+export type TeamCandidate = {
+  id: string;
+  name: string;
+  role: TeamRole;
+  portraitId: string;
+  /** Weekly ACC salary. */
+  salary: number;
+  /** 1..100 */
+  skill: number;
+  /** ATA chapters this person knows well. */
+  ataAffinity: number[];
+  regionCode: RegionCode | null;
+  availableUntilTick: number;
+  blurb: string;
+};
+
+export type TeamMember = TeamCandidate & { hiredTick: number };
+
+export type FounderIdentity = {
+  companyName: string;
+  founderName: string;
+  portraitId: string;
+};
+
+/** Everything the player earns, spends, and knows outside the balance sheet. */
+export type CompanyState = {
+  identity: FounderIdentity;
+  budget: TurnBudget;
+  /** Carried relationship capital, decays each pulse. */
+  relationshipCapital: number;
+  knowledge: KnowledgeProgress[];
+  team: TeamMember[];
+  candidates: TeamCandidate[];
+  /** Node ids the player has personally visited this pulse. */
+  visitedThisTick: string[];
+};
+
 export type GameCommand =
   | { type: "purchase_listing"; listingId: number; destinationFacilityId: string }
   | { type: "send_to_shop"; assetId: number; shopId: string; workscope: "min" | "oh" }
@@ -451,7 +742,13 @@ export type GameCommand =
   | { type: "set_sales_strategy"; patch: Partial<SalesStrategy> }
   | { type: "accept_network_opportunity"; opportunityId: number }
   | { type: "sign_network_agreement"; opportunityId: number }
-  | { type: "sign_pbh"; contractId: number };
+  | { type: "sign_pbh"; contractId: number }
+  | { type: "open_opportunity"; opportunityId: number }
+  | { type: "visit_node"; nodeId: string }
+  | { type: "invest_knowledge"; nodeId: string }
+  | { type: "hire_team_member"; candidateId: string }
+  | { type: "release_team_member"; memberId: string }
+  | { type: "set_identity"; companyName: string; founderName: string; portraitId: string };
 
 export type CommandEnvelope = {
   id: number;
@@ -481,4 +778,12 @@ export type CampaignConfig = {
   scenario?: "prototype" | "full" | "shock";
   /** Only for live clients. Headless runs tick as fast as the CPU. */
   livePace?: LivePace;
+  /** v2 identity. Defaults are rolled from the seed when omitted. */
+  companyName?: string;
+  founderName?: string;
+  portraitId?: string;
+  /** Facilities placed on the large map. Defaults to 420. */
+  facilityCount?: number;
+  /** Serialized high-value assets in the visible universe. Defaults to 40000. */
+  worldAssetCount?: number;
 };

@@ -106,6 +106,10 @@ export function restoreSnapshot(json: string): GameState {
     !isRecord(world.reliability.factor) ||
     !isRecord(world.mrp) ||
     !isRecord(world.removalHistory) ||
+    !isRecord(world.calendar) ||
+    !isRecord(world.globalMarket) ||
+    !isRecord(world.company) ||
+    !Array.isArray(world.regions) ||
     requiredArrays.some((key) => !Array.isArray(world[key])) ||
     !(world.firms as unknown[]).every(
       (firm) =>
@@ -198,6 +202,7 @@ function migrateLegacyRecord(state: Record<string, unknown>): Record<string, unk
         ? Math.round(contract.weeklyRate * 0.6)
         : 25_000;
   }
+  migrateV2World(world);
   for (const job of arrayRecords(world.jobs)) {
     job.orderedTick ??= world.tick ?? 0;
     job.arriveTick ??= job.orderedTick;
@@ -211,6 +216,78 @@ function migrateLegacyRecord(state: Record<string, unknown>): Record<string, unk
         : 0;
   }
   return state;
+}
+
+
+/**
+ * v2 backfill. Older saves predate the calendar, the region table, the statistical
+ * global market, and the company sheet (identity, turn budget, Tribal Knowledge, Team).
+ * Defaults are deliberately inert: a migrated save behaves exactly like a v1 save until
+ * the player earns knowledge or hires anyone.
+ */
+function migrateV2World(world: Record<string, unknown>): void {
+  const tick = typeof world.tick === "number" ? world.tick : 0;
+  if (!isRecord(world.calendar)) {
+    const period = (tick % 52) + 1;
+    world.calendar = {
+      year: 2027 + Math.floor(tick / 52),
+      period,
+      periodsPerYear: 52,
+      quarter: Math.min(4, Math.floor((period - 1) / 13) + 1),
+      season: period >= 23 && period <= 35 ? "summer" : period >= 10 && period <= 22 ? "spring" : period >= 36 && period <= 48 ? "autumn" : "winter",
+      yearFraction: (period - 1) / 52,
+      seasonalDemand: 1,
+      seasonalPrice: 1,
+    };
+  }
+  if (!Array.isArray(world.regions)) world.regions = [];
+  if (!isRecord(world.globalMarket)) {
+    world.globalMarket = {
+      cohorts: [],
+      baselineCount: 0,
+      growthRate: 0.06,
+      retireRate: 0.02,
+      priceIndex: 1,
+      demandIndex: 1,
+      shocks: [],
+      history: [],
+    };
+  }
+  if (!isRecord(world.company)) {
+    world.company = {
+      identity: {
+        companyName: "Aero Asset Partners",
+        founderName: "The Founder",
+        portraitId: "founder-mixed-woman",
+      },
+      budget: { timeTotal: 40, timeSpent: 0, rcTotal: 12, rcSpent: 0 },
+      relationshipCapital: 0,
+      knowledge: [],
+      team: [],
+      candidates: [],
+      visitedThisTick: [],
+    };
+  }
+  for (const facility of arrayRecords(world.facilities)) {
+    facility.regionCode ??= "NEASIA";
+    if (!Array.isArray(facility.ataCapabilities)) facility.ataCapabilities = [];
+    facility.scale ??= 2;
+  }
+  for (const node of arrayRecords(world.networkNodes)) {
+    node.regionCode ??= "NEASIA";
+    node.reach ??= node.state === "partner" ? "som" : node.state === "locked" ? "tam" : "sam";
+    if (!Array.isArray(node.ataFocus)) node.ataFocus = [];
+    node.scale ??= 2;
+    node.slots ??= 3;
+  }
+  for (const opportunity of arrayRecords(world.opportunities)) {
+    opportunity.timeCost ??= 0;
+    opportunity.rcCost ??= 0;
+    opportunity.accCost ??= 0;
+    if (!Array.isArray(opportunity.ataFocus)) opportunity.ataFocus = [];
+    opportunity.easterEgg ??= false;
+    opportunity.reward ??= "";
+  }
 }
 
 function arrayRecords(value: unknown): Record<string, unknown>[] {

@@ -61,6 +61,32 @@ export const gameCommandSchema = z.discriminatedUnion("type", [
     type: z.literal("sign_pbh"),
     contractId: z.number().int().positive(),
   }),
+  z.object({
+    type: z.literal("open_opportunity"),
+    opportunityId: z.number().int().positive(),
+  }),
+  z.object({
+    type: z.literal("visit_node"),
+    nodeId: z.string().min(1).max(64),
+  }),
+  z.object({
+    type: z.literal("invest_knowledge"),
+    nodeId: z.string().min(1).max(64),
+  }),
+  z.object({
+    type: z.literal("hire_team_member"),
+    candidateId: z.string().min(1).max(64),
+  }),
+  z.object({
+    type: z.literal("release_team_member"),
+    memberId: z.string().min(1).max(64),
+  }),
+  z.object({
+    type: z.literal("set_identity"),
+    companyName: z.string().min(1).max(48),
+    founderName: z.string().min(1).max(48),
+    portraitId: z.string().min(1).max(64),
+  }),
 ]);
 
 export function parseGameCommand(value: unknown): GameCommand {

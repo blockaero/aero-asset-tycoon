@@ -7,6 +7,8 @@ import type {
   Airline,
   CampaignConfig,
   Facility,
+  FacilityKind,
+  RegionCode,
   Firm,
   FleetGroup,
   InstalledCohort,
@@ -19,7 +21,13 @@ import type {
   Unit,
   World,
 } from "./types.ts";
-import { anchorPrice, nextId } from "./util.ts";
+import { anchorPrice, completeOpportunity, nextId } from "./util.ts";
+import { calendarFor } from "./calendar.ts";
+import { REGIONS } from "./geography.ts";
+import { generateMap, nodeStateToReach } from "./bigmap.ts";
+import { createGlobalMarket } from "./cohort-market.ts";
+import { defaultIdentity, sanitizeIdentity } from "./identity.ts";
+import { createBudget } from "./budgets.ts";
 
 const AIRLINE_NAMES = [
   "Sakura Pacific",
@@ -72,12 +80,46 @@ export function rivalPolicy(index: number): StandingPolicy {
   return variants[index % variants.length]!;
 }
 
+/** The founder's home region. Tokyo HQ sits in Northeast Asia. */
+const HQ_REGION: RegionCode = "NEASIA";
+
+/**
+ * ATA chapters a hand-authored core facility works in. The generated world map
+ * derives its own from the facility archetypes in bigmap.ts; this only covers the
+ * small set of nodes the opening scenario ships with.
+ */
+function coreAtaFor(kind: FacilityKind): number[] {
+  switch (kind) {
+    case "factory":
+      return [21, 24, 27, 29, 32, 34, 49, 72, 73, 79, 80];
+    case "repair_shop":
+      return [21, 24, 27, 29, 32, 36, 49, 80];
+    case "engine_shop":
+      return [71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 83];
+    case "component_shop":
+      return [24, 29, 32];
+    case "hangar":
+      return [21, 24, 25, 27, 29, 32, 33, 34, 49];
+    case "teardown":
+      return [32, 52, 53, 54, 57, 71, 72];
+    default:
+      return [21, 24, 27, 29, 32, 34, 72, 73];
+  }
+}
+
+type CoreFacility = Omit<Facility, "regionCode" | "ataCapabilities" | "scale"> &
+  Partial<Pick<Facility, "regionCode" | "ataCapabilities" | "scale">>;
+type CoreNode = Omit<NetworkNode, "regionCode" | "reach" | "ataFocus" | "scale" | "slots"> &
+  Partial<Pick<NetworkNode, "regionCode" | "reach" | "ataFocus" | "scale" | "slots">>;
+
 export function createWorld(config: CampaignConfig): World {
   const rng = new Rng(config.seed);
   const parts = buildCatalog(rng, config.partCount);
   const organizations: Organization[] = [];
-  const facilities: Facility[] = [];
-  const networkNodes: NetworkNode[] = [];
+  // The hand-authored core world is written with short literals; the v2 geography,
+  // ATA capability and fog-of-war fields are filled in by normalizeCore below.
+  const facilities: CoreFacility[] = [];
+  const networkNodes: CoreNode[] = [];
 
   organizations.push({
     id: "org-player",
@@ -336,6 +378,43 @@ export function createWorld(config: CampaignConfig): World {
     });
   }
 
+  // Fill the v2 fields the core world's short literals leave out.
+  const coreFacilities: Facility[] = facilities.map((facility) => ({
+    ...facility,
+    regionCode: facility.regionCode ?? HQ_REGION,
+    ataCapabilities: facility.ataCapabilities ?? coreAtaFor(facility.kind),
+    scale: facility.scale ?? (facility.kind === "factory" ? 5 : 3),
+  }));
+  const coreNodes: NetworkNode[] = networkNodes.map((node) => {
+    const facility = coreFacilities.find((candidate) => candidate.nodeId === node.id);
+    return {
+      ...node,
+      regionCode: node.regionCode ?? HQ_REGION,
+      reach: node.reach ?? nodeStateToReach(node.state),
+      ataFocus: node.ataFocus ?? facility?.ataCapabilities ?? [],
+      scale: node.scale ?? facility?.scale ?? 3,
+      slots: node.slots ?? 3,
+    };
+  });
+
+  // The large fogged world sits around the hand-authored core. Almost all of it starts
+  // in TAM: present in the statistics, invisible on the map.
+  const generated = generateMap(rng, {
+    facilityCount: Math.max(0, config.facilityCount ?? (config.ticks <= 24 ? 120 : 420)),
+    hqRegion: HQ_REGION,
+  });
+
+  const identity = sanitizeIdentity(
+    {
+      companyName: config.companyName,
+      founderName: config.founderName,
+      portraitId: config.portraitId,
+    },
+    rng,
+  );
+  const playerOrganization = organizations.find((organization) => organization.id === "org-player");
+  if (playerOrganization) playerOrganization.name = identity.companyName;
+
   const world: World = {
     seed: config.seed,
     scenario: config.scenario ?? (config.ticks <= 24 ? "prototype" : "full"),
@@ -344,9 +423,9 @@ export function createWorld(config: CampaignConfig): World {
     region: "GLOBAL",
     series: SERIES.map((series) => ({ ...series })),
     parts,
-    organizations,
-    facilities,
-    networkNodes,
+    organizations: [...organizations, ...generated.organizations],
+    facilities: [...coreFacilities, ...generated.facilities],
+    networkNodes: [...coreNodes, ...generated.nodes],
     relationships: organizations
       .filter((organization) => organization.id !== "org-player")
       .map((organization) => ({
@@ -385,6 +464,20 @@ export function createWorld(config: CampaignConfig): World {
     events: [],
     pulses: [],
     removalHistory: {},
+    calendar: calendarFor(0),
+    regions: REGIONS.map((entry) => ({ ...entry, countries: [...entry.countries] })),
+    globalMarket: createGlobalMarket(rng, {
+      assetCount: config.worldAssetCount ?? (config.ticks <= 24 ? 12_000 : 40_000),
+    }),
+    company: {
+      identity,
+      budget: createBudget([]),
+      relationshipCapital: 0,
+      knowledge: [],
+      team: [],
+      candidates: [],
+      visitedThisTick: [],
+    },
   };
 
   initializeReliabilityAndCohorts(world, rng);
@@ -558,7 +651,7 @@ function seedListingsAndOpportunities(world: World, rng: Rng): void {
       exclusive: false,
     };
     world.listings.push(listing);
-    world.opportunities.push({
+    world.opportunities.push(completeOpportunity({
       id: nextId(world),
       nodeId,
       kind: "listing",
@@ -568,7 +661,7 @@ function seedListingsAndOpportunities(world: World, rng: Rng): void {
       agreementKind: null,
       expiresTick: listing.expiresTick,
       accepted: false,
-    });
+    }));
   }
 
   const packageParts = world.parts.filter((part) => part.repairable).slice(0, 4);
@@ -600,7 +693,7 @@ function seedListingsAndOpportunities(world: World, rng: Rng): void {
       exclusive: true,
     };
     world.listings.push(listing);
-    world.opportunities.push({
+    world.opportunities.push(completeOpportunity({
       id: nextId(world),
       nodeId: listing.nodeId,
       kind: "listing",
@@ -610,7 +703,7 @@ function seedListingsAndOpportunities(world: World, rng: Rng): void {
       agreementKind: null,
       expiresTick: listing.expiresTick,
       accepted: false,
-    });
+    }));
   }
 
   const agreementSpecs = [
@@ -634,7 +727,7 @@ function seedListingsAndOpportunities(world: World, rng: Rng): void {
     },
   ];
   for (const spec of agreementSpecs) {
-    world.opportunities.push({
+    world.opportunities.push(completeOpportunity({
       id: nextId(world),
       nodeId: spec.nodeId,
       kind: "agreement",
@@ -644,10 +737,10 @@ function seedListingsAndOpportunities(world: World, rng: Rng): void {
       agreementKind: spec.kind,
       expiresTick: 100,
       accepted: false,
-    });
+    }));
   }
   for (const node of world.networkNodes.filter((candidate) => candidate.state === "lead")) {
-    world.opportunities.push({
+    world.opportunities.push(completeOpportunity({
       id: nextId(world),
       nodeId: node.id,
       kind: "introduction",
@@ -657,7 +750,7 @@ function seedListingsAndOpportunities(world: World, rng: Rng): void {
       agreementKind: null,
       expiresTick: 24,
       accepted: false,
-    });
+    }));
   }
 }
 

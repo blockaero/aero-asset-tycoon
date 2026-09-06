@@ -7,7 +7,7 @@ import type {
   NetworkOpportunity,
   World,
 } from "./types.ts";
-import { anchorPrice, mrpFor, nextId, relationshipScore } from "./util.ts";
+import { anchorPrice, completeOpportunity, mrpFor, nextId, relationshipScore } from "./util.ts";
 
 export function updateNetworkReach(world: World): void {
   const player = world.firms.find((firm) => firm.id === "firm-0");
@@ -23,17 +23,22 @@ export function updateNetworkReach(world: World): void {
         payload: { nodeId: node.id, organizationId: node.organizationId },
       });
       if (!world.opportunities.some((opportunity) => opportunity.nodeId === node.id && opportunity.kind === "introduction" && !opportunity.accepted)) {
-        world.opportunities.push({
-          id: nextId(world),
-          nodeId: node.id,
-          kind: "introduction",
-          title: `Introduction to ${node.label}`,
-          description: "Accept the introduction to establish a working relationship.",
-          referenceId: null,
-          agreementKind: null,
-          expiresTick: world.tick + 12,
-          accepted: false,
-        });
+        world.opportunities.push(
+          completeOpportunity({
+            id: nextId(world),
+            nodeId: node.id,
+            kind: "introduction",
+            title: `Introduction to ${node.label}`,
+            description: "Accept the introduction to establish a working relationship.",
+            referenceId: null,
+            agreementKind: null,
+            expiresTick: world.tick + 12,
+            accepted: false,
+            rcCost: 2,
+            timeCost: 2,
+            ataFocus: node.ataFocus,
+          }),
+        );
       }
     }
     else if (node.state === "lead" && relationship >= Math.max(15, node.relationshipRequired)) {
@@ -194,17 +199,21 @@ export function tickNetworkAgreements(world: World, rng: Rng): void {
         status: "open",
         exclusive: true,
       });
-      world.opportunities.push({
-        id: nextId(world),
-        nodeId: node.id,
-        kind: "listing",
-        title: `Reserved allocation: ${part.name}`,
-        description: "Partner-only inventory allocation.",
-        referenceId: listingId,
-        agreementKind: null,
-        expiresTick: world.tick + 4,
-        accepted: false,
-      });
+      world.opportunities.push(
+        completeOpportunity({
+          id: nextId(world),
+          nodeId: node.id,
+          kind: "listing",
+          title: `Reserved allocation: ${part.name}`,
+          description: "Partner-only inventory allocation.",
+          referenceId: listingId,
+          agreementKind: null,
+          expiresTick: world.tick + 4,
+          accepted: false,
+          ataFocus: [part.ata],
+          reward: "Partner-only allocation below anchor price.",
+        }),
+      );
     } else if (agreement.kind === "preferred_vendor") {
       const airline = world.airlines.find(
         (candidate) => candidate.organizationId === agreement.organizationId,
