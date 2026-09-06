@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import type { LiveSnapshot } from "../live/runner.ts";
 import type { GameObservation } from "../sim/observation.ts";
 import type {
@@ -18,6 +18,7 @@ import {
   setCampaignPace,
   subscribeCampaign,
 } from "./api.ts";
+import { musicOn, startMusic, subscribeMusic, toggleMusic } from "./music.ts";
 
 type View = "hq" | "map" | "market" | "strategy" | "sales" | "assets" | "kpis" | "pbh";
 type InspectTarget =
@@ -98,6 +99,7 @@ export function App() {
         busy={busy}
         error={error}
         onStart={async (input) => {
+          startMusic();
           setBusy(true);
           try {
             const created = await createCampaign(input);
@@ -112,6 +114,7 @@ export function App() {
           }
         }}
         onLoad={async (saveId, pace) => {
+          startMusic();
           setBusy(true);
           try {
             const loaded = await loadCampaign(saveId, pace);
@@ -266,6 +269,11 @@ function CampaignStart({
   useEffect(() => {
     void listSaves().then(setSaves).catch(() => setSaves([]));
   }, []);
+  useEffect(() => {
+    const kick = () => startMusic();
+    window.addEventListener("pointerdown", kick, { once: true });
+    return () => window.removeEventListener("pointerdown", kick);
+  }, []);
   const seconds = length * ({ fast: 25, medium: 50, slow: 75 }[pace]);
   return (
     <main className="start-screen">
@@ -372,8 +380,23 @@ function LedgerHeader({
         </button>
         <button disabled={busy || snapshot.status === "running" || snapshot.status === "finished"} onClick={() => onAction("step")}>Step</button>
         <button disabled={busy} onClick={onSave}>Save</button>
+        <MusicToggle />
       </div>
     </header>
+  );
+}
+
+function MusicToggle() {
+  const on = useSyncExternalStore(subscribeMusic, musicOn);
+  return (
+    <button
+      type="button"
+      onClick={toggleMusic}
+      aria-pressed={on}
+      title="Hangar theme — warm industrial loop"
+    >
+      {on ? "♪ Music" : "♪ Muted"}
+    </button>
   );
 }
 
