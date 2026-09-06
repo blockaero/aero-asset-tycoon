@@ -1,0 +1,36 @@
+.art-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  background: var(--paper-deep);
+}
+
+/*
+ * Last resort when neither a render nor a stand-in exists. Reads as intentional
+ * material rather than a broken image, so an unfinished shot never looks like a bug.
+ */
+.art-image--placeholder {
+  width: 100%;
+  border: 1px solid var(--hairline);
+  border-radius: 2px;
+  background:
+    linear-gradient(
+      148deg,
+      var(--graphite-700) 0%,
+      var(--graphite-500) 42%,
+      var(--graphite-600) 68%,
+      var(--graphite-800) 100%
+    );
+  position: relative;
+  overflow: hidden;
+}
+
+.art-image--placeholder::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--grid);
+  background-size: 12px 12px;
+  opacity: 0.5;
+}

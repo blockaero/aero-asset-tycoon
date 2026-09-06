@@ -43,5 +43,7 @@ describe("common-seed synthetic playtest", () => {
       Math.max(...reports.map((report) => report.averageFillRate)) -
       Math.min(...reports.map((report) => report.averageFillRate)),
     ).toBeGreaterThan(0.001);
-  });
+    // Five archetypes over five seeds and a hundred weeks each. Every assertion above
+    // stands; this only tells vitest the benchmark is expected to be slow.
+  }, 60_000);
 });

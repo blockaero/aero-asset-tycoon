@@ -1,0 +1,584 @@
+/* PulseWheel — one circular control for the live pulse, the pace and the turn budget.
+   Every class is prefixed `pulsewheel-`. Colours come from the tokens in styles.css;
+   the only computed colours are hsl() built on --season-hue, which the component sets
+   inline from the sim calendar. Selectors are deliberately scoped under .pulsewheel so
+   the global button rules in styles.css cannot repaint the disc on hover or nudge it
+   out of position on :active. */
+
+.pulsewheel {
+  position: relative;
+  flex: 0 0 auto;
+  width: 148px;
+  height: 148px;
+  /* Fallbacks; the component overrides both inline every render. */
+  --season-hue: 210;
+  --daylight: 0.5;
+  --pw-light-x: 50%;
+  --pw-light-y: 30%;
+}
+
+/* ---------------------------------------------------------------- *
+ * Arcs
+ * ---------------------------------------------------------------- */
+
+.pulsewheel-ring {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.pulsewheel-bezel {
+  fill: none;
+  stroke: var(--hairline);
+  stroke-width: 1;
+  opacity: 0.6;
+}
+
+/* 1 — outer timer arc. The loud one: accent blue, round cap, faint bloom. */
+.pulsewheel-track {
+  fill: none;
+  stroke: var(--hairline);
+  stroke-width: 6;
+  opacity: 0.5;
+}
+
+.pulsewheel-timer {
+  fill: none;
+  stroke: var(--cyan);
+  stroke-width: 6;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 5px var(--cyan-glow));
+}
+
+.pulsewheel.is-paused .pulsewheel-timer {
+  stroke: var(--muted);
+  filter: none;
+  opacity: 0.55;
+}
+
+/* 2 — inner budget arc. The quiet one: thinner, graphite, butt cap, dotted track. */
+.pulsewheel-budget-track {
+  fill: none;
+  stroke: var(--hairline);
+  stroke-width: 2;
+  stroke-dasharray: 1 5;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+
+.pulsewheel-budget {
+  fill: none;
+  stroke: var(--graphite-600);
+  stroke-width: 3;
+  stroke-linecap: butt;
+  opacity: 0.7;
+}
+
+.pulsewheel-budget.is-tight {
+  stroke: var(--amber);
+  opacity: 0.9;
+}
+
+.pulsewheel-budget.is-spent {
+  stroke: var(--red);
+  opacity: 0.95;
+}
+
+/* 7 — one flash per resolved pulse. */
+.pulsewheel-flash {
+  fill: none;
+  stroke-width: 8;
+  opacity: 0.42;
+  pointer-events: none;
+}
+
+.pulsewheel-flash--gain {
+  stroke: var(--green);
+}
+
+.pulsewheel-flash--loss {
+  stroke: var(--red);
+}
+
+/* Small status indicator on the rim: navigation green / amber only, never decoration. */
+.pulsewheel-status {
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  border: 1px solid var(--paper);
+  border-radius: 50%;
+  background: var(--muted);
+  pointer-events: none;
+}
+
+.pulsewheel-status[data-state="running"] {
+  background: var(--green);
+}
+
+.pulsewheel-status[data-state="paused"] {
+  background: var(--amber);
+}
+
+.pulsewheel-status[data-state="busy"] {
+  background: var(--cyan);
+}
+
+/* ---------------------------------------------------------------- *
+ * 3 — the disc face
+ * ---------------------------------------------------------------- */
+
+.pulsewheel .pulsewheel-disc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 104px;
+  height: 104px;
+  margin: 0;
+  padding: 0;
+  transform: translate(-50%, -50%);
+  border: 1px solid var(--hairline);
+  border-radius: 50%;
+  color: var(--ink);
+  background: var(--aluminium-flat);
+  box-shadow:
+    0 1px 3px color-mix(in srgb, var(--graphite-900) 22%, transparent),
+    inset 0 0 0 1px var(--paper-glow);
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  transition: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.pulsewheel .pulsewheel-disc:hover:not(:disabled) {
+  border-color: var(--cyan);
+  background: var(--aluminium-flat);
+  box-shadow:
+    0 2px 8px color-mix(in srgb, var(--graphite-900) 26%, transparent),
+    inset 0 0 0 1px var(--paper-glow);
+}
+
+.pulsewheel .pulsewheel-disc:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+  border-color: var(--cyan);
+  background: var(--aluminium-flat);
+}
+
+.pulsewheel .pulsewheel-disc:active:not(:disabled) {
+  transform: translate(-50%, -50%) scale(0.985);
+}
+
+.pulsewheel .pulsewheel-disc:disabled {
+  cursor: progress;
+  opacity: 0.72;
+}
+
+.pulsewheel-face,
+.pulsewheel-season,
+.pulsewheel-night,
+.pulsewheel-sun,
+.pulsewheel-art,
+.pulsewheel-plate {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Brushed aluminium, straight from the token. Also the fallback block behind the art,
+   so a missing SVG never leaves a hole in the layout. */
+.pulsewheel-face {
+  background: var(--aluminium);
+}
+
+/* Season: an hsl wash built on --season-hue, blended soft so the disc stays a disc
+   and never becomes a colour wheel. */
+.pulsewheel-season {
+  background: radial-gradient(
+    circle at 50% 26%,
+    hsl(var(--season-hue) 44% 70%) 0%,
+    hsl(var(--season-hue) 38% 34%) 100%
+  );
+  opacity: 0.2;
+  mix-blend-mode: soft-light;
+}
+
+/* Day/night: brightness follows the dawn-noon-dusk-night curve carried in --daylight,
+   and the light centre travels with the pulse. */
+.pulsewheel-night {
+  background: radial-gradient(circle at 50% 64%, var(--graphite-700) 0%, var(--graphite-900) 100%);
+  opacity: calc(0.5 - var(--daylight) * 0.44);
+}
+
+.pulsewheel-sun {
+  background: radial-gradient(
+    circle at var(--pw-light-x) var(--pw-light-y),
+    var(--paper-glow) 0%,
+    transparent 52%
+  );
+  opacity: calc(0.16 + var(--daylight) * 0.7);
+}
+
+.pulsewheel-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.28;
+  mix-blend-mode: luminosity;
+}
+
+/* Keeps the readout legible at midnight and at noon alike. */
+.pulsewheel-plate {
+  inset: 11px;
+  background: radial-gradient(circle at 50% 50%, var(--paper-glow) 0%, transparent 74%);
+  opacity: 0.84;
+}
+
+/* ---------------------------------------------------------------- *
+ * 4 — the three stacked lines
+ * ---------------------------------------------------------------- */
+
+.pulsewheel-readout {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  text-shadow:
+    0 0 8px var(--paper-glow),
+    0 0 3px var(--paper-glow);
+}
+
+.pulsewheel-period {
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+}
+
+.pulsewheel-year {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.pulsewheel-phase {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---------------------------------------------------------------- *
+ * 5 — queued command badge
+ * ---------------------------------------------------------------- */
+
+.pulsewheel-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  min-width: 20px;
+  padding: 2px 5px;
+  border: 1px solid var(--cyan-deep);
+  border-radius: 10px;
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--paper);
+  background: var(--cyan);
+  box-shadow: 0 1px 4px var(--cyan-glow);
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- *
+ * 6 — radial menu and its keyboard-reachable toggle
+ * ---------------------------------------------------------------- */
+
+.pulsewheel .pulsewheel-more {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 20px;
+  padding: 0;
+  transform: translateX(-50%);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  color: var(--muted);
+  background: var(--paper);
+  transition: none;
+}
+
+.pulsewheel .pulsewheel-more svg {
+  display: block;
+  fill: currentColor;
+}
+
+.pulsewheel .pulsewheel-more:hover:not(:disabled),
+.pulsewheel .pulsewheel-more:focus-visible {
+  color: var(--cyan);
+  border-color: var(--cyan);
+  background: var(--paper);
+  box-shadow: none;
+}
+
+.pulsewheel .pulsewheel-more:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+.pulsewheel .pulsewheel-more:active:not(:disabled) {
+  transform: translateX(-50%) translateY(1px);
+}
+
+.pulsewheel .pulsewheel-more[aria-expanded="true"] {
+  color: var(--paper);
+  border-color: var(--cyan-deep);
+  background: var(--cyan);
+}
+
+.pulsewheel-menu {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.pulsewheel .pulsewheel-menu-item {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 76px;
+  padding: 5px 9px;
+  transform: translate(-50%, -50%);
+  border: 1px solid var(--hairline);
+  border-radius: 2px;
+  text-align: left;
+  color: var(--ink);
+  background: var(--paper);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--graphite-900) 22%, transparent);
+  pointer-events: auto;
+  transition: none;
+}
+
+.pulsewheel .pulsewheel-menu-item:hover:not(:disabled),
+.pulsewheel .pulsewheel-menu-item:focus-visible {
+  border-color: var(--cyan);
+  background: var(--paper-glow);
+  box-shadow: 0 4px 14px var(--cyan-glow);
+}
+
+.pulsewheel .pulsewheel-menu-item:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+.pulsewheel .pulsewheel-menu-item:active:not(:disabled) {
+  transform: translate(-50%, -50%) translateY(1px);
+}
+
+.pulsewheel .pulsewheel-menu-item[aria-checked="true"] {
+  border-color: var(--cyan-deep);
+  box-shadow: inset 3px 0 0 var(--cyan);
+}
+
+.pulsewheel-menu-label {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.pulsewheel-menu-hint {
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
+/* ---------------------------------------------------------------- *
+ * Legend
+ * ---------------------------------------------------------------- */
+
+.pulsewheel-legend {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  max-width: 260px;
+}
+
+.pulsewheel-legend-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.pulsewheel-legend dt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink-soft);
+}
+
+.pulsewheel-legend dd {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.pulsewheel-legend-swatch {
+  width: 14px;
+  height: 4px;
+  border-radius: 2px;
+}
+
+.pulsewheel-legend-swatch--timer {
+  background: var(--cyan);
+}
+
+.pulsewheel-legend-swatch--budget {
+  background: var(--graphite-600);
+  opacity: 0.7;
+}
+
+/* ---------------------------------------------------------------- *
+ * Utility
+ * ---------------------------------------------------------------- */
+
+.pulsewheel-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------------------------------------------------------------- *
+ * Motion — everything opt-in
+ * ---------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .pulsewheel-timer {
+    transition:
+      stroke-dasharray 850ms linear,
+      stroke 220ms var(--ease-out),
+      opacity 220ms var(--ease-out);
+  }
+
+  .pulsewheel-budget {
+    transition:
+      stroke-dasharray 320ms var(--ease-out),
+      stroke 220ms var(--ease-out);
+  }
+
+  .pulsewheel-night,
+  .pulsewheel-sun {
+    transition: opacity 850ms linear;
+  }
+
+  .pulsewheel .pulsewheel-disc {
+    transition:
+      border-color 140ms var(--ease-out),
+      box-shadow 140ms var(--ease-out),
+      transform 140ms var(--ease-out);
+  }
+
+  .pulsewheel .pulsewheel-more,
+  .pulsewheel .pulsewheel-menu-item {
+    transition:
+      border-color 140ms var(--ease-out),
+      color 140ms var(--ease-out),
+      background 140ms var(--ease-out),
+      box-shadow 140ms var(--ease-out);
+  }
+
+  .pulsewheel-flash {
+    animation: pulsewheel-flash 1000ms var(--ease-out) 1 both;
+  }
+
+  .pulsewheel-menu-item {
+    animation: pulsewheel-menu-in 160ms var(--ease-out) 1 both;
+  }
+
+  .pulsewheel.is-busy .pulsewheel-status {
+    animation: pulsewheel-breathe 1200ms ease-in-out infinite;
+  }
+}
+
+@keyframes pulsewheel-flash {
+  0% {
+    opacity: 0;
+    stroke-width: 6;
+  }
+
+  16% {
+    opacity: 0.9;
+    stroke-width: 11;
+  }
+
+  100% {
+    opacity: 0;
+    stroke-width: 6;
+  }
+}
+
+@keyframes pulsewheel-menu-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulsewheel-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
+}

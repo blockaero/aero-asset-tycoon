@@ -215,13 +215,23 @@ function fictionalPartNumber(ata: number, sequence: number): string {
   return `AAT-${String(ata).padStart(2, "0")}-${String(sequence).padStart(4, "0")}`;
 }
 
+/** Coprime with ARCHETYPES.length so the walk visits every archetype before repeating. */
+const CATALOG_STRIDE = 31;
+
 export function buildCatalog(rng: Rng, partCount: number): PartMaster[] {
   const parts: PartMaster[] = [];
   for (let i = 0; i < partCount; i++) {
-    const source = ARCHETYPES[i % ARCHETYPES.length]!;
+    // Walk the archetype list with a stride coprime to its length. A small partCount
+    // still spans ATA chapters and both airframe and engine series, where a plain
+    // i % length would take only the lowest-numbered chapters.
+    const source = ARCHETYPES[(i * CATALOG_STRIDE) % ARCHETYPES.length]!;
     const generation = Math.floor(i / ARCHETYPES.length);
     const applicationSeriesId = source.seriesIds[(generation + i) % source.seriesIds.length]!;
     const application = SERIES.find((series) => series.id === applicationSeriesId);
+    // A real component usually serves more than one type. Keeping the archetype's full
+    // applicability concentrates the installed base on fewer part numbers, which is what
+    // makes stocking a chapter a viable strategy rather than a lottery across variants.
+    const seriesIds = generation === 0 ? [...source.seriesIds] : [applicationSeriesId];
     const priceJitter = generation === 0 ? 1 : rng.float(0.86, 1.18);
     const intervalJitter = generation === 0 ? 1 : rng.float(0.9, 1.12);
     const suffix = generation === 0 ? "" : ` · Variant ${generation + 1}`;
@@ -240,7 +250,7 @@ export function buildCatalog(rng: Rng, partCount: number): PartMaster[] {
       name: `${source.name} · ${application?.name ?? applicationSeriesId}${suffix}`,
       ata: source.ata,
       category: source.category,
-      seriesIds: [applicationSeriesId],
+      seriesIds,
       positions: source.positions,
       removalMode: source.removalMode,
       lifeLimitFh: source.lifeLimitFh ? Math.round(source.lifeLimitFh * intervalJitter) : null,

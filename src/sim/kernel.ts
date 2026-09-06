@@ -29,6 +29,7 @@ import {
   releaseTeamMember,
   setIdentity,
   settleCompanyWeek,
+  syncCoreReach,
   visitNode,
 } from "./company.ts";
 import { reservePbhDemand, settlePbhContracts, signPbhContract } from "./pbh.ts";
@@ -91,6 +92,7 @@ export function openWeek(state: GameState): GameState {
   generateAndPostDemand(world, rng);
   reservePbhDemand(world);
   updateNetworkReach(world);
+  syncCoreReach(world);
   state.rngState = rng.getState();
   state.phase = "open";
   return state;
@@ -139,6 +141,7 @@ export function resolveWeek(state: GameState): GameState {
   applyWeeklyCosts(world, pulse);
   settleCompanyWeek(world, pulse);
   updateNetworkReach(world);
+  syncCoreReach(world);
 
   const closing = player?.accBalance ?? 0;
   world.pulses.push({

@@ -10,7 +10,7 @@
 
 import { advanceGlobalMarket } from "./cohort-market.ts";
 import { calendarFor } from "./calendar.ts";
-import { promoteReach, reachToNodeState } from "./bigmap.ts";
+import { nodeStateToReach, promoteReach, reachToNodeState } from "./bigmap.ts";
 import { canOpen, expireOpportunities, rollOpportunities } from "./opportunities.ts";
 import { canInvest, investTick, knowledgeNode } from "./knowledge.ts";
 import { BASE_TEAM_CAP, canHire, refreshCandidates, weeklySalaryCost } from "./team.ts";
@@ -134,6 +134,10 @@ function refreshFog(world: World, modifiers: CompanyModifiers): void {
   if (!player) return;
   for (const node of world.networkNodes) {
     if (node.role === "hq") continue;
+    // The hand-authored core nodes are owned by updateNetworkReach in network.ts,
+    // which has its own progression thresholds. Here we only mirror their state into
+    // reach; syncCoreReach below does that after the legacy pass has run.
+    if (!node.id.startsWith("node-gen-")) continue;
     const before = node.reach;
     node.reach = promoteReach(node, {
       reputation: player.globalReputation,
@@ -156,13 +160,25 @@ function refreshFog(world: World, modifiers: CompanyModifiers): void {
 /** Top up opportunity slots at every node the player can actually see. */
 function refreshOpportunities(world: World, rng: Rng, modifiers: CompanyModifiers): void {
   const easterEggChance = 0.02 + modifiers.eventAccess * 0.03;
+  // Index once. A 600-node map with a per-node scan over facilities and opportunities
+  // is quadratic and shows up immediately in headless runs.
+  const facilityByNode = new Map<string, (typeof world.facilities)[number]>();
+  for (const facility of world.facilities) {
+    if (!facilityByNode.has(facility.nodeId)) facilityByNode.set(facility.nodeId, facility);
+  }
+  const openByNode = new Map<string, NetworkOpportunity[]>();
+  for (const opportunity of world.opportunities) {
+    if (opportunity.accepted) continue;
+    const bucket = openByNode.get(opportunity.nodeId);
+    if (bucket) bucket.push(opportunity);
+    else openByNode.set(opportunity.nodeId, [opportunity]);
+  }
+
   for (const node of world.networkNodes) {
     if (node.reach === "tam" || node.role === "hq") continue;
-    const facility = world.facilities.find((candidate) => candidate.nodeId === node.id);
+    const facility = facilityByNode.get(node.id);
     if (!facility) continue;
-    const existing = world.opportunities.filter(
-      (opportunity) => opportunity.nodeId === node.id && !opportunity.accepted,
-    );
+    const existing = openByNode.get(node.id) ?? [];
     if (existing.length >= node.slots) continue;
     const rolled = rollOpportunities(rng, {
       tick: world.tick,
@@ -177,6 +193,17 @@ function refreshOpportunities(world: World, rng: Rng, modifiers: CompanyModifier
       easterEggChance,
     });
     world.opportunities.push(...rolled);
+  }
+}
+
+/**
+ * Mirror the legacy locked/lead/known/partner progression onto the fog ring for the
+ * hand-authored core nodes. Runs after updateNetworkReach so state is already final.
+ */
+export function syncCoreReach(world: World): void {
+  for (const node of world.networkNodes) {
+    if (node.id.startsWith("node-gen-")) continue;
+    node.reach = nodeStateToReach(node.state);
   }
 }
 
