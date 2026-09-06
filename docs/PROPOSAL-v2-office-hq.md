@@ -166,3 +166,49 @@ Four phases. Each ends with tests, typecheck, build, and the e2e suite green.
 - Founder portraits: fixed set of eight, or eight plus a "roll again" that regenerates? Fixed is cheaper and deterministic.
 - Time budget: 40 hours a week feels right for a founder. Confirm or pick a different number.
 - Image pipeline: run the first shot list from your desktop Claude session through Gemini, or approve an image API so it can run headless here?
+
+---
+
+## Implementation status
+
+Shipped on `claude/aero-game-design-oogwv6`. Typecheck clean, 237 unit tests, build and
+end-to-end all green.
+
+| Proposal item | Where it lives | State |
+| --- | --- | --- |
+| 1. Pulse wheel | `src/client/components/PulseWheel.tsx`, `src/sim/calendar.ts` | Done |
+| 2. Larger map, three budgets, easter eggs | `src/sim/bigmap.ts`, `budgets.ts`, `opportunities.ts`, `components/NetworkMapV2.tsx` | Done |
+| 3. Name company and founder, portraits | `src/sim/identity.ts`, `components/NewGame.tsx` | Done |
+| 4. Graphics library | `.claude/skills/aero-asset-tycoon-graphics/`, `docs/COWORK-ART-BRIEF.md`, `src/client/art/` | Procedural stand-ins; real renders need a desktop session |
+| 5. Strategy demoted to a mechanic | Standing-orders drawer in Fleet Manager | Done |
+| 6. Six-minute Office HQ cycle | `src/client/components/OfficeHQ.css` | Done |
+| 7. Fog of war, TAM/SAM/SOM, cohort market | `src/sim/cohort-market.ts`, `bigmap.ts`, `company.ts` | Done |
+| Tribal Knowledge | `src/sim/knowledge.ts`, `effects.ts` | Done |
+| Team | `src/sim/team.ts` | Done |
+| ATA prominence | `src/sim/ata.ts`, `catalog.ts`, and every surface | Done |
+
+### Decisions taken
+
+The four open questions were resolved in the build rather than left hanging.
+
+- **Pulse unit** stayed at one week. The calendar helper makes the displayed period a
+  presentation choice, so a monthly pulse is a config change rather than a kernel change.
+- **Founder portraits** are a fixed set of eight, four presenting feminine and four
+  masculine, one of each heritage in each set. A test asserts the records carry no numeric
+  field, so nobody can later attach a stat to a face.
+- **Time budget** is 40 founder hours a week, raised by knowledge and by hiring a buyer.
+- **Image pipeline** produces procedural SVG stand-ins here, with a loader that prefers a
+  real `.webp` render at the same shot ID. The Gemini pass runs from a desktop session
+  using `docs/COWORK-ART-BRIEF.md`.
+
+### Balance changes the test suite forced
+
+Two real regressions surfaced and were fixed at the cause rather than by moving thresholds.
+
+- Archetypes are ordered by ATA chapter, so a small part count took only the lowest
+  chapters and dropped engine hardware entirely. The catalog now walks the archetype list
+  with a coprime stride, so any prefix spans chapters and both airframe and engine series.
+- Single-series applicability fragmented demand across jittered variants, which made
+  stocking a chapter unviable. Best long-run net asset value had fallen to 9.75M against
+  10M of starting capital. Base parts now apply to every series their archetype covers, and
+  the best archetype returned to 10.40M.
