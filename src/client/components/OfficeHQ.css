@@ -260,7 +260,9 @@
 
 .officehq-readout-row {
   display: grid;
-  grid-template-columns: 2.6em 1fr;
+  /* Wide enough for "ATA nn" on one line: the panel is portrait now, so a
+     wrapped label would push the third row out of the readout box. */
+  grid-template-columns: 4em 1fr;
   gap: 0.4em;
   border-bottom: 1px solid color-mix(in srgb, var(--cyan-bright) 40%, transparent);
   padding-bottom: 0.14em;
