@@ -32,9 +32,10 @@ export function App() {
   const [view, setView] = useState<View>("hq");
   const [inspect, setInspect] = useState<InspectTarget>(null);
   const [marketFocus, setMarketFocus] = useState<number | null>(null);
-  const [notice, setNotice] = useState("Welcome to the founder’s desk.");
+  const [notice, setNotice] = useState("The desk is live. The market is listening.");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [pulseBeat, setPulseBeat] = useState<GameObservation["pulses"][number] | null>(null);
   const feedbackKey = useRef("");
 
   useEffect(() => {
@@ -70,6 +71,7 @@ export function App() {
             ? feedbackMessage(feedback.kind, feedback.payload)
             : "One weekly pulse resolved.",
         );
+        setPulseBeat(next.observation.pulses.at(-1) ?? null);
       } else {
         setNotice(`Campaign ${action}d.`);
       }
@@ -106,7 +108,7 @@ export function App() {
             setSnapshot(created);
             setView("hq");
             setError("");
-            setNotice("Opening inventory is ready. Review the HQ, then resume or step the first pulse.");
+            setNotice("Opening inventory is positioned. The first demand pulse is approaching.");
           } catch (cause) {
             setError(messageOf(cause));
           } finally {
@@ -160,7 +162,7 @@ export function App() {
 
       <nav className="view-tabs" aria-label="Headquarters">
         {([
-          ["hq", "Founder HQ"],
+          ["hq", "Operations Desk"],
           ["map", "Network Map"],
           ["market", "Marketplace"],
           ["strategy", "Buying Strategy"],
@@ -246,6 +248,7 @@ export function App() {
           onCommand={command}
         />
       )}
+      {pulseBeat && <PulseBeat pulse={pulseBeat} onClose={() => setPulseBeat(null)} />}
       {finished && <EndSheet observation={observation} />}
     </div>
   );
@@ -278,7 +281,7 @@ function CampaignStart({
   return (
     <main className="start-screen">
       <section className="title-block">
-        <p className="eyebrow">AAT / CAMPAIGN BRIEF / REV 01</p>
+        <p className="eyebrow">AAT / CAMPAIGN BRIEF / REV 02</p>
         <h1>Aero Asset Tycoon</h1>
         <p className="lead">
           Build an aviation aftermarket book without letting inventory consume the company.
@@ -312,7 +315,7 @@ function CampaignStart({
           </p>
           {error && <p className="form-error">{error}</p>}
           <button className="primary" type="submit" disabled={busy}>
-            {busy ? "Establishing HQ…" : "Enter Tokyo HQ"}
+            {busy ? "Establishing operations…" : "Enter Operations Desk"}
           </button>
           {saves.length > 0 && (
             <div className="load-saves">
@@ -350,11 +353,12 @@ function LedgerHeader({
   const { observation } = snapshot;
   const pulse = observation.pulses.at(-1);
   const seconds = useCountdown(snapshot.remainingMs, snapshot.status);
+  const pendingCount = observation.pendingCommands.length;
   return (
     <header className="ledger-header">
       <div className="brand">
         <span className="eyebrow">AERO ASSET PARTNERS</span>
-        <strong>Founder HQ · Tokyo</strong>
+        <strong>Operations Desk</strong>
       </div>
       <div className="acc-balance">
         <span>ACC BALANCE</span>
@@ -378,7 +382,14 @@ function LedgerHeader({
         <button disabled={busy || snapshot.status === "finished"} onClick={() => onAction(snapshot.status === "running" ? "pause" : "resume")}>
           {snapshot.status === "running" ? "Pause" : "Resume"}
         </button>
-        <button disabled={busy || snapshot.status === "running" || snapshot.status === "finished"} onClick={() => onAction("step")}>Step</button>
+        <button
+          className="hero-pulse"
+          disabled={busy || snapshot.status === "running" || snapshot.status === "finished"}
+          onClick={() => onAction("step")}
+          title={pendingCount > 0 ? `${pendingCount} command(s) queued` : "Resolve weekly pulse"}
+        >
+          Pulse
+        </button>
         <button disabled={busy} onClick={onSave}>Save</button>
         <MusicToggle />
       </div>
@@ -429,22 +440,17 @@ function Headquarters({
 }) {
   const available = observation.inventory.filter((asset) => asset.facilityId === observation.firm.warehouseFacilityId).length;
   const inTransit = observation.inventory.filter((asset) => asset.transferId !== null).length;
+  const reachableNodes = observation.nodes.filter((node) => node.state !== "locked").length;
   return (
-    <section className="hq-scene" aria-label="Founder office overlooking a Haneda-inspired airfield">
-      <div className="office-window">
-        <div className="skyline" />
-        <div className="runway">
-          <span className="runway-mark one" />
-          <span className="runway-mark two" />
-          <span className="taxi-aircraft" aria-hidden="true">✈</span>
-        </div>
-      </div>
+    <section className="hq-scene" aria-label="Operations desk overlooking a global aviation network">
+      <div className="hq-backdrop" aria-hidden="true" />
+      <div className="hq-overlay" aria-hidden="true" />
       <div className="office-copy">
-        <p className="eyebrow">EXECUTIVE OFFICE / HANEDA DISTRICT</p>
+        <p className="eyebrow">OPERATIONS DESK / GLOBAL NETWORK</p>
         <h2>The book is moving.</h2>
         <p>
           {lastPulse
-            ? `Last pulse: ${signedAcc(lastPulse.delta)}. ${available} assets ready; ${inTransit} in transit.`
+            ? `Week ${lastPulse.tick} pulse: ${signedAcc(lastPulse.delta)}. ${available} assets ready; ${inTransit} in transit.`
             : "Opening inventory is positioned. The first demand pulse is approaching."}
         </p>
       </div>
@@ -466,12 +472,6 @@ function Headquarters({
         <span className={observation.nodes.some((node) => node.state === "partner" && node.role !== "hq") ? "complete" : ""}>4 · Establish a partner</span>
         <span className={observation.pbhContracts.some((contract) => contract.status === "active" || contract.status === "completed") ? "complete" : ""}>5 · Operate PBH</span>
       </div>
-      <div className="founder" aria-hidden="true">
-        <span className="head" />
-        <span className="body" />
-        <span className="chair" />
-      </div>
-      <div className="desk" aria-hidden="true" />
       <button className="hotspot monitors" onClick={() => onOpen("market")}>
         <span>Connected monitors</span>
         <strong>Open Marketplace</strong>
@@ -490,7 +490,7 @@ function Headquarters({
       </button>
       <button className="hotspot map-window" onClick={() => onOpen("map")}>
         <span>Network reach</span>
-        <strong>{observation.nodes.filter((node) => node.state !== "locked").length} reachable nodes</strong>
+        <strong>{reachableNodes} reachable nodes</strong>
       </button>
     </section>
   );
@@ -514,56 +514,58 @@ function NetworkMap({
   const hq = observation.nodes.find((node) => node.role === "hq");
   const opportunities = observation.opportunities.filter((opportunity) => opportunity.nodeId === selected?.id);
   return (
-    <Sheet title="Network Map" code="NET / TOKYO / 01">
+    <Sheet title="Network Map" code="NET / GLOBAL / 01">
       <div className="map-layout">
-        <svg className="network-map" viewBox="0 0 100 100" role="img" aria-label="Relationship network centered on Tokyo HQ">
-          <defs>
-            <pattern id="smallGrid" width="5" height="5" patternUnits="userSpaceOnUse">
-              <path d="M 5 0 L 0 0 0 5" fill="none" className="grid-line" />
-            </pattern>
-          </defs>
-          <rect width="100" height="100" fill="url(#smallGrid)" />
-          {hq && observation.nodes.filter((node) => node.id !== hq.id).map((node) => (
-            <line key={`route-${node.id}`} x1={hq.x} y1={hq.y} x2={node.x} y2={node.y} className={`route ${node.state}`} />
-          ))}
-          {observation.nodes.map((node) => {
-            const edgeLabelX = node.x < 20 ? 5 : node.x > 80 ? -5 : 0;
-            const labelAnchor = node.x < 20 ? "start" : node.x > 80 ? "end" : "middle";
-            const labelY =
-              node.y > 86 ||
-              (node.role === "customer" && node.y < 30) ||
-              (node.role === "mro" && node.x > 75)
-                ? -6
-                : node.role === "hq"
-                  ? 9
-                  : 7;
-            return (
-              <g
-                key={node.id}
-                className={`map-node ${node.state} ${selectedId === node.id ? "selected" : ""}`}
-                transform={`translate(${node.x} ${node.y})`}
-                role="button"
-                tabIndex={0}
-                aria-label={`${node.label}; ${node.state}`}
-                onClick={() => {
-                  if (node.role === "hq") onHq();
-                  else setSelectedId(node.id);
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
+        <div className="network-map" role="img" aria-label="Global aviation aftermarket network">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+            <defs>
+              <pattern id="smallGrid" width="5" height="5" patternUnits="userSpaceOnUse">
+                <path d="M 5 0 L 0 0 0 5" fill="none" className="grid-line" />
+              </pattern>
+            </defs>
+            <rect width="100" height="100" fill="url(#smallGrid)" opacity="0.3" />
+            {hq && observation.nodes.filter((node) => node.id !== hq.id).map((node) => (
+              <line key={`route-${node.id}`} x1={hq.x} y1={hq.y} x2={node.x} y2={node.y} className={`route ${node.state}`} />
+            ))}
+            {observation.nodes.map((node) => {
+              const edgeLabelX = node.x < 20 ? 5 : node.x > 80 ? -5 : 0;
+              const labelAnchor = node.x < 20 ? "start" : node.x > 80 ? "end" : "middle";
+              const labelY =
+                node.y > 86 ||
+                (node.role === "customer" && node.y < 30) ||
+                (node.role === "mro" && node.x > 75)
+                  ? -6
+                  : node.role === "hq"
+                    ? 9
+                    : 7;
+              return (
+                <g
+                  key={node.id}
+                  className={`map-node ${node.state} ${selectedId === node.id ? "selected" : ""}`}
+                  transform={`translate(${node.x} ${node.y})`}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${node.label}; ${node.state}`}
+                  onClick={() => {
                     if (node.role === "hq") onHq();
                     else setSelectedId(node.id);
-                  }
-                }}
-              >
-                <circle r={node.role === "hq" ? 5 : 3.8} />
-                <text x={edgeLabelX} y={labelY} textAnchor={labelAnchor}>{node.label}</text>
-                {observation.opportunities.some((item) => item.nodeId === node.id) && <circle className="opportunity-dot" cx="4" cy="-4" r="1.6" />}
-              </g>
-            );
-          })}
-        </svg>
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      if (node.role === "hq") onHq();
+                      else setSelectedId(node.id);
+                    }
+                  }}
+                >
+                  <circle r={node.role === "hq" ? 5 : 3.8} />
+                  <text x={edgeLabelX} y={labelY} textAnchor={labelAnchor}>{node.label}</text>
+                  {observation.opportunities.some((item) => item.nodeId === node.id) && <circle className="opportunity-dot" cx="4" cy="-4" r="1.6" />}
+                </g>
+              );
+            })}
+          </svg>
+        </div>
         <aside className="node-sheet">
           {selected ? (
             <>
@@ -1060,9 +1062,9 @@ function PbhDesk({
 }) {
   return (
     <Sheet title="Power-by-the-Hour" code="PBH / SLA / 06">
-      <p className="lead compact">
-        Contracted ACC revenue in return for condition-qualified availability. Repair and logistics TAT still decide whether the SLA survives.
-      </p>
+        <p className="lead compact">
+          Contracted ACC revenue in return for condition-qualified availability. Repair and logistics TAT still decide whether the SLA survives. Every strand is a promise.
+        </p>
       <div className="card-grid">
         {observation.pbhContracts.map((contract) => {
           const airline = observation.airlines.find((candidate) => candidate.id === contract.airlineId);
@@ -1219,7 +1221,7 @@ function EndSheet({ observation }: { observation: GameObservation }) {
     <div className="inspect-backdrop" role="dialog" aria-modal="true">
       <section className="inspect-sheet end-sheet">
         <p className="eyebrow">CAMPAIGN CLOSED / WEEK {observation.tick}</p>
-        <h2>{observation.firm.insolvent ? "The book ran out of ACC." : "Campaign complete."}</h2>
+        <h2>{observation.firm.insolvent ? "The book ran out of ACC." : "You kept the metal flying."}</h2>
         <div className="metric-grid">
           <Metric label="ACC result" value={signedAcc(totalDelta)} />
           <Metric label="Ending ACC" value={formatAcc(observation.firm.accBalance)} />
@@ -1238,8 +1240,24 @@ function EndSheet({ observation }: { observation: GameObservation }) {
             </div>
           ))}
         </div>
-        <p>Reload the page to establish a new seeded world. Your latest save stays in this browser.</p>
+        <p>Reload the page to establish a new seeded world. Your latest save stays in this browser. The book remembers.</p>
       </section>
+    </div>
+  );
+}
+
+function PulseBeat({ pulse, onClose }: { pulse: GameObservation["pulses"][number]; onClose: () => void }) {
+  useEffect(() => {
+    const timer = window.setTimeout(onClose, 1400);
+    return () => window.clearTimeout(timer);
+  }, [onClose]);
+  return (
+    <div className="pulse-beat" role="status" aria-live="polite">
+      <div className="pulse-beat-card">
+        <p className="eyebrow">WEEK {pulse.tick} / PULSE RESOLVED</p>
+        <strong className={pulse.delta >= 0 ? "positive" : "negative"}>{signedAcc(pulse.delta)}</strong>
+        <span>The market moved while you slept.</span>
+      </div>
     </div>
   );
 }
@@ -1338,7 +1356,7 @@ function feedbackMessage(
     return `Repair accepted: ${formatAcc(Number(payload.fee))} ACC; repair TAT ${payload.repairTat} week(s).`;
   }
   if (kind === "network_agreement_signed") return `Network agreement signed: ${String(payload.agreementKind).replaceAll("_", " ")}.`;
-  if (kind === "network_opportunity_accepted") return "Network introduction accepted.";
+  if (kind === "network_opportunity_accepted") return "A new thread joins the network.";
   if (kind === "pbh_signed") return `PBH signed: ${payload.ratePerFh} ACC/FH; ${formatAcc(Number(payload.minimumWeeklyRate))} weekly floor.`;
   if (kind === "pbh_sla_miss") return `PBH SLA missed: ${formatAcc(Number(payload.penalty))} ACC penalty.`;
   if (kind === "transfer_arrived") return `Shipment arrived at ${String(payload.toFacilityId)}.`;
