@@ -50,8 +50,8 @@ const PACE_HINT: Record<LivePace, string> = {
   slow: "Long pulse",
 };
 
-/** Disc face texture. Absent until the art pass runs, so the aluminium block shows through. */
-const FACE_ART = "assets/gen/pulse-wheel-face.svg";
+/** Disc face texture. Shot id from the graphics shot list; falls back to the aluminium token. */
+const FACE_ART = "assets/gen/wheel-face.svg";
 
 export type PulseWheelProps = {
   calendar: GameCalendar;

@@ -1,0 +1,819 @@
+/* ==========================================================================
+   TeamScreen — the portrait video-call monitor beside the desk.
+
+   Every class is prefixed teamscreen- so nothing collides with the app shell
+   or the other monitors. Colour comes only from the tokens in styles.css:
+   graphite, warm white, brushed aluminium and the one accent blue, with the
+   navigation green and red used only as small status marks. There is not a
+   single new colour literal in this file — the blends are all color-mix() of
+   the tokens, and the close glyph inherits currentColor.
+
+   Every image in the component sits on a token-coloured gradient block, so a
+   missing art file never leaves a hole in the layout.
+   ========================================================================== */
+
+.teamscreen {
+  /* Recessive furniture. One step off the paper, never louder than the data. */
+  --teamscreen-surface: color-mix(in srgb, var(--paper-glow) 88%, var(--paper));
+  --teamscreen-surface-deep: color-mix(in srgb, var(--paper-deep) 62%, var(--paper-glow));
+  --teamscreen-rule: color-mix(in srgb, var(--hairline) 74%, var(--paper));
+  --teamscreen-plate: linear-gradient(
+    158deg,
+    var(--graphite-500) 0%,
+    var(--graphite-700) 54%,
+    var(--graphite-600) 100%
+  );
+
+  position: relative;
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+  border: 1px solid var(--ink);
+  background-color: color-mix(in srgb, var(--paper) 76%, var(--paper-glow));
+  background-image: var(--grid);
+  background-size: 20px 20px;
+  padding: 22px 24px 26px;
+  color: var(--ink);
+  font-family: var(--font-body);
+  box-shadow: 0 4px 24px color-mix(in srgb, var(--graphite-900) 8%, transparent);
+}
+
+/* Brushed aluminium strip. The token gradient is the material and the fallback. */
+.teamscreen-bezel {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 8px;
+  background: var(--aluminium);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.teamscreen-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 12px;
+}
+
+.teamscreen-eyebrow {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.teamscreen-title {
+  margin: 2px 0 0;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.teamscreen-subtitle {
+  margin: 4px 0 0;
+  max-width: 78ch;
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.teamscreen .teamscreen-close {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--hairline);
+  background: var(--teamscreen-surface);
+  padding: 0;
+  color: var(--ink-soft);
+}
+
+.teamscreen .teamscreen-close:hover,
+.teamscreen .teamscreen-close:focus-visible {
+  border-color: var(--cyan);
+  color: var(--cyan-deep);
+}
+
+.teamscreen-close svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  fill: none;
+}
+
+/* ==========================================================================
+   Header statistics
+   ========================================================================== */
+
+.teamscreen-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  gap: 1px;
+  border: 1px solid var(--teamscreen-rule);
+  background: var(--teamscreen-rule);
+}
+
+.teamscreen-stat {
+  display: grid;
+  align-content: start;
+  gap: 3px;
+  background: var(--teamscreen-surface);
+  padding: 11px 13px 12px;
+}
+
+.teamscreen-stat-label {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.teamscreen-stat-value {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.1;
+}
+
+.teamscreen-stat-of {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.teamscreen-stat-note {
+  margin: 1px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* Payroll against the burn. One accent bar on a graphite track. */
+.teamscreen-share {
+  position: relative;
+  overflow: hidden;
+  height: 5px;
+  border: 1px solid var(--teamscreen-rule);
+  background: color-mix(in srgb, var(--paper-deep) 80%, var(--paper-glow));
+  margin: 3px 0 2px;
+}
+
+.teamscreen-share-fill {
+  display: block;
+  height: 100%;
+  min-width: 1px;
+  background: linear-gradient(90deg, var(--cyan) 0%, var(--cyan-bright) 100%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .teamscreen-share-fill {
+    transition: width 320ms var(--ease-out);
+  }
+}
+
+/* ==========================================================================
+   Body layout — call window, roster, candidates
+   ========================================================================== */
+
+.teamscreen-body {
+  display: grid;
+  grid-template-columns: 300px minmax(280px, 1fr) minmax(320px, 1.15fr);
+  align-items: start;
+  gap: 18px;
+}
+
+@media (max-width: 1380px) {
+  .teamscreen-body {
+    grid-template-columns: 280px minmax(0, 1fr);
+  }
+
+  .teamscreen-body > .teamscreen-column:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ==========================================================================
+   1. The call window
+   ========================================================================== */
+
+.teamscreen-call {
+  position: sticky;
+  top: 12px;
+  display: grid;
+  border: 1px solid var(--ink);
+  background: var(--graphite-800);
+  box-shadow: 0 6px 22px color-mix(in srgb, var(--graphite-900) 18%, transparent);
+}
+
+.teamscreen-call-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  border-bottom: 1px solid color-mix(in srgb, var(--aluminium-flat) 26%, transparent);
+}
+
+/* Portrait plate: the gradient underneath is the fallback for a missing file. */
+.teamscreen-portrait {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background: var(--teamscreen-plate);
+}
+
+.teamscreen-portrait img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.teamscreen-portrait-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: color-mix(in srgb, var(--paper) 26%, transparent);
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.teamscreen-call-portrait {
+  position: absolute;
+  inset: 0;
+}
+
+/* Corner status strip: the only place the navigation green appears. */
+.teamscreen-call-status {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  border: 1px solid color-mix(in srgb, var(--aluminium-flat) 28%, transparent);
+  background: color-mix(in srgb, var(--graphite-900) 74%, transparent);
+  padding: 4px 8px;
+  color: color-mix(in srgb, var(--paper) 88%, transparent);
+  font-family: var(--font-data);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.teamscreen-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--green) 32%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .teamscreen-dot {
+    animation: teamscreen-breathe 2.6s var(--ease-out) infinite;
+  }
+
+  @keyframes teamscreen-breathe {
+    0%,
+    100% {
+      opacity: 1;
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--green) 32%, transparent);
+    }
+    50% {
+      opacity: 0.6;
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--green) 14%, transparent);
+    }
+  }
+}
+
+.teamscreen-call-plate {
+  display: grid;
+  gap: 5px;
+  background: linear-gradient(180deg, var(--graphite-700) 0%, var(--graphite-800) 100%);
+  padding: 12px 13px 14px;
+  color: color-mix(in srgb, var(--paper) 88%, transparent);
+}
+
+.teamscreen-call-name {
+  margin: 0;
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+}
+
+.teamscreen-call-role {
+  margin: 0;
+  color: var(--cyan-bright);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.teamscreen-call-blurb {
+  margin: 4px 0 0;
+  color: color-mix(in srgb, var(--paper) 74%, transparent);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.teamscreen-call-meta {
+  display: grid;
+  gap: 1px;
+  margin: 8px 0 0;
+  border-top: 1px solid color-mix(in srgb, var(--aluminium-flat) 20%, transparent);
+  padding-top: 8px;
+}
+
+.teamscreen-call-meta-row {
+  display: grid;
+  grid-template-columns: 78px 1fr;
+  gap: 8px;
+  align-items: baseline;
+  padding: 2px 0;
+}
+
+.teamscreen-call-meta dt {
+  color: color-mix(in srgb, var(--paper) 52%, transparent);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.teamscreen-call-meta dd {
+  margin: 0;
+  color: color-mix(in srgb, var(--paper) 92%, transparent);
+  font-family: var(--font-data);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   Columns
+   ========================================================================== */
+
+.teamscreen-column {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-width: 0;
+}
+
+.teamscreen-column-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 6px;
+}
+
+.teamscreen-column-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.teamscreen-column-count {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-align: right;
+}
+
+.teamscreen-provenance {
+  margin: 0;
+  border-left: 2px solid var(--cyan);
+  background: color-mix(in srgb, var(--cyan) 5%, var(--teamscreen-surface));
+  padding: 9px 11px;
+  color: var(--ink-soft);
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+
+.teamscreen-empty {
+  margin: 0;
+  border: 1px dashed var(--hairline);
+  background: var(--teamscreen-surface);
+  padding: 14px 14px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.teamscreen-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ==========================================================================
+   Person cards — one shape for the roster and the candidate board
+   ========================================================================== */
+
+.teamscreen-card {
+  display: grid;
+  gap: 8px;
+  border: 1px solid var(--hairline);
+  border-left: 3px solid var(--hairline);
+  background: var(--teamscreen-surface);
+  padding: 10px 12px 12px;
+}
+
+.teamscreen-card[data-selected="true"] {
+  border-color: var(--cyan);
+  border-left-color: var(--cyan);
+  background: color-mix(in srgb, var(--cyan) 4%, var(--paper-glow));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cyan) 22%, transparent);
+}
+
+.teamscreen-card[data-expired="true"] {
+  border-left-color: var(--muted);
+  background: var(--teamscreen-surface-deep);
+}
+
+.teamscreen .teamscreen-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  border: 0;
+  background: none;
+  padding: 0;
+  text-align: left;
+}
+
+.teamscreen .teamscreen-card-head:hover,
+.teamscreen .teamscreen-card-head:focus-visible {
+  background: none;
+  box-shadow: none;
+}
+
+.teamscreen .teamscreen-card-head:hover .teamscreen-card-name,
+.teamscreen .teamscreen-card-head:focus-visible .teamscreen-card-name {
+  color: var(--cyan-deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.teamscreen .teamscreen-card-head:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+.teamscreen-thumb {
+  flex: none;
+  width: 44px;
+  height: 56px;
+  border: 1px solid color-mix(in srgb, var(--graphite-800) 44%, transparent);
+}
+
+.teamscreen-thumb .teamscreen-portrait-fallback {
+  font-size: 16px;
+}
+
+.teamscreen-card-head-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.teamscreen-card-name {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.15;
+}
+
+.teamscreen-card-role {
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+/* --- Facts ---------------------------------------------------------------- */
+
+.teamscreen-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  margin: 0;
+  border: 1px solid var(--teamscreen-rule);
+  background: var(--teamscreen-rule);
+}
+
+.teamscreen-fact {
+  display: grid;
+  gap: 1px;
+  flex: 1 1 76px;
+  background: color-mix(in srgb, var(--paper) 58%, var(--paper-glow));
+  padding: 5px 8px 6px;
+}
+
+.teamscreen-fact dt {
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.teamscreen-fact dd {
+  margin: 0;
+  font-family: var(--font-data);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- ATA chapters --------------------------------------------------------- */
+
+.teamscreen-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.teamscreen-chip {
+  border: 1px solid color-mix(in srgb, var(--cyan) 32%, var(--hairline));
+  background: color-mix(in srgb, var(--cyan) 7%, var(--paper-glow));
+  padding: 2px 7px;
+  color: var(--cyan-deep);
+  font-family: var(--font-data);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.teamscreen-chips-empty {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* --- What they actually do ------------------------------------------------ */
+
+.teamscreen-effects {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.teamscreen-effects li {
+  position: relative;
+  padding-left: 14px;
+  color: var(--ink-soft);
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+.teamscreen-effects li::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 2px;
+  width: 5px;
+  height: 5px;
+  border: 1px solid var(--cyan);
+  background: color-mix(in srgb, var(--cyan) 22%, transparent);
+}
+
+.teamscreen-card-tenure {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 9.5px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+/* --- Candidate window ----------------------------------------------------- */
+
+.teamscreen-window {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  border-top: 1px solid var(--teamscreen-rule);
+  padding-top: 7px;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.teamscreen-window::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border: 1px solid var(--muted);
+}
+
+.teamscreen-window[data-urgent="true"] {
+  color: var(--red);
+}
+
+.teamscreen-window[data-urgent="true"]::before {
+  border-color: var(--red);
+  background: var(--red);
+}
+
+/* ==========================================================================
+   Actions
+   ========================================================================== */
+
+.teamscreen-card-actions {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+}
+
+.teamscreen .teamscreen-hire {
+  width: 100%;
+  border: 1px solid var(--cyan-deep);
+  background: linear-gradient(180deg, var(--cyan-bright) 0%, var(--cyan-deep) 100%);
+  padding: 8px 12px;
+  color: var(--paper);
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.teamscreen .teamscreen-hire:hover:not(:disabled),
+.teamscreen .teamscreen-hire:focus-visible:not(:disabled) {
+  border-color: var(--cyan-deep);
+  background: linear-gradient(180deg, var(--cyan) 0%, var(--cyan-deep) 100%);
+  box-shadow: 0 0 0 3px var(--cyan-glow);
+}
+
+.teamscreen .teamscreen-hire:disabled {
+  border-color: var(--hairline);
+  background: var(--teamscreen-surface-deep);
+  color: var(--muted);
+}
+
+.teamscreen-why {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.teamscreen .teamscreen-release {
+  border: 1px solid var(--hairline);
+  background: color-mix(in srgb, var(--paper) 66%, var(--paper-glow));
+  padding: 5px 12px;
+  color: var(--ink-soft);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.teamscreen .teamscreen-release:hover,
+.teamscreen .teamscreen-release:focus-visible {
+  border-color: var(--red);
+  background: var(--red-soft);
+  box-shadow: none;
+  color: var(--red);
+}
+
+/* Confirmation step: the release only leaves once it has been said twice. */
+.teamscreen-confirm {
+  display: grid;
+  gap: 8px;
+  border: 1px solid color-mix(in srgb, var(--red) 40%, var(--hairline));
+  background: var(--red-soft);
+  padding: 9px 10px 10px;
+}
+
+.teamscreen-confirm-text {
+  margin: 0;
+  color: var(--ink);
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+.teamscreen-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.teamscreen .teamscreen-release-confirm {
+  border: 1px solid var(--red);
+  background: var(--red);
+  padding: 6px 12px;
+  color: var(--paper);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.teamscreen .teamscreen-release-confirm:hover,
+.teamscreen .teamscreen-release-confirm:focus-visible {
+  border-color: var(--ink);
+  background: color-mix(in srgb, var(--red) 84%, var(--graphite-900));
+  color: var(--paper);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--red) 22%, transparent);
+}
+
+.teamscreen .teamscreen-release-cancel {
+  border: 1px solid var(--hairline);
+  background: var(--paper-glow);
+  padding: 6px 12px;
+  color: var(--ink-soft);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.teamscreen .teamscreen-release-cancel:hover,
+.teamscreen .teamscreen-release-cancel:focus-visible {
+  border-color: var(--cyan);
+  background: var(--paper-glow);
+  color: var(--cyan-deep);
+}
+
+/* ==========================================================================
+   Motion — everything optional, and only when the viewer allows it
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  .teamscreen-card {
+    transition:
+      border-color 140ms var(--ease-out),
+      background 140ms var(--ease-out),
+      box-shadow 140ms var(--ease-out);
+  }
+}

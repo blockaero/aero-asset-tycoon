@@ -14,17 +14,18 @@
      Money in: a 2-step accent-blue categorical pair. Validated — lightness
      band, chroma floor, CVD separation (ΔE 17.7 protan) and normal-vision
      floor (ΔE 18.1) all pass against a near-white chart surface.
-     Money out: an ORDERED graphite ramp, monotone in OKLab lightness
-     (0.25 · 0.39 · 0.57 · 0.72 · 0.83). Sequential ramps are judged on
-     monotonicity; identity is additionally carried by the 2px surface gaps,
-     the 45° hatch on step 5, the legend and the data table. */
+     Money out: an ORDERED graphite ramp, validated as an ordinal scale — monotone
+     in OKLab lightness (0.25 · 0.38 · 0.52 · 0.66 · 0.79), every adjacent gap
+     over the 0.06 floor, the light end clearing the surface at 2.09:1, single
+     hue (4° spread). Identity is additionally carried by the 2px surface gaps,
+     the 45° hatch on the palest step, the legend and the data table. */
   --fin-gain-1: var(--cyan);
   --fin-gain-2: color-mix(in srgb, var(--cyan-bright) 74%, var(--paper));
   --fin-loss-1: var(--graphite-800);
-  --fin-loss-2: color-mix(in srgb, var(--graphite-600) 60%, var(--graphite-500));
-  --fin-loss-3: color-mix(in srgb, var(--muted) 92%, var(--graphite-500));
-  --fin-loss-4: color-mix(in srgb, var(--muted) 66%, var(--paper));
-  --fin-loss-5: color-mix(in srgb, var(--hairline) 86%, var(--paper));
+  --fin-loss-2: color-mix(in srgb, var(--graphite-600) 70%, var(--graphite-500));
+  --fin-loss-3: color-mix(in srgb, var(--muted) 53%, var(--graphite-500));
+  --fin-loss-4: color-mix(in srgb, var(--muted) 83%, var(--paper));
+  --fin-loss-5: color-mix(in srgb, var(--hairline) 81%, var(--muted));
 
   /* Recessive furniture. One step off the chart surface, never louder. */
   --fin-surface: rgba(255, 255, 255, 0.86);
@@ -385,11 +386,13 @@
   min-width: 0;
 }
 
+/* No padding: the chart geometry carries its own insets, which keeps a viewBox
+   percentage identical to a container percentage for tooltip placement. */
 .fin-plot {
   position: relative;
   border: 1px solid var(--hairline);
   background: var(--fin-surface);
-  padding: 10px 12px;
+  padding: 0;
 }
 
 .fin-svg {
@@ -570,6 +573,13 @@
   font-variant-numeric: tabular-nums;
 }
 
+.fin-ata-units {
+  fill: var(--muted);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
 .fin-plot:hover .fin-ata-row:not(.is-active) .fin-ata-bar {
   opacity: 0.55;
 }
@@ -671,8 +681,12 @@
   pointer-events: none;
 }
 
-.fin-tooltip--right {
-  transform: translate(0, -50%);
+.fin-tooltip--below {
+  transform: translate(-50%, 14px);
+}
+
+.fin-tooltip--corner {
+  transform: none;
 }
 
 .fin-tooltip-title {

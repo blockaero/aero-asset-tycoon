@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2560" height="1440" viewBox="0 0 2560 1440">
+<!-- aero-asset-tycoon procedural stand-in: hq-founder-idle -->
+<defs><linearGradient id="founderG" x1="1064.14" y1="1002.67" x2="1495.86" y2="1440" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1c2229"/><stop offset="0.42" stop-color="#2d363f"/><stop offset="1" stop-color="#161b20"/></linearGradient><linearGradient id="founderRim" x1="1280" y1="0" x2="1495.86" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffffff" stop-opacity="0"/><stop offset="1" stop-color="#ffffff" stop-opacity="0.18"/></linearGradient><clipPath id="rimWindow"><rect x="1353.39" y="0" width="215.86" height="1440"/></clipPath><clipPath id="rimAccent"><rect x="1044.14" y="0" width="142.47" height="1440"/></clipPath><mask id="headHole"><rect x="0" y="0" width="2560" height="1440" fill="#ffffff"/><ellipse cx="1280" cy="871.2" rx="87.04" ry="79.2" fill="#000000"/></mask></defs>
+<g mask="url(#headHole)"><ellipse cx="1280" cy="1400" rx="237.45" ry="120" fill="#05070a" opacity="0.22"/>
+<path d="M 1064.14 1440 C 1056.14 1152.67, 1064.14 1036.67, 1077.09 1008.67 C 1094.36 976.67, 1146.17 958.67, 1193.66 946.67 C 1232.51 934.67, 1219.94 924.67, 1239.96 942.48 L 1320.04 942.48 C 1340.06 924.67, 1327.49 934.67, 1366.34 946.67 C 1413.83 958.67, 1465.64 976.67, 1482.91 1008.67 C 1495.86 1036.67, 1503.86 1152.67, 1495.86 1440 Z" fill="url(#founderG)"/>
+<path d="M 1064.14 1440 C 1056.14 1152.67, 1064.14 1036.67, 1077.09 1008.67 C 1094.36 976.67, 1146.17 958.67, 1193.66 946.67 C 1232.51 934.67, 1219.94 924.67, 1239.96 942.48 L 1320.04 942.48 C 1340.06 924.67, 1327.49 934.67, 1366.34 946.67 C 1413.83 958.67, 1465.64 976.67, 1482.91 1008.67 C 1495.86 1036.67, 1503.86 1152.67, 1495.86 1440 Z" fill="url(#founderRim)" opacity="0.35"/>
+<g clip-path="url(#rimWindow)">
+<path d="M 1064.14 1440 C 1056.14 1152.67, 1064.14 1036.67, 1077.09 1008.67 C 1094.36 976.67, 1146.17 958.67, 1193.66 946.67 C 1232.51 934.67, 1219.94 924.67, 1239.96 942.48 L 1320.04 942.48 C 1340.06 924.67, 1327.49 934.67, 1366.34 946.67 C 1413.83 958.67, 1465.64 976.67, 1482.91 1008.67 C 1495.86 1036.67, 1503.86 1152.67, 1495.86 1440 Z" fill="none" stroke="#d2d8dd" stroke-width="9" opacity="0.42"/>
+</g>
+<g clip-path="url(#rimAccent)">
+<path d="M 1064.14 1440 C 1056.14 1152.67, 1064.14 1036.67, 1077.09 1008.67 C 1094.36 976.67, 1146.17 958.67, 1193.66 946.67 C 1232.51 934.67, 1219.94 924.67, 1239.96 942.48 L 1320.04 942.48 C 1340.06 924.67, 1327.49 934.67, 1366.34 946.67 C 1413.83 958.67, 1465.64 976.67, 1482.91 1008.67 C 1495.86 1036.67, 1503.86 1152.67, 1495.86 1440 Z" fill="none" stroke="#3f8ee8" stroke-width="6" opacity="0.26"/>
+</g>
+<path d="M 1191.22 999.5 C 1236.48 972.58, 1323.52 972.58, 1368.78 999.5" fill="none" stroke="#39424b" stroke-width="10" opacity="0.8"/>
+<line x1="1280" y1="1013.76" x2="1280" y2="1440" stroke="#0d1114" stroke-width="6" opacity="0.35"/>
+<ellipse cx="1280" cy="871.2" rx="104.04" ry="96.2" fill="#232a31"/>
+<path d="M 1175.96 871.2 A 104.04 96.2 0 0 1 1384.04 871.2" fill="none" stroke="#9aa4ad" stroke-width="5" opacity="0.30"/></g>
+</svg>

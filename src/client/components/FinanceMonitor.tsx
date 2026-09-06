@@ -14,11 +14,13 @@
      · Money in is a 2-step accent-blue categorical pair. Validated: lightness
        band, chroma floor, CVD separation and normal-vision floor all pass
        (worst adjacent ΔE 17.7 protan / 18.1 normal).
-     · Money out is an ORDERED graphite ramp, monotone in OKLab lightness
-       (0.25 → 0.39 → 0.57 → 0.72 → 0.83). A sequential ramp is judged on
-       monotonicity, not on the categorical adjacency rule, and it is backed by
-       three secondary channels: a 2px surface gap between every segment, a
-       45° hatch on the palest step, and a legend plus a data table.
+     · Money out is an ORDERED graphite ramp — the slots run purchases → repair →
+       logistics → overhead → penalties, the fixed cost cascade, so the ramp
+       encodes stack position and never magnitude. Validated as an ordinal
+       scale: monotone OKLab lightness 0.25 → 0.38 → 0.52 → 0.66 → 0.79, every
+       adjacent gap over the floor, light end clearing the surface, one hue. It
+       is backed by three more channels: a 2px surface gap between every
+       segment, a 45° hatch on the palest step, and a legend plus a table.
      · The balance line and the ATA mix are single-hue by magnitude, with the
        de-emphasis grey reserved for the "other" tail.
      · Status red/green is never a series colour. It only ever marks a signed
@@ -66,9 +68,6 @@ const SPARK_POINTS = 12;
 /** Conditions that count as serviceable stock. AR / BER / SCRAP do not. */
 const SERVICEABLE: ReadonlySet<Condition> = new Set<Condition>(["NE", "NS", "OH", "SV", "RP"]);
 
-/** Optional bezel texture. Absent until the art pass runs; the aluminium token carries it. */
-const BEZEL_ART = "assets/gen/finance-monitor-bezel.svg";
-
 type FlowKey = "sales" | "contracts" | "purchases" | "repair" | "logistics" | "overhead" | "penalties";
 
 type FlowSpec = {
@@ -94,12 +93,12 @@ const FLOWS: readonly FlowSpec[] = [
   { key: "penalties", label: "Penalties", tone: "out", slot: "loss-5" },
 ];
 
-/* Balance chart geometry. */
-const BAL = { w: 720, h: 232, top: 16, right: 20, bottom: 30, left: 70 };
-/* Breakdown chart geometry. */
-const BRK = { w: 720, h: 228, top: 16, right: 20, bottom: 28, left: 70 };
-/* ATA chart geometry. */
-const ATA = { w: 640, row: 32, top: 6, bottom: 6, barX: 232, barMax: 300 };
+/* Chart geometry. The plot frame has no CSS padding — the breathing room lives in
+   these insets instead, so a viewBox percentage maps 1:1 onto a container
+   percentage and the HTML tooltips land exactly on the marks they describe. */
+const BAL = { w: 720, h: 244, top: 20, right: 28, bottom: 36, left: 76 };
+const BRK = { w: 720, h: 240, top: 20, right: 28, bottom: 34, left: 76 };
+const ATA = { w: 640, row: 32, top: 12, bottom: 12, labelX: 14, titleX: 84, barX: 238, barMax: 250, unitsX: 628 };
 /** Surface gap between touching marks, in viewBox units (~2px at render size). */
 const GAP = 2.2;
 
@@ -108,7 +107,6 @@ const GAP = 2.2;
  * ---------------------------------------------------------------- */
 
 export function FinanceMonitor({ observation, onClose }: FinanceMonitorProps) {
-  const [bezelBroken, setBezelBroken] = useState(false);
   const headingId = useId();
 
   /* Escape closes the monitor. Registered once, removed on unmount. */
@@ -125,18 +123,8 @@ export function FinanceMonitor({ observation, onClose }: FinanceMonitorProps) {
 
   return (
     <section className="fin-monitor" aria-labelledby={headingId}>
-      <div className="fin-bezel" aria-hidden="true">
-        {!bezelBroken ? (
-          <img
-            className="fin-bezel-art"
-            src={`${import.meta.env.BASE_URL}${BEZEL_ART}`}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            onError={() => setBezelBroken(true)}
-          />
-        ) : null}
-      </div>
+      {/* Bezel is the aluminium token in CSS; there is no bezel shot in the art library. */}
+      <div className="fin-bezel" aria-hidden="true" />
 
       <header className="fin-head">
         <div className="fin-brand">
@@ -434,7 +422,7 @@ function BalanceChart({
 
             {active ? (
               <div
-                className="fin-tooltip"
+                className={`fin-tooltip ${active.cy < plot.y + plot.h * 0.45 ? "fin-tooltip--below" : ""}`}
                 aria-hidden="true"
                 style={{ left: `${clampPercent((active.cx / BAL.w) * 100)}%`, top: `${(active.cy / BAL.h) * 100}%` }}
               >
@@ -620,21 +608,25 @@ function BreakdownChart({ pulses, headingId }: { pulses: readonly AccPulse[]; he
             </svg>
 
             {active && hover !== null ? (
+              /* A corner readout rather than a floating bubble: a seven-row card is
+                 taller than most stacks, so pinning it opposite the hovered bar keeps
+                 it inside the frame and never covers the mark it describes. */
               <div
-                className="fin-tooltip"
+                className="fin-tooltip fin-tooltip--corner"
                 aria-hidden="true"
-                style={{
-                  left: `${clampPercent(((plot.x + model.band * hover + model.band / 2) / BRK.w) * 100)}%`,
-                  top: `${(model.yOf(Math.max(0, active.up)) / BRK.h) * 100}%`,
-                }}
+                style={
+                  hover / model.bars.length < 0.5
+                    ? { right: 12, top: 12 }
+                    : { left: `calc(${((BRK.left / BRK.w) * 100).toFixed(2)}% + 10px)`, top: 12 }
+                }
               >
                 <p className="fin-tooltip-title">Week {active.pulse.tick}</p>
-                {FLOWS.map((flow) => (
+                {FLOWS.filter((flow) => active.pulse[flow.key] !== 0).map((flow) => (
                   <p className="fin-tooltip-row" key={flow.key}>
                     <span>
                       <i className={`fin-swatch fin-fill--${flow.slot}`} /> {flow.label}
                     </span>
-                    <strong>{active.pulse[flow.key] === 0 ? "—" : signedAcc(active.pulse[flow.key])}</strong>
+                    <strong>{signedAcc(active.pulse[flow.key])}</strong>
                   </p>
                 ))}
                 <p className="fin-tooltip-row fin-tooltip-total">
@@ -798,13 +790,13 @@ function AtaValueMix({
                 return (
                   <g key={row.code ?? "other"} className={`fin-ata-row ${hover === index ? "is-active" : ""}`} style={indexVar(index)}>
                     <title>{`${row.label} — ${formatAcc(row.value)} ACC, ${row.count} units`}</title>
-                    <text className="fin-ata-code" x={2} y={mid + 1}>
+                    <text className="fin-ata-code" x={ATA.labelX} y={mid + 1}>
                       {other ? "OTHER" : `ATA ${row.code}`}
                     </text>
-                    <text className="fin-ata-title" x={72} y={mid - 3}>
-                      {truncate(row.title, 25)}
+                    <text className="fin-ata-title" x={ATA.titleX} y={mid - 3}>
+                      {truncate(row.title, 26)}
                     </text>
-                    <text className="fin-ata-group" x={72} y={mid + 9}>
+                    <text className="fin-ata-group" x={ATA.titleX} y={mid + 9}>
                       {row.group}
                     </text>
                     <path
@@ -813,6 +805,9 @@ function AtaValueMix({
                     />
                     <text className="fin-ata-value" x={ATA.barX + width + 8} y={mid + 3.5}>
                       {formatAcc(row.value)}
+                    </text>
+                    <text className="fin-ata-units" x={ATA.unitsX} y={mid + 3.5} textAnchor="end">
+                      {formatCount(row.count)} units
                     </text>
                     <rect
                       className="fin-hit"
@@ -827,34 +822,6 @@ function AtaValueMix({
               })}
             </svg>
 
-            {hover !== null && model.list[hover] ? (
-              <div
-                className="fin-tooltip fin-tooltip--right"
-                aria-hidden="true"
-                style={{
-                  left: "58%",
-                  top: `${((ATA.top + hover * ATA.row + ATA.row / 2) / model.height) * 100}%`,
-                }}
-              >
-                <p className="fin-tooltip-title">{model.list[hover]!.label}</p>
-                <p className="fin-tooltip-row">
-                  <span>Group</span>
-                  <strong>{model.list[hover]!.group}</strong>
-                </p>
-                <p className="fin-tooltip-row">
-                  <span>Value at mark</span>
-                  <strong>{formatAcc(model.list[hover]!.value)}</strong>
-                </p>
-                <p className="fin-tooltip-row">
-                  <span>Units</span>
-                  <strong>{formatCount(model.list[hover]!.count)}</strong>
-                </p>
-                <p className="fin-tooltip-row">
-                  <span>Share</span>
-                  <strong>{formatPercent(model.total === 0 ? 0 : model.list[hover]!.value / model.total)}</strong>
-                </p>
-              </div>
-            ) : null}
           </div>
 
           <DataTable

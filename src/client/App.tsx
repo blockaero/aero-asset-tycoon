@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } fro
 import type { LiveSnapshot } from "../live/runner.ts";
 import type { GameObservation } from "../sim/observation.ts";
 import type {
-  KnowledgeBranch,
   LivePace,
   MarketListing,
   NetworkOpportunity,
@@ -26,9 +25,10 @@ import { PulseWheel } from "./components/PulseWheel.tsx";
 import { NetworkMapV2 } from "./components/NetworkMapV2.tsx";
 import { FinanceMonitor } from "./components/FinanceMonitor.tsx";
 import { FleetManager } from "./components/FleetManager.tsx";
+import { IntelMonitor } from "./components/IntelMonitor.tsx";
+import { TribalKnowledge } from "./components/TribalKnowledge.tsx";
+import { TeamScreen } from "./components/TeamScreen.tsx";
 import { tickDurationMs } from "../sim/balance.ts";
-import { KNOWLEDGE_NODES, canInvest, nodesInBranch } from "../sim/knowledge.ts";
-import { TEAM_ROLE_DEFS, weeklySalaryCost } from "../sim/team.ts";
 
 /**
  * The office is the shell. Everything else is a surface opened from it: three
@@ -258,9 +258,24 @@ export function App() {
         {view === "finance" && (
           <FinanceMonitor observation={observation} onClose={() => setView("hq")} />
         )}
-        {view === "intel" && <IntelPanel observation={observation} />}
-        {view === "wall" && <WallPanel observation={observation} onCommand={command} />}
-        {view === "team" && <TeamPanel observation={observation} onCommand={command} />}
+        {view === "intel" && (
+          <IntelMonitor observation={observation} onClose={() => setView("hq")} />
+        )}
+        {view === "wall" && (
+          <TribalKnowledge
+            observation={observation}
+            onInvest={(nodeId) => command({ type: "invest_knowledge", nodeId }, "Tribal Knowledge")}
+            onClose={() => setView("hq")}
+          />
+        )}
+        {view === "team" && (
+          <TeamScreen
+            observation={observation}
+            onHire={(candidateId) => command({ type: "hire_team_member", candidateId }, "Hire")}
+            onRelease={(memberId) => command({ type: "release_team_member", memberId }, "Release")}
+            onClose={() => setView("hq")}
+          />
+        )}
         {view === "pbh" && <PbhDesk observation={observation} onCommand={command} />}
       </main>
 
@@ -1177,201 +1192,4 @@ function pulseProgress(snapshot: LiveSnapshot): number {
   const total = tickDurationMs(snapshot.pace);
   if (total <= 0) return 0;
   return Math.min(1, Math.max(0, 1 - snapshot.remainingMs / total));
-}
-
-/**
- * Market intelligence. The fog covers the economy as well as the map: shock detail
- * stays hidden until the player earns the intel to see it.
- */
-function IntelPanel({ observation }: { observation: GameObservation }) {
-  const market = observation.market;
-  const funnel = observation.funnel;
-  const total = funnel.tam + funnel.sam + funnel.som;
-  return (
-    <Sheet title="Market Intelligence" code="INT / MKT / 01">
-      <div className="live-breakdown">
-        <span>Price index {market.priceIndex.toFixed(3)}</span>
-        <span>Demand index {market.demandIndex.toFixed(3)}</span>
-        <span>Tracked assets {market.trackedAssets.toLocaleString("en-US")}</span>
-        <span>World fleet {market.worldAssets.toLocaleString("en-US")}</span>
-        <span>Growth {(market.growthRate * 100).toFixed(0)}%/yr</span>
-        <span>Retirement {(market.retireRate * 100).toFixed(0)}%/yr</span>
-      </div>
-      <p className="lead compact">
-        The engine tracks a scaled slice of the world fleet. Everything outside your
-        reach exists as statistics, not as serial numbers.
-      </p>
-      <h3>Reach</h3>
-      <div className="live-breakdown">
-        <span>TAM {funnel.tam} sites, exist but unseen</span>
-        <span>SAM {funnel.sam} sites, visible, not established</span>
-        <span>SOM {funnel.som} sites, ready to trade</span>
-        <span>{total} sites total</span>
-      </div>
-      <h3>Known shocks</h3>
-      {market.knownShocks.length === 0 ? (
-        <p className="lead compact">
-          No shock intelligence. The AI branch of Tribal Knowledge and an analyst on
-          the team both reveal what the market is doing before it shows up in prices.
-        </p>
-      ) : (
-        <ul className="plain-list">
-          {market.knownShocks.map((shock) => (
-            <li key={shock.id}>
-              <strong>{shock.label}</strong> — weeks {shock.startTick} to {shock.endTick},
-              price {(shock.priceImpact * 100).toFixed(0)}%, demand{" "}
-              {(shock.demandImpact * 100).toFixed(0)}%
-              {shock.ata !== null ? ` · ATA ${shock.ata}` : ""}
-              {shock.regionCode ? ` · ${shock.regionCode}` : ""}
-            </li>
-          ))}
-        </ul>
-      )}
-      <h3>Where the fleet sits</h3>
-      <ul className="plain-list">
-        {market.byRegion.slice(0, 8).map((row) => (
-          <li key={row.code}>
-            {row.name}: {row.count.toLocaleString("en-US")} tracked
-          </li>
-        ))}
-      </ul>
-    </Sheet>
-  );
-}
-
-/** The certificate wall: Tribal Knowledge. */
-function WallPanel({
-  observation,
-  onCommand,
-}: {
-  observation: GameObservation;
-  onCommand: (command: unknown, label: string) => void;
-}) {
-  const progress = observation.company.knowledge;
-  const earned = progress.filter((entry) => entry.completedTick !== null).length;
-  const branches: KnowledgeBranch[] = ["certification", "asset", "operations"];
-  return (
-    <Sheet title="Tribal Knowledge" code="TK / WALL / 01">
-      <p className="lead compact">
-        {earned} of {KNOWLEDGE_NODES.length} earned. Certifications and memberships hang
-        on the wall; asset knowledge is organised by ATA chapter; company operations
-        cover sales, operations and AI.
-      </p>
-      {branches.map((branch) => (
-        <section key={branch}>
-          <h3>
-            {branch === "certification"
-              ? "Certifications and memberships"
-              : branch === "asset"
-                ? "Asset knowledge by ATA chapter"
-                : "Company operations"}
-          </h3>
-          <ul className="plain-list">
-            {nodesInBranch(branch).map((node) => {
-              const entry = progress.find((candidate) => candidate.nodeId === node.id);
-              const done = entry?.completedTick !== null && entry !== undefined;
-              const gate = canInvest(node.id, progress, observation.firm.accBalance);
-              return (
-                <li key={node.id}>
-                  <strong>{node.shortTitle}</strong> — {node.blurb}
-                  <br />
-                  <small>
-                    {formatAcc(node.accCost)} ACC · {node.timeCost} h/wk ·{" "}
-                    {node.ticksToComplete} weeks
-                    {node.ataCodes.length > 0 ? ` · ATA ${node.ataCodes.join(", ")}` : ""}
-                  </small>{" "}
-                  {done ? (
-                    <em>Earned</em>
-                  ) : entry ? (
-                    <em>
-                      In progress {entry.investedTicks}/{node.ticksToComplete}
-                    </em>
-                  ) : (
-                    <button
-                      type="button"
-                      disabled={!gate.ok}
-                      title={gate.reason ?? "Begin studying"}
-                      onClick={() =>
-                        onCommand({ type: "invest_knowledge", nodeId: node.id }, node.shortTitle)
-                      }
-                    >
-                      Invest
-                    </button>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      ))}
-    </Sheet>
-  );
-}
-
-/** The side screen: Team. */
-function TeamPanel({
-  observation,
-  onCommand,
-}: {
-  observation: GameObservation;
-  onCommand: (command: unknown, label: string) => void;
-}) {
-  const { team, candidates } = observation.company;
-  const payroll = weeklySalaryCost(team);
-  return (
-    <Sheet title="Team" code="TEAM / CALL / 01">
-      <p className="lead compact">
-        {team.length} hired. Weekly payroll {formatAcc(payroll)} ACC. Candidates come
-        from the map and from memberships such as ISTAT.
-      </p>
-      <h3>Roster</h3>
-      {team.length === 0 ? (
-        <p className="lead compact">
-          Just you, so far. Every hire buys back founder hours or opens something you
-          cannot reach alone.
-        </p>
-      ) : (
-        <ul className="plain-list">
-          {team.map((member) => (
-            <li key={member.id}>
-              <strong>{member.name}</strong> — {TEAM_ROLE_DEFS[member.role].label}, skill{" "}
-              {member.skill}, {formatAcc(member.salary)} ACC/wk
-              {member.ataAffinity.length > 0 ? ` · ATA ${member.ataAffinity.join(", ")}` : ""}
-              <br />
-              <small>{TEAM_ROLE_DEFS[member.role].blurb}</small>{" "}
-              <button
-                type="button"
-                onClick={() =>
-                  onCommand({ type: "release_team_member", memberId: member.id }, "Release")
-                }
-              >
-                Release
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-      <h3>Candidates</h3>
-      <ul className="plain-list">
-        {candidates.map((candidate) => (
-          <li key={candidate.id}>
-            <strong>{candidate.name}</strong> — {TEAM_ROLE_DEFS[candidate.role].label}, skill{" "}
-            {candidate.skill}, {formatAcc(candidate.salary)} ACC/wk
-            <br />
-            <small>
-              {candidate.blurb} · available {Math.max(0, candidate.availableUntilTick - observation.tick)} more weeks
-            </small>{" "}
-            <button
-              type="button"
-              onClick={() =>
-                onCommand({ type: "hire_team_member", candidateId: candidate.id }, "Hire")
-              }
-            >
-              Hire
-            </button>
-          </li>
-        ))}
-      </ul>
-    </Sheet>
-  );
 }

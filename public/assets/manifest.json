@@ -1,4 +1,446 @@
 {
   "version": 1,
-  "assets": []
+  "assets": [
+    {
+      "id": "ata-airframe-systems",
+      "file": "assets/gen/ata-airframe-systems.svg",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "ata-avionics",
+      "file": "assets/gen/ata-avionics.svg",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "ata-general",
+      "file": "assets/gen/ata-general.svg",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "ata-propulsion",
+      "file": "assets/gen/ata-propulsion.svg",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "ata-structures",
+      "file": "assets/gen/ata-structures.svg",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "ata-utilities",
+      "file": "assets/gen/ata-utilities.svg",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "card-consignment",
+      "file": "assets/gen/card-consignment.svg",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1500,
+      "h": 1000,
+      "generated": "procedural"
+    },
+    {
+      "id": "card-favor",
+      "file": "assets/gen/card-favor.svg",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1500,
+      "h": 1000,
+      "generated": "procedural"
+    },
+    {
+      "id": "card-idle-shop",
+      "file": "assets/gen/card-idle-shop.svg",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1500,
+      "h": 1000,
+      "generated": "procedural"
+    },
+    {
+      "id": "card-restructuring",
+      "file": "assets/gen/card-restructuring.svg",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1500,
+      "h": 1000,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-broker",
+      "file": "assets/gen/facility-broker.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-component-shop",
+      "file": "assets/gen/facility-component-shop.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-conference",
+      "file": "assets/gen/facility-conference.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-distribution",
+      "file": "assets/gen/facility-distribution.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-engine-shop",
+      "file": "assets/gen/facility-engine-shop.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-factory",
+      "file": "assets/gen/facility-factory.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-hangar",
+      "file": "assets/gen/facility-hangar.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-lessor",
+      "file": "assets/gen/facility-lessor.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-repair-shop",
+      "file": "assets/gen/facility-repair-shop.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-teardown",
+      "file": "assets/gen/facility-teardown.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-warehouse",
+      "file": "assets/gen/facility-warehouse.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "founder-asian-man",
+      "file": "assets/gen/founder-asian-man.svg",
+      "role": "founder",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "founder-asian-woman",
+      "file": "assets/gen/founder-asian-woman.svg",
+      "role": "founder",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "founder-black-man",
+      "file": "assets/gen/founder-black-man.svg",
+      "role": "founder",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "founder-black-woman",
+      "file": "assets/gen/founder-black-woman.svg",
+      "role": "founder",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "founder-mixed-man",
+      "file": "assets/gen/founder-mixed-man.svg",
+      "role": "founder",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "founder-mixed-woman",
+      "file": "assets/gen/founder-mixed-woman.svg",
+      "role": "founder",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "founder-white-man",
+      "file": "assets/gen/founder-white-man.svg",
+      "role": "founder",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "founder-white-woman",
+      "file": "assets/gen/founder-white-woman.svg",
+      "role": "founder",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "hq-foreground",
+      "file": "assets/gen/hq-foreground.svg",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "procedural"
+    },
+    {
+      "id": "hq-founder-idle",
+      "file": "assets/gen/hq-founder-idle.svg",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "procedural"
+    },
+    {
+      "id": "hq-monitors-idle",
+      "file": "assets/gen/hq-monitors-idle.svg",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "procedural"
+    },
+    {
+      "id": "hq-monitors-lit",
+      "file": "assets/gen/hq-monitors-lit.svg",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "procedural"
+    },
+    {
+      "id": "hq-room",
+      "file": "assets/gen/hq-room.svg",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "procedural"
+    },
+    {
+      "id": "hq-side-screen",
+      "file": "assets/gen/hq-side-screen.svg",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "procedural"
+    },
+    {
+      "id": "hq-wall-empty",
+      "file": "assets/gen/hq-wall-empty.svg",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "procedural"
+    },
+    {
+      "id": "hq-wall-filled",
+      "file": "assets/gen/hq-wall-filled.svg",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "procedural"
+    },
+    {
+      "id": "hq-window",
+      "file": "assets/gen/hq-window.svg",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "procedural"
+    },
+    {
+      "id": "sky-autumn",
+      "file": "assets/gen/sky-autumn.svg",
+      "role": "sky",
+      "ratio": "21:9",
+      "w": 2520,
+      "h": 1080,
+      "generated": "procedural"
+    },
+    {
+      "id": "sky-spring",
+      "file": "assets/gen/sky-spring.svg",
+      "role": "sky",
+      "ratio": "21:9",
+      "w": 2520,
+      "h": 1080,
+      "generated": "procedural"
+    },
+    {
+      "id": "sky-summer",
+      "file": "assets/gen/sky-summer.svg",
+      "role": "sky",
+      "ratio": "21:9",
+      "w": 2520,
+      "h": 1080,
+      "generated": "procedural"
+    },
+    {
+      "id": "sky-winter",
+      "file": "assets/gen/sky-winter.svg",
+      "role": "sky",
+      "ratio": "21:9",
+      "w": 2520,
+      "h": 1080,
+      "generated": "procedural"
+    },
+    {
+      "id": "team-analyst",
+      "file": "assets/gen/team-analyst.svg",
+      "role": "team",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "team-buyer",
+      "file": "assets/gen/team-buyer.svg",
+      "role": "team",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "team-records",
+      "file": "assets/gen/team-records.svg",
+      "role": "team",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "team-regional",
+      "file": "assets/gen/team-regional.svg",
+      "role": "team",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "team-repair",
+      "file": "assets/gen/team-repair.svg",
+      "role": "team",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "team-sales",
+      "file": "assets/gen/team-sales.svg",
+      "role": "team",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "wheel-face",
+      "file": "assets/gen/wheel-face.svg",
+      "role": "wheel",
+      "ratio": "1:1",
+      "w": 1024,
+      "h": 1024,
+      "generated": "procedural"
+    }
+  ]
 }

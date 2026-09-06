@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2560" height="1440" viewBox="0 0 2560 1440">
+<!-- aero-asset-tycoon procedural stand-in: hq-window -->
+<defs><linearGradient id="skyG" x1="0" y1="172.8" x2="0" y2="921.6" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#8fb2d2"/><stop offset="0.42" stop-color="#b9cfe2"/><stop offset="0.74" stop-color="#dfe8ef"/><stop offset="1" stop-color="#cfd8de"/></linearGradient><radialGradient id="sun" cx="2363.2" cy="322.8" r="420" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffffff" stop-opacity="0.85"/><stop offset="0.35" stop-color="#eef3f8" stop-opacity="0.3"/><stop offset="1" stop-color="#eef3f8" stop-opacity="0"/></radialGradient><linearGradient id="hazeG" x1="0" y1="606.91" x2="0" y2="726.91" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffffff" stop-opacity="0"/><stop offset="1" stop-color="#ffffff" stop-opacity="0.55"/></linearGradient><clipPath id="winClip"><rect x="1938" y="190.8" width="527.2" height="712.8"/></clipPath></defs>
+<g clip-path="url(#winClip)">
+<rect x="1920" y="172.8" width="563.2" height="748.8" fill="url(#skyG)"/>
+<rect x="1920" y="172.8" width="563.2" height="748.8" fill="url(#sun)"/>
+<ellipse cx="2411.57" cy="498.37" rx="103.59" ry="12.55" fill="#ffffff" opacity="0.3"/>
+<ellipse cx="2398.28" cy="267.03" rx="108.4" ry="13.22" fill="#ffffff" opacity="0.22"/>
+<ellipse cx="2391.79" cy="253.56" rx="105.88" ry="19.02" fill="#ffffff" opacity="0.36"/>
+<ellipse cx="2248.18" cy="263.95" rx="157.19" ry="18.31" fill="#ffffff" opacity="0.18"/>
+<ellipse cx="2293.44" cy="419.8" rx="110.14" ry="18.31" fill="#ffffff" opacity="0.23"/>
+<ellipse cx="2233.9" cy="371.02" rx="202.14" ry="20.59" fill="#ffffff" opacity="0.26"/>
+<ellipse cx="2244.17" cy="256.27" rx="137.75" ry="20.37" fill="#ffffff" opacity="0.19"/>
+<line x1="1950" y1="382.8" x2="2443.2" y2="268.8" stroke="#ffffff" stroke-width="4" opacity="0.30"/>
+<line x1="1980" y1="440.8" x2="2463.2" y2="330.8" stroke="#ffffff" stroke-width="3" opacity="0.18"/>
+<rect x="1920" y="606.91" width="563.2" height="120" fill="url(#hazeG)"/>
+<rect x="1920" y="726.91" width="563.2" height="194.69" fill="#aab5be"/>
+<rect x="1920" y="726.91" width="563.2" height="4" fill="#8e99a3" opacity="0.7"/>
+<rect x="1960" y="680.91" width="210" height="46" fill="#7d8a95" opacity="0.85"/>
+<rect x="1980" y="664.91" width="22" height="16" fill="#7d8a95" opacity="0.85"/>
+<rect x="2220" y="696.91" width="150" height="30" fill="#8a959f" opacity="0.8"/>
+<rect x="2390" y="606.91" width="26" height="120" fill="#7d8a95" opacity="0.9"/>
+<rect x="2378" y="586.91" width="50" height="24" fill="#8e99a3" opacity="0.9"/>
+<rect x="1920" y="786.91" width="563.2" height="3" fill="#98a3ac" opacity="0.6"/>
+<rect x="1920" y="831.6" width="563.2" height="90" fill="#9aa5ae" opacity="0.55"/>
+</g>
+</svg>
