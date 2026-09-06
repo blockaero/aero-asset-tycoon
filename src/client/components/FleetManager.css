@@ -1,0 +1,935 @@
+/* ==========================================================================
+   FleetManager — the centre monitor.
+
+   Every class is prefixed fleetmgr- so nothing collides with the app shell or
+   the other monitors. Colour comes only from the tokens in styles.css; the
+   sole computed colours are color-mix() blends of those same tokens, so the
+   sheet introduces no new literal. Green, amber and red appear only as 6px
+   status dots and a single gate rule — never as decoration.
+   ========================================================================== */
+
+.fleetmgr {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.fleetmgr-eyebrow {
+  margin: 0 0 6px;
+  color: var(--cyan-deep);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.fleetmgr-lede {
+  margin: 6px 0 0;
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.fleetmgr-empty {
+  margin: 0;
+  border: 1px dashed var(--hairline);
+  padding: 18px 20px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   1. Header
+   ========================================================================== */
+
+.fleetmgr-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 132px auto;
+  gap: 18px;
+  align-items: start;
+  border: 1px solid var(--hairline);
+  border-top: 3px solid var(--graphite-800);
+  background: var(--paper-glow);
+  padding: 14px 16px 16px;
+}
+
+.fleetmgr-head-title h2 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.fleetmgr-plate {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  width: 132px;
+  height: 78px;
+  border: 1px solid var(--hairline);
+  background: var(--aluminium);
+}
+
+.fleetmgr-plate[data-missing="true"]::after {
+  content: "ATA BOARD";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+}
+
+.fleetmgr-plate img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fleetmgr-head-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fleetmgr-drawer-open {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+  border: 1px solid var(--graphite-700);
+  padding: 10px 14px;
+  color: var(--paper);
+  background: linear-gradient(180deg, var(--graphite-700) 0%, var(--graphite-900) 100%);
+}
+
+.fleetmgr-drawer-open:hover:not(:disabled),
+.fleetmgr-drawer-open:focus-visible {
+  color: var(--paper);
+  border-color: var(--cyan-bright);
+  background: linear-gradient(180deg, var(--graphite-600) 0%, var(--graphite-800) 100%);
+}
+
+.fleetmgr-drawer-open-label {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.fleetmgr-status {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.fleetmgr-status::before {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+.fleetmgr-status[data-state="on"] {
+  color: var(--green);
+}
+
+.fleetmgr-status[data-state="on"]::before {
+  background: var(--green);
+}
+
+.fleetmgr-drawer-open .fleetmgr-status {
+  color: var(--aluminium-flat);
+}
+
+.fleetmgr-drawer-open .fleetmgr-status[data-state="on"] {
+  color: var(--green-soft);
+}
+
+/* ==========================================================================
+   2. Summary strip
+   ========================================================================== */
+
+.fleetmgr-summary {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border: 1px solid var(--hairline);
+  background: var(--paper-glow);
+}
+
+.fleetmgr-metric {
+  display: grid;
+  gap: 4px;
+  border-left: 1px solid var(--hairline);
+  padding: 10px 12px 11px;
+}
+
+.fleetmgr-metric:first-child {
+  border-left: 0;
+}
+
+.fleetmgr-metric-label {
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.fleetmgr-metric-value {
+  color: var(--ink);
+  font-family: var(--font-data);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* ==========================================================================
+   3. Filters
+   ========================================================================== */
+
+.fleetmgr-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: end;
+  border: 1px solid var(--hairline);
+  background: var(--paper-deep);
+  padding: 10px 12px;
+}
+
+.fleetmgr-field {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.fleetmgr-field > span {
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.fleetmgr-field select,
+.fleetmgr-field input {
+  border: 1px solid var(--hairline);
+  border-radius: 1px;
+  padding: 6px 8px;
+  min-width: 0;
+  color: var(--ink);
+  background: var(--paper-glow);
+  font-size: 12px;
+}
+
+.fleetmgr-field select:focus-visible,
+.fleetmgr-field input:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 1px;
+}
+
+.fleetmgr-field--grow {
+  flex: 1 1 240px;
+}
+
+.fleetmgr-field--narrow input {
+  width: 92px;
+}
+
+.fleetmgr-filter-count {
+  margin: 0 0 6px auto;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+/* ==========================================================================
+   4. The ATA chip board — the loudest thing on the monitor
+   ========================================================================== */
+
+.fleetmgr-board {
+  display: grid;
+  gap: 20px;
+}
+
+.fleetmgr-group-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 0 0 10px;
+  border-bottom: 2px solid var(--graphite-800);
+  padding-bottom: 6px;
+}
+
+.fleetmgr-group-name {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.fleetmgr-group-sub {
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+.fleetmgr-chips {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+
+.fleetmgr-chip {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 2px;
+  overflow: hidden;
+  min-height: 118px;
+  border: 1px solid var(--hairline);
+  border-radius: 1px;
+  padding: 9px 11px 15px;
+  text-align: left;
+  background: linear-gradient(180deg, var(--paper-glow) 0%, var(--paper-deep) 100%);
+}
+
+.fleetmgr-chip-code {
+  color: var(--graphite-800);
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 0.94;
+  letter-spacing: 0.02em;
+}
+
+.fleetmgr-chip-title {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.fleetmgr-chip-foot {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+  align-self: end;
+  margin-top: 8px;
+}
+
+.fleetmgr-chip-count {
+  color: var(--ink);
+  font-family: var(--font-data);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.fleetmgr-chip-count::before {
+  content: "× ";
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.fleetmgr-chip-value {
+  color: var(--cyan-deep);
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.fleetmgr-chip-bar {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background: var(--paper-deep);
+}
+
+.fleetmgr-chip-bar::after {
+  content: "";
+  display: block;
+  width: var(--fleetmgr-fill, 0%);
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan-deep), var(--cyan-bright));
+}
+
+.fleetmgr-chip:hover:not(:disabled),
+.fleetmgr-chip:focus-visible {
+  border-color: var(--cyan);
+  background: linear-gradient(180deg, var(--paper-glow) 0%, var(--paper) 100%);
+}
+
+.fleetmgr-chip[data-open="true"] {
+  border-color: var(--cyan-deep);
+  box-shadow: inset 0 0 0 1px var(--cyan-deep);
+  background: linear-gradient(180deg, var(--paper-glow) 0%, var(--paper) 100%);
+}
+
+/* --- Condition tag: the only place green / amber / red appear ------------- */
+
+.fleetmgr-cond {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  border: 1px solid var(--hairline);
+  padding: 1px 5px;
+  color: var(--ink-soft);
+  background: var(--paper-glow);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+}
+
+.fleetmgr-cond-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+.fleetmgr-cond[data-status="ready"] .fleetmgr-cond-dot {
+  background: var(--green);
+}
+
+.fleetmgr-cond[data-status="work"] .fleetmgr-cond-dot {
+  background: var(--amber);
+}
+
+.fleetmgr-cond[data-status="dead"] .fleetmgr-cond-dot {
+  background: var(--red);
+}
+
+/* ==========================================================================
+   5. Expanded chip — serialized units and bulk actions
+   ========================================================================== */
+
+.fleetmgr-detail {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--graphite-600);
+  border-top-width: 3px;
+  background: var(--paper-glow);
+  padding: 13px 14px 14px;
+}
+
+.fleetmgr-detail-head h4 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.fleetmgr-detail-sub {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.fleetmgr-bulk {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.fleetmgr-bulk-block {
+  border: 1px solid var(--hairline);
+  background: var(--paper);
+  padding: 10px 12px 11px;
+}
+
+.fleetmgr-bulk-title {
+  margin: 0 0 8px;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.fleetmgr-bulk-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: end;
+}
+
+.fleetmgr-hint {
+  margin: 8px 0 0;
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.fleetmgr-action {
+  border: 1px solid var(--hairline);
+  border-radius: 1px;
+  padding: 7px 12px;
+  color: var(--ink);
+  background: var(--paper-glow);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.fleetmgr-action--primary {
+  border-color: var(--cyan-deep);
+  color: var(--paper);
+  background: linear-gradient(180deg, var(--cyan-bright) 0%, var(--cyan-deep) 100%);
+}
+
+.fleetmgr-action--primary:hover:not(:disabled),
+.fleetmgr-action--primary:focus-visible {
+  color: var(--paper);
+  border-color: var(--cyan-deep);
+  background: linear-gradient(180deg, var(--cyan) 0%, var(--cyan-deep) 100%);
+}
+
+/* --- Serialized table ---------------------------------------------------- */
+
+.fleetmgr-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--hairline);
+  background: var(--paper);
+}
+
+.fleetmgr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.fleetmgr-table th {
+  position: sticky;
+  top: 0;
+  border-bottom: 1px solid var(--graphite-600);
+  padding: 7px 9px;
+  text-align: left;
+  color: var(--paper);
+  background: var(--graphite-800);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.fleetmgr-table td {
+  border-bottom: 1px solid var(--hairline);
+  padding: 6px 9px;
+  vertical-align: top;
+  color: var(--ink-soft);
+}
+
+.fleetmgr-table tr[data-selected="true"] td {
+  background: color-mix(in srgb, var(--cyan) 9%, transparent);
+}
+
+.fleetmgr-cell-num {
+  text-align: right;
+  font-family: var(--font-data);
+  white-space: nowrap;
+}
+
+.fleetmgr-cell-check {
+  width: 32px;
+}
+
+.fleetmgr-cell-place {
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.fleetmgr-link {
+  border: 0;
+  padding: 0;
+  color: var(--cyan-deep);
+  background: none;
+  font: inherit;
+  font-family: var(--font-data);
+  text-align: left;
+}
+
+.fleetmgr-link:hover:not(:disabled),
+.fleetmgr-link:focus-visible {
+  background: none;
+  box-shadow: none;
+  text-decoration: underline;
+}
+
+.fleetmgr-link--part {
+  display: grid;
+  gap: 1px;
+}
+
+.fleetmgr-part-name {
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 12px;
+}
+
+.fleetmgr-part-number {
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+
+.fleetmgr-more {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 11px;
+}
+
+/* ==========================================================================
+   6. Standing orders drawer
+   ========================================================================== */
+
+.fleetmgr-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fleetmgr-scrim {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: color-mix(in srgb, var(--graphite-900) 52%, transparent);
+}
+
+.fleetmgr-scrim:hover:not(:disabled),
+.fleetmgr-scrim:focus-visible {
+  border: 0;
+  background: color-mix(in srgb, var(--graphite-900) 58%, transparent);
+  box-shadow: none;
+}
+
+.fleetmgr-panel {
+  position: relative;
+  overflow-y: auto;
+  width: min(1080px, 92vw);
+  height: 100%;
+  border-left: 1px solid var(--graphite-700);
+  background: var(--paper);
+  background-image: var(--grid);
+  background-size: 20px 20px;
+  box-shadow: -20px 0 48px color-mix(in srgb, var(--graphite-900) 34%, transparent);
+}
+
+.fleetmgr-panel:focus-visible {
+  outline: 2px solid var(--cyan-bright);
+  outline-offset: -3px;
+}
+
+.fleetmgr-panel-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  gap: 18px;
+  justify-content: space-between;
+  align-items: start;
+  border-bottom: 1px solid var(--graphite-600);
+  padding: 16px 20px 15px;
+  color: var(--paper);
+  background: linear-gradient(180deg, var(--graphite-800) 0%, var(--graphite-900) 100%);
+}
+
+.fleetmgr-panel-head h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.fleetmgr-panel-head .fleetmgr-eyebrow {
+  color: var(--cyan-bright);
+}
+
+.fleetmgr-panel-head .fleetmgr-lede {
+  color: var(--aluminium-flat);
+}
+
+.fleetmgr-panel-close {
+  flex: 0 0 auto;
+  border-color: var(--graphite-600);
+  padding: 4px 10px;
+  color: var(--paper);
+  background: transparent;
+  font-family: var(--font-data);
+  font-size: 13px;
+}
+
+.fleetmgr-panel-close:hover:not(:disabled),
+.fleetmgr-panel-close:focus-visible {
+  color: var(--ink);
+  background: var(--paper);
+}
+
+.fleetmgr-panel-body {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  padding: 18px 20px 26px;
+}
+
+.fleetmgr-side {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  border: 1px solid var(--hairline);
+  background: var(--paper-glow);
+  padding: 14px 15px 15px;
+}
+
+.fleetmgr-side-head {
+  margin: 0 0 4px;
+  border-bottom: 2px solid var(--graphite-800);
+  padding-bottom: 6px;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.fleetmgr-side-lede {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.fleetmgr-gate {
+  display: grid;
+  gap: 4px;
+  border: 1px solid var(--hairline);
+  border-left: 3px solid var(--muted);
+  padding: 8px 10px;
+  background: var(--paper);
+}
+
+.fleetmgr-gate[data-state="open"] {
+  border-left-color: var(--green);
+  background: var(--green-soft);
+}
+
+.fleetmgr-gate[data-state="shut"] {
+  border-left-color: var(--amber);
+  background: var(--amber-soft);
+}
+
+.fleetmgr-gate p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.fleetmgr-switch {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 4px;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.fleetmgr-number {
+  display: grid;
+  gap: 0;
+  margin-top: 4px;
+}
+
+.fleetmgr-number input {
+  width: 100%;
+}
+
+.fleetmgr-fieldset {
+  margin: 8px 0 0;
+  border: 1px solid var(--hairline);
+  padding: 8px 10px 10px;
+  background: var(--paper);
+}
+
+.fleetmgr-fieldset legend {
+  padding: 0 4px;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.fleetmgr-condition-set {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.fleetmgr-condition-pick {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  border: 1px solid var(--hairline);
+  padding: 3px 6px;
+  background: var(--paper-glow);
+  cursor: pointer;
+}
+
+.fleetmgr-condition-pick:hover {
+  border-color: var(--cyan);
+}
+
+.fleetmgr-side-foot {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 12px;
+}
+
+.fleetmgr-change-count {
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   7. Motion — everything opt-in, nothing under reduce
+   ========================================================================== */
+
+@keyframes fleetmgr-open {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fleetmgr-slide {
+  from {
+    transform: translateX(28px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes fleetmgr-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fleetmgr-chip {
+    transition:
+      transform 140ms var(--ease-out),
+      border-color 140ms var(--ease-out),
+      box-shadow 140ms var(--ease-out);
+  }
+
+  .fleetmgr-chip:hover:not(:disabled) {
+    transform: translateY(-2px);
+  }
+
+  .fleetmgr-detail {
+    animation: fleetmgr-open 180ms var(--ease-out) both;
+  }
+
+  .fleetmgr-panel {
+    animation: fleetmgr-slide 220ms var(--ease-out) both;
+  }
+
+  .fleetmgr-scrim {
+    animation: fleetmgr-fade 180ms var(--ease-out) both;
+  }
+}
+
+/* ==========================================================================
+   8. Narrow desks
+   ========================================================================== */
+
+@media (max-width: 1000px) {
+  .fleetmgr-panel-body,
+  .fleetmgr-bulk {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fleetmgr-panel {
+    width: 100%;
+  }
+}

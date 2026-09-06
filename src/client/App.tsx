@@ -24,6 +24,8 @@ import { NewGame } from "./components/NewGame.tsx";
 import { OfficeHQ } from "./components/OfficeHQ.tsx";
 import { PulseWheel } from "./components/PulseWheel.tsx";
 import { NetworkMapV2 } from "./components/NetworkMapV2.tsx";
+import { FinanceMonitor } from "./components/FinanceMonitor.tsx";
+import { FleetManager } from "./components/FleetManager.tsx";
 import { tickDurationMs } from "../sim/balance.ts";
 import { KNOWLEDGE_NODES, canInvest, nodesInBranch } from "../sim/knowledge.ts";
 import { TEAM_ROLE_DEFS, weeklySalaryCost } from "../sim/team.ts";
@@ -243,17 +245,15 @@ export function App() {
           />
         )}
         {view === "fleet" && (
-          <>
-            <AssetControl
-              observation={observation}
-              onCommand={command}
-              onInspect={(id) => setInspect({ kind: "asset", id })}
-            />
-            <StrategySheet observation={observation} onCommand={command} />
-            <SalesOffice observation={observation} onCommand={command} />
-          </>
+          <FleetManager
+            observation={observation}
+            onCommand={command}
+            onInspectAsset={(id) => setInspect({ kind: "asset", id })}
+          />
         )}
-        {view === "finance" && <KpiIndex />}
+        {view === "finance" && (
+          <FinanceMonitor observation={observation} onClose={() => setView("hq")} />
+        )}
         {view === "intel" && <IntelPanel observation={observation} />}
         {view === "wall" && <WallPanel observation={observation} onCommand={command} />}
         {view === "team" && <TeamPanel observation={observation} onCommand={command} />}

@@ -40,8 +40,11 @@ test("founder names a company, works the desk, and reaches every surface", async
   for (const surface of ["Finance", "Fleet Manager", "Intelligence", "Tribal Knowledge", "Team"]) {
     await page.getByRole("button", { name: surface, exact: true }).click();
     await expect(page.locator(".workspace")).toBeVisible();
+    await page.screenshot({
+      path: `test-results/surface-${surface.toLowerCase().replace(/ /g, "-")}.png`,
+      fullPage: true,
+    });
   }
-  await page.screenshot({ path: "test-results/tribal-knowledge.png", fullPage: true });
 
   // --- Save and reload ------------------------------------------------------
   await page.getByRole("button", { name: "Save", exact: true }).click();
