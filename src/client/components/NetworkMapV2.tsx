@@ -738,7 +738,7 @@ export function NetworkMapV2({
           <b>{NUMBER_FORMAT.format(culled.capped)}</b> hidden by the {NODE_CAP} cap
         </span>
         <span>
-          <b>{NUMBER_FORMAT.format(Math.max(0, offScreen))}</b> off screen
+          <b>{NUMBER_FORMAT.format(Math.max(0, offScreen))}</b> outside the window
         </span>
         <span>
           zoom <b>{view.k.toFixed(1)}×</b>

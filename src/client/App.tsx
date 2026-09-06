@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } fro
 import type { LiveSnapshot } from "../live/runner.ts";
 import type { GameObservation } from "../sim/observation.ts";
 import type {
+  KnowledgeBranch,
   LivePace,
   MarketListing,
   NetworkOpportunity,
@@ -19,8 +20,21 @@ import {
   subscribeCampaign,
 } from "./api.ts";
 import { musicOn, startMusic, subscribeMusic, toggleMusic } from "./music.ts";
+import { NewGame } from "./components/NewGame.tsx";
+import { OfficeHQ } from "./components/OfficeHQ.tsx";
+import { PulseWheel } from "./components/PulseWheel.tsx";
+import { NetworkMapV2 } from "./components/NetworkMapV2.tsx";
+import { tickDurationMs } from "../sim/balance.ts";
+import { KNOWLEDGE_NODES, canInvest, nodesInBranch } from "../sim/knowledge.ts";
+import { TEAM_ROLE_DEFS, weeklySalaryCost } from "../sim/team.ts";
 
-type View = "hq" | "map" | "market" | "strategy" | "sales" | "assets" | "kpis" | "pbh";
+/**
+ * The office is the shell. Everything else is a surface opened from it: three
+ * monitors on the desk, the certificate wall behind it, and the team screen beside it.
+ * Buying and selling strategy are no longer places you visit; they are a drawer
+ * inside the fleet manager.
+ */
+type View = "hq" | "map" | "finance" | "fleet" | "intel" | "wall" | "team" | "market" | "pbh";
 type InspectTarget =
   | { kind: "asset"; id: number }
   | { kind: "part"; id: string }
@@ -97,33 +111,31 @@ export function App() {
 
   if (!snapshot) {
     return (
-      <CampaignStart
+      <NewGameScreen
         busy={busy}
         error={error}
         onStart={async (input) => {
-          startMusic();
           setBusy(true);
           try {
-            const created = await createCampaign(input);
-            setSnapshot(created);
+            setSnapshot(await createCampaign(input));
             setView("hq");
             setError("");
-            setNotice("Opening inventory is positioned. The first demand pulse is approaching.");
+            startMusic();
           } catch (cause) {
             setError(messageOf(cause));
           } finally {
             setBusy(false);
           }
         }}
-        onLoad={async (saveId, pace) => {
-          startMusic();
+        onLoad={async (saveId) => {
           setBusy(true);
           try {
-            const loaded = await loadCampaign(saveId, pace);
+            const loaded = await loadCampaign(saveId, "fast");
             setSnapshot(loaded);
             setView("hq");
             setError("");
             setNotice(`Loaded ${saveId} at week ${loaded.observation.tick}.`);
+            startMusic();
           } catch (cause) {
             setError(messageOf(cause));
           } finally {
@@ -162,13 +174,14 @@ export function App() {
 
       <nav className="view-tabs" aria-label="Headquarters">
         {([
-          ["hq", "Operations Desk"],
+          ["hq", "Office HQ"],
           ["map", "Network Map"],
+          ["finance", "Finance"],
+          ["fleet", "Fleet Manager"],
+          ["intel", "Intelligence"],
+          ["wall", "Tribal Knowledge"],
+          ["team", "Team"],
           ["market", "Marketplace"],
-          ["strategy", "Buying Strategy"],
-          ["sales", "Sales Office"],
-          ["assets", "Asset Control"],
-          ["kpis", "KPI Index"],
           ["pbh", "PBH"],
         ] as [View, string][]).map(([id, label]) => (
           <button key={id} className={view === id ? "active" : ""} onClick={() => {
@@ -188,22 +201,28 @@ export function App() {
 
       <main className="workspace">
         {view === "hq" && (
-          <Headquarters
+          <OfficeHQ
             observation={observation}
-            onOpen={setView}
-            lastPulse={lastPulse}
+            onOpenMonitor={(which) =>
+              setView(which === "finance" ? "finance" : which === "fleet" ? "fleet" : "intel")
+            }
+            onOpenWall={() => setView("wall")}
+            onOpenTeam={() => setView("team")}
+            onOpenMap={() => setView("map")}
           />
         )}
         {view === "map" && (
-          <NetworkMap
+          <NetworkMapV2
             observation={observation}
-            onHq={() => setView("hq")}
-            onInspect={(id) => setInspect({ kind: "node", id })}
+            onInspectNode={(id) => setInspect({ kind: "node", id })}
+            onOpenOpportunity={(opportunityId) =>
+              command({ type: "open_opportunity", opportunityId }, "Opportunity")
+            }
+            onVisitNode={(nodeId) => command({ type: "visit_node", nodeId }, "Site visit")}
             onOpenListing={(listingId) => {
               setMarketFocus(listingId);
               setView("market");
             }}
-            onCommand={command}
           />
         )}
         {view === "market" && (
@@ -223,20 +242,21 @@ export function App() {
             onInspectPart={(id) => setInspect({ kind: "part", id })}
           />
         )}
-        {view === "strategy" && (
-          <StrategySheet observation={observation} onCommand={command} />
+        {view === "fleet" && (
+          <>
+            <AssetControl
+              observation={observation}
+              onCommand={command}
+              onInspect={(id) => setInspect({ kind: "asset", id })}
+            />
+            <StrategySheet observation={observation} onCommand={command} />
+            <SalesOffice observation={observation} onCommand={command} />
+          </>
         )}
-        {view === "sales" && (
-          <SalesOffice observation={observation} onCommand={command} />
-        )}
-        {view === "assets" && (
-          <AssetControl
-            observation={observation}
-            onCommand={command}
-            onInspect={(id) => setInspect({ kind: "asset", id })}
-          />
-        )}
-        {view === "kpis" && <KpiIndex />}
+        {view === "finance" && <KpiIndex />}
+        {view === "intel" && <IntelPanel observation={observation} />}
+        {view === "wall" && <WallPanel observation={observation} onCommand={command} />}
+        {view === "team" && <TeamPanel observation={observation} onCommand={command} />}
         {view === "pbh" && <PbhDesk observation={observation} onCommand={command} />}
       </main>
 
@@ -254,7 +274,8 @@ export function App() {
   );
 }
 
-function CampaignStart({
+/** Thin wrapper: the NewGame component is presentational, so saves are fetched here. */
+function NewGameScreen({
   busy,
   error,
   onStart,
@@ -262,80 +283,32 @@ function CampaignStart({
 }: {
   busy: boolean;
   error: string;
-  onStart: (input: { seed: number; pace: LivePace; ticks: number; scenario: "prototype" | "full" }) => void;
-  onLoad: (saveId: string, pace: LivePace) => void;
+  onStart: (input: {
+    seed: number;
+    pace: LivePace;
+    ticks: number;
+    scenario: "prototype" | "full";
+    companyName: string;
+    founderName: string;
+    portraitId: string;
+  }) => void;
+  onLoad: (saveId: string) => void;
 }) {
-  const [seed, setSeed] = useState(20260906);
-  const [pace, setPace] = useState<LivePace>("fast");
-  const [length, setLength] = useState<24 | 100>(24);
-  const [saves, setSaves] = useState<{ id: string; savedAt: string; tick: number; seed: number }[]>([]);
+  const [saves, setSaves] = useState<
+    { id: string; savedAt: string; tick: number; seed: number }[]
+  >([]);
   useEffect(() => {
     void listSaves().then(setSaves).catch(() => setSaves([]));
   }, []);
   useEffect(() => {
+    // Browsers block audio until a gesture; the first pointer press starts the theme.
     const kick = () => startMusic();
     window.addEventListener("pointerdown", kick, { once: true });
     return () => window.removeEventListener("pointerdown", kick);
   }, []);
-  const seconds = length * ({ fast: 25, medium: 50, slow: 75 }[pace]);
-  return (
-    <main className="start-screen">
-      <section className="title-block">
-        <p className="eyebrow">AAT / CAMPAIGN BRIEF / REV 02</p>
-        <h1>Aero Asset Tycoon</h1>
-        <p className="lead">
-          Build an aviation aftermarket book without letting inventory consume the company.
-        </p>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            onStart({ seed, pace, ticks: length, scenario: length === 24 ? "prototype" : "full" });
-          }}
-        >
-          <label>
-            World seed
-            <input type="number" value={seed} onChange={(event) => setSeed(Number(event.target.value))} />
-          </label>
-          <fieldset>
-            <legend>Campaign</legend>
-            <label><input type="radio" checked={length === 24} onChange={() => setLength(24)} /> Founder’s first 24 weeks</label>
-            <label><input type="radio" checked={length === 100} onChange={() => setLength(100)} /> Open market · 100 weeks</label>
-          </fieldset>
-          <fieldset>
-            <legend>Weekly pulse</legend>
-            {(["fast", "medium", "slow"] as LivePace[]).map((value) => (
-              <label key={value}>
-                <input type="radio" checked={pace === value} onChange={() => setPace(value)} />
-                {capitalize(value)} · {{ fast: 25, medium: 50, slow: 75 }[value]}s
-              </label>
-            ))}
-          </fieldset>
-          <p className="session-estimate">
-            Live duration: approximately {Math.round(seconds / 60)} minutes plus pause time.
-          </p>
-          {error && <p className="form-error">{error}</p>}
-          <button className="primary" type="submit" disabled={busy}>
-            {busy ? "Establishing operations…" : "Enter Operations Desk"}
-          </button>
-          {saves.length > 0 && (
-            <div className="load-saves">
-              <span>Continue saved campaign</span>
-              {saves.slice(0, 3).map((save) => (
-                <button type="button" key={save.id} disabled={busy} onClick={() => onLoad(save.id, pace)}>
-                  {save.id} · W{save.tick} · seed {save.seed}
-                </button>
-              ))}
-            </div>
-          )}
-        </form>
-        <small>
-          Real aircraft/engine nomenclature; fictional organizations, P/Ns, prices, reliability and outcomes.
-          Not affiliated with any OEM, airline or airport.
-        </small>
-      </section>
-    </main>
-  );
+  return <NewGame busy={busy} error={error} saves={saves} onStart={onStart} onLoad={onLoad} />;
 }
+
 
 function LedgerHeader({
   snapshot,
@@ -352,13 +325,12 @@ function LedgerHeader({
 }) {
   const { observation } = snapshot;
   const pulse = observation.pulses.at(-1);
-  const seconds = useCountdown(snapshot.remainingMs, snapshot.status);
   const pendingCount = observation.pendingCommands.length;
   return (
     <header className="ledger-header">
       <div className="brand">
-        <span className="eyebrow">AERO ASSET PARTNERS</span>
-        <strong>Operations Desk</strong>
+        <span className="eyebrow">{observation.company.identity.companyName.toUpperCase()}</span>
+        <strong>Office HQ</strong>
       </div>
       <div className="acc-balance">
         <span>ACC BALANCE</span>
@@ -368,31 +340,23 @@ function LedgerHeader({
         <span>WEEK {pulse?.tick ?? 0} PULSE</span>
         <strong>{signedAcc(pulse?.delta ?? 0)}</strong>
       </div>
-      <PulseTrail pulses={observation.pulses} />
-      <div className="clock">
-        <span>WEEK {observation.tick}</span>
-        <strong>{snapshot.status === "running" ? `${seconds}s` : snapshot.status.toUpperCase()}</strong>
-      </div>
       <div className="clock-actions">
-        <select value={snapshot.pace} onChange={(event) => onPace(event.target.value as LivePace)} aria-label="Pulse speed">
-          <option value="fast">25s</option>
-          <option value="medium">50s</option>
-          <option value="slow">75s</option>
-        </select>
-        <button disabled={busy || snapshot.status === "finished"} onClick={() => onAction(snapshot.status === "running" ? "pause" : "resume")}>
-          {snapshot.status === "running" ? "Pause" : "Resume"}
-        </button>
-        <button
-          className="hero-pulse"
-          disabled={busy || snapshot.status === "running" || snapshot.status === "finished"}
-          onClick={() => onAction("step")}
-          title={pendingCount > 0 ? `${pendingCount} command(s) queued` : "Resolve weekly pulse"}
-        >
-          Pulse
-        </button>
         <button disabled={busy} onClick={onSave}>Save</button>
         <MusicToggle />
       </div>
+      <PulseWheel
+        calendar={observation.calendar}
+        progress={pulseProgress(snapshot)}
+        paused={snapshot.status !== "running"}
+        busy={busy}
+        pendingCount={pendingCount}
+        pace={snapshot.pace}
+        budget={observation.company.budget}
+        lastDelta={pulse?.delta ?? null}
+        onPulse={() => onAction("step")}
+        onPause={() => onAction(snapshot.status === "running" ? "pause" : "resume")}
+        onPace={onPace}
+      />
     </header>
   );
 }
@@ -411,190 +375,8 @@ function MusicToggle() {
   );
 }
 
-function PulseTrail({ pulses }: { pulses: GameObservation["pulses"] }) {
-  const recent = pulses.slice(-10);
-  const max = Math.max(1, ...recent.map((pulse) => Math.abs(pulse.delta)));
-  return (
-    <div className="pulse-trail" aria-label="Trailing ACC pulses">
-      {recent.length === 0 && <span className="empty-bars">Awaiting first pulse</span>}
-      {recent.map((pulse) => (
-        <span
-          key={pulse.tick}
-          className={pulse.delta >= 0 ? "gain" : "loss"}
-          style={{ height: `${8 + (Math.abs(pulse.delta) / max) * 26}px` }}
-          title={`Week ${pulse.tick}: ${signedAcc(pulse.delta)}`}
-        />
-      ))}
-    </div>
-  );
-}
 
-function Headquarters({
-  observation,
-  onOpen,
-  lastPulse,
-}: {
-  observation: GameObservation;
-  onOpen: (view: View) => void;
-  lastPulse: GameObservation["pulses"][number] | undefined;
-}) {
-  const available = observation.inventory.filter((asset) => asset.facilityId === observation.firm.warehouseFacilityId).length;
-  const inTransit = observation.inventory.filter((asset) => asset.transferId !== null).length;
-  const reachableNodes = observation.nodes.filter((node) => node.state !== "locked").length;
-  return (
-    <section className="hq-scene" aria-label="Operations desk overlooking a global aviation network">
-      <div className="hq-backdrop" aria-hidden="true" />
-      <div className="hq-overlay" aria-hidden="true" />
-      <div className="office-copy">
-        <p className="eyebrow">OPERATIONS DESK / GLOBAL NETWORK</p>
-        <h2>The book is moving.</h2>
-        <p>
-          {lastPulse
-            ? `Week ${lastPulse.tick} pulse: ${signedAcc(lastPulse.delta)}. ${available} assets ready; ${inTransit} in transit.`
-            : "Opening inventory is positioned. The first demand pulse is approaching."}
-        </p>
-      </div>
-      {lastPulse && (
-        <div className="live-breakdown" aria-label="Latest ACC pulse breakdown">
-          <span>Sales {signedAcc(lastPulse.sales)}</span>
-          <span>Purchases {signedAcc(lastPulse.purchases)}</span>
-          <span>Repair {signedAcc(lastPulse.repair)}</span>
-          <span>Logistics {signedAcc(lastPulse.logistics)}</span>
-          <span>Overhead {signedAcc(lastPulse.overhead)}</span>
-          {lastPulse.contracts !== 0 && <span>Contracts {signedAcc(lastPulse.contracts)}</span>}
-          {lastPulse.penalties !== 0 && <span>Penalties {signedAcc(lastPulse.penalties)}</span>}
-        </div>
-      )}
-      <div className="founder-objectives">
-        <span className={observation.pulses.length > 0 ? "complete" : ""}>1 · Resolve first pulse</span>
-        <span className={observation.firm.manualAcquisitions > 0 ? "complete" : ""}>2 · Acquire an asset</span>
-        <span className={observation.firm.repairsCompleted > 0 ? "complete" : ""}>3 · Complete a repair</span>
-        <span className={observation.nodes.some((node) => node.state === "partner" && node.role !== "hq") ? "complete" : ""}>4 · Establish a partner</span>
-        <span className={observation.pbhContracts.some((contract) => contract.status === "active" || contract.status === "completed") ? "complete" : ""}>5 · Operate PBH</span>
-      </div>
-      <button className="hotspot monitors" onClick={() => onOpen("market")}>
-        <span>Connected monitors</span>
-        <strong>Open Marketplace</strong>
-      </button>
-      <button className="hotspot phone" onClick={() => onOpen("sales")}>
-        <span>Buyer line</span>
-        <strong>Sales Office</strong>
-      </button>
-      <button className="hotspot manifest" onClick={() => onOpen("assets")}>
-        <span>Asset manifest</span>
-        <strong>{available} in warehouse</strong>
-      </button>
-      <button className="hotspot strategy-board" onClick={() => onOpen("strategy")}>
-        <span>Acquisition policy</span>
-        <strong>Buying Strategy</strong>
-      </button>
-      <button className="hotspot map-window" onClick={() => onOpen("map")}>
-        <span>Network reach</span>
-        <strong>{reachableNodes} reachable nodes</strong>
-      </button>
-    </section>
-  );
-}
 
-function NetworkMap({
-  observation,
-  onHq,
-  onInspect,
-  onOpenListing,
-  onCommand,
-}: {
-  observation: GameObservation;
-  onHq: () => void;
-  onInspect: (id: string) => void;
-  onOpenListing: (listingId: number) => void;
-  onCommand: (command: unknown, message: string) => void;
-}) {
-  const [selectedId, setSelectedId] = useState("node-hq");
-  const selected = observation.nodes.find((node) => node.id === selectedId) ?? observation.nodes[0];
-  const hq = observation.nodes.find((node) => node.role === "hq");
-  const opportunities = observation.opportunities.filter((opportunity) => opportunity.nodeId === selected?.id);
-  return (
-    <Sheet title="Network Map" code="NET / GLOBAL / 01">
-      <div className="map-layout">
-        <div className="network-map" role="img" aria-label="Global aviation aftermarket network">
-          <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-            <defs>
-              <pattern id="smallGrid" width="5" height="5" patternUnits="userSpaceOnUse">
-                <path d="M 5 0 L 0 0 0 5" fill="none" className="grid-line" />
-              </pattern>
-            </defs>
-            <rect width="100" height="100" fill="url(#smallGrid)" opacity="0.3" />
-            {hq && observation.nodes.filter((node) => node.id !== hq.id).map((node) => (
-              <line key={`route-${node.id}`} x1={hq.x} y1={hq.y} x2={node.x} y2={node.y} className={`route ${node.state}`} />
-            ))}
-            {observation.nodes.map((node) => {
-              const edgeLabelX = node.x < 20 ? 5 : node.x > 80 ? -5 : 0;
-              const labelAnchor = node.x < 20 ? "start" : node.x > 80 ? "end" : "middle";
-              const labelY =
-                node.y > 86 ||
-                (node.role === "customer" && node.y < 30) ||
-                (node.role === "mro" && node.x > 75)
-                  ? -6
-                  : node.role === "hq"
-                    ? 9
-                    : 7;
-              return (
-                <g
-                  key={node.id}
-                  className={`map-node ${node.state} ${selectedId === node.id ? "selected" : ""}`}
-                  transform={`translate(${node.x} ${node.y})`}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`${node.label}; ${node.state}`}
-                  onClick={() => {
-                    if (node.role === "hq") onHq();
-                    else setSelectedId(node.id);
-                  }}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
-                      event.preventDefault();
-                      if (node.role === "hq") onHq();
-                      else setSelectedId(node.id);
-                    }
-                  }}
-                >
-                  <circle r={node.role === "hq" ? 5 : 3.8} />
-                  <text x={edgeLabelX} y={labelY} textAnchor={labelAnchor}>{node.label}</text>
-                  {observation.opportunities.some((item) => item.nodeId === node.id) && <circle className="opportunity-dot" cx="4" cy="-4" r="1.6" />}
-                </g>
-              );
-            })}
-          </svg>
-        </div>
-        <aside className="node-sheet">
-          {selected ? (
-            <>
-              <p className="eyebrow">{selected.role.toUpperCase()} / {selected.state.toUpperCase()}</p>
-              <h3>{selected.label}</h3>
-              <Metric label="Logistics TAT" value={`${selected.logisticsTatTicks} wk`} />
-              <Metric label="Reputation required" value={String(selected.reputationRequired)} />
-              <Metric
-                label="Relationship"
-                value={String(observation.relationships.find((relationship) => relationship.organizationId === selected.organizationId)?.score ?? 0)}
-              />
-              {selected.state === "locked" && <p className="locked-note">Needs reputation {selected.reputationRequired}. Private terms remain hidden.</p>}
-              {selected.state !== "locked" && (
-                <>
-                  <button className="secondary" onClick={() => onInspect(selected.id)}>Inspect organization</button>
-                  <h4>Opportunities</h4>
-                  {opportunities.length === 0 && <Empty>No active opportunity at this node.</Empty>}
-                  {opportunities.map((opportunity) => (
-                    <OpportunityRow key={opportunity.id} opportunity={opportunity} onCommand={onCommand} onOpenListing={onOpenListing} />
-                  ))}
-                </>
-              )}
-            </>
-          ) : <Empty>Select a node.</Empty>}
-        </aside>
-      </div>
-    </Sheet>
-  );
-}
 
 function OpportunityRow({
   opportunity,
@@ -1382,5 +1164,210 @@ function latestFeedbackEvent(events: GameObservation["events"]) {
         "transfer_arrived",
       ].includes(event.kind),
     )
+  );
+}
+
+
+/** 0..1 through the current live pulse, derived from the runner's remaining time. */
+function pulseProgress(snapshot: LiveSnapshot): number {
+  const total = tickDurationMs(snapshot.pace);
+  if (total <= 0) return 0;
+  return Math.min(1, Math.max(0, 1 - snapshot.remainingMs / total));
+}
+
+/**
+ * Market intelligence. The fog covers the economy as well as the map: shock detail
+ * stays hidden until the player earns the intel to see it.
+ */
+function IntelPanel({ observation }: { observation: GameObservation }) {
+  const market = observation.market;
+  const funnel = observation.funnel;
+  const total = funnel.tam + funnel.sam + funnel.som;
+  return (
+    <Sheet title="Market Intelligence" code="INT / MKT / 01">
+      <div className="live-breakdown">
+        <span>Price index {market.priceIndex.toFixed(3)}</span>
+        <span>Demand index {market.demandIndex.toFixed(3)}</span>
+        <span>Tracked assets {market.trackedAssets.toLocaleString("en-US")}</span>
+        <span>World fleet {market.worldAssets.toLocaleString("en-US")}</span>
+        <span>Growth {(market.growthRate * 100).toFixed(0)}%/yr</span>
+        <span>Retirement {(market.retireRate * 100).toFixed(0)}%/yr</span>
+      </div>
+      <p className="lead compact">
+        The engine tracks a scaled slice of the world fleet. Everything outside your
+        reach exists as statistics, not as serial numbers.
+      </p>
+      <h3>Reach</h3>
+      <div className="live-breakdown">
+        <span>TAM {funnel.tam} sites, exist but unseen</span>
+        <span>SAM {funnel.sam} sites, visible, not established</span>
+        <span>SOM {funnel.som} sites, ready to trade</span>
+        <span>{total} sites total</span>
+      </div>
+      <h3>Known shocks</h3>
+      {market.knownShocks.length === 0 ? (
+        <p className="lead compact">
+          No shock intelligence. The AI branch of Tribal Knowledge and an analyst on
+          the team both reveal what the market is doing before it shows up in prices.
+        </p>
+      ) : (
+        <ul className="plain-list">
+          {market.knownShocks.map((shock) => (
+            <li key={shock.id}>
+              <strong>{shock.label}</strong> — weeks {shock.startTick} to {shock.endTick},
+              price {(shock.priceImpact * 100).toFixed(0)}%, demand{" "}
+              {(shock.demandImpact * 100).toFixed(0)}%
+              {shock.ata !== null ? ` · ATA ${shock.ata}` : ""}
+              {shock.regionCode ? ` · ${shock.regionCode}` : ""}
+            </li>
+          ))}
+        </ul>
+      )}
+      <h3>Where the fleet sits</h3>
+      <ul className="plain-list">
+        {market.byRegion.slice(0, 8).map((row) => (
+          <li key={row.code}>
+            {row.name}: {row.count.toLocaleString("en-US")} tracked
+          </li>
+        ))}
+      </ul>
+    </Sheet>
+  );
+}
+
+/** The certificate wall: Tribal Knowledge. */
+function WallPanel({
+  observation,
+  onCommand,
+}: {
+  observation: GameObservation;
+  onCommand: (command: unknown, label: string) => void;
+}) {
+  const progress = observation.company.knowledge;
+  const earned = progress.filter((entry) => entry.completedTick !== null).length;
+  const branches: KnowledgeBranch[] = ["certification", "asset", "operations"];
+  return (
+    <Sheet title="Tribal Knowledge" code="TK / WALL / 01">
+      <p className="lead compact">
+        {earned} of {KNOWLEDGE_NODES.length} earned. Certifications and memberships hang
+        on the wall; asset knowledge is organised by ATA chapter; company operations
+        cover sales, operations and AI.
+      </p>
+      {branches.map((branch) => (
+        <section key={branch}>
+          <h3>
+            {branch === "certification"
+              ? "Certifications and memberships"
+              : branch === "asset"
+                ? "Asset knowledge by ATA chapter"
+                : "Company operations"}
+          </h3>
+          <ul className="plain-list">
+            {nodesInBranch(branch).map((node) => {
+              const entry = progress.find((candidate) => candidate.nodeId === node.id);
+              const done = entry?.completedTick !== null && entry !== undefined;
+              const gate = canInvest(node.id, progress, observation.firm.accBalance);
+              return (
+                <li key={node.id}>
+                  <strong>{node.shortTitle}</strong> — {node.blurb}
+                  <br />
+                  <small>
+                    {formatAcc(node.accCost)} ACC · {node.timeCost} h/wk ·{" "}
+                    {node.ticksToComplete} weeks
+                    {node.ataCodes.length > 0 ? ` · ATA ${node.ataCodes.join(", ")}` : ""}
+                  </small>{" "}
+                  {done ? (
+                    <em>Earned</em>
+                  ) : entry ? (
+                    <em>
+                      In progress {entry.investedTicks}/{node.ticksToComplete}
+                    </em>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={!gate.ok}
+                      title={gate.reason ?? "Begin studying"}
+                      onClick={() =>
+                        onCommand({ type: "invest_knowledge", nodeId: node.id }, node.shortTitle)
+                      }
+                    >
+                      Invest
+                    </button>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))}
+    </Sheet>
+  );
+}
+
+/** The side screen: Team. */
+function TeamPanel({
+  observation,
+  onCommand,
+}: {
+  observation: GameObservation;
+  onCommand: (command: unknown, label: string) => void;
+}) {
+  const { team, candidates } = observation.company;
+  const payroll = weeklySalaryCost(team);
+  return (
+    <Sheet title="Team" code="TEAM / CALL / 01">
+      <p className="lead compact">
+        {team.length} hired. Weekly payroll {formatAcc(payroll)} ACC. Candidates come
+        from the map and from memberships such as ISTAT.
+      </p>
+      <h3>Roster</h3>
+      {team.length === 0 ? (
+        <p className="lead compact">
+          Just you, so far. Every hire buys back founder hours or opens something you
+          cannot reach alone.
+        </p>
+      ) : (
+        <ul className="plain-list">
+          {team.map((member) => (
+            <li key={member.id}>
+              <strong>{member.name}</strong> — {TEAM_ROLE_DEFS[member.role].label}, skill{" "}
+              {member.skill}, {formatAcc(member.salary)} ACC/wk
+              {member.ataAffinity.length > 0 ? ` · ATA ${member.ataAffinity.join(", ")}` : ""}
+              <br />
+              <small>{TEAM_ROLE_DEFS[member.role].blurb}</small>{" "}
+              <button
+                type="button"
+                onClick={() =>
+                  onCommand({ type: "release_team_member", memberId: member.id }, "Release")
+                }
+              >
+                Release
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      <h3>Candidates</h3>
+      <ul className="plain-list">
+        {candidates.map((candidate) => (
+          <li key={candidate.id}>
+            <strong>{candidate.name}</strong> — {TEAM_ROLE_DEFS[candidate.role].label}, skill{" "}
+            {candidate.skill}, {formatAcc(candidate.salary)} ACC/wk
+            <br />
+            <small>
+              {candidate.blurb} · available {Math.max(0, candidate.availableUntilTick - observation.tick)} more weeks
+            </small>{" "}
+            <button
+              type="button"
+              onClick={() =>
+                onCommand({ type: "hire_team_member", candidateId: candidate.id }, "Hire")
+              }
+            >
+              Hire
+            </button>
+          </li>
+        ))}
+      </ul>
+    </Sheet>
   );
 }
