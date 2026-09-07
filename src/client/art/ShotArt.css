@@ -22,3 +22,21 @@
   height: 30px;
   flex: 0 0 auto;
 }
+
+.shot-art--mark {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+.shot-art--series {
+  height: 22px;
+  width: auto;
+  max-width: 74px;
+  flex: 0 0 auto;
+}
+
+.shot-art--brand {
+  height: 100%;
+  width: auto;
+}

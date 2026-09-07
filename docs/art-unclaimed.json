@@ -1,36 +1,12 @@
 {
   "why": "Renders delivered without a declared shot. The generator publishes them so the catalogue is honest, but nothing has confirmed a surface draws them. Wire one and declare the shot, then remove the id here.",
   "ids": [
-    "brand-mark",
-    "brand-wordmark",
     "card-milestone-first-cert",
     "card-milestone-first-hire",
     "card-milestone-first-region",
     "card-milestone-first-sale",
     "card-milestone-insolvent",
-    "card-milestone-solvent-year",
-    "category-consumable",
-    "category-expendable",
-    "category-llp",
-    "category-repairable",
-    "category-rotable",
-    "category-standard",
-    "class-airframe",
-    "class-component",
-    "class-engine",
-    "class-llp",
-    "facility-component-shop-s5",
-    "facility-engine-shop-s5",
-    "facility-hangar-s5",
-    "hq-room-night",
-    "loading-plate",
-    "og-share",
-    "series-737-800",
-    "series-a320-200",
-    "series-cf34-8e",
-    "series-cfm56-5b",
-    "series-cfm56-7b",
-    "series-e175",
-    "wheel-bezel"
-  ]
+    "card-milestone-solvent-year"
+  ],
+  "note": "The milestone cards have no surface to sit on: the sim has no milestone system. They are held here rather than wired to an invented one."
 }

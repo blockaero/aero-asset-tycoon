@@ -1933,3 +1933,43 @@ td button {
 .condition:has(.condition-badge) {
   gap: 4px;
 }
+
+/* Part inspector: the class and category marks, then the applicability list. */
+.part-marks,
+.part-series {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 0;
+}
+
+.part-marks-text {
+  font-family: var(--font-data);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.part-series-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--hairline);
+  padding: 2px 6px;
+  font-family: var(--font-data);
+  font-size: 11px;
+}
+
+/* The pre-React shell. React replaces #root's children on mount. */
+.boot-plate {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+}
+
+.boot-plate img {
+  width: min(360px, 60vw);
+  height: auto;
+}

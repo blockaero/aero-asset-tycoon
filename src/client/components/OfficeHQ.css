@@ -78,6 +78,16 @@
   z-index: 2;
 }
 
+.officehq-layer--room-night {
+  z-index: 3;
+  opacity: 0;
+}
+
+/* No stand-in: without the night render the office simply stays in daylight. */
+.officehq-layer--room-night[data-missing="true"] {
+  display: none;
+}
+
 .officehq-layer--room[data-missing="true"] {
   background:
     linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 44%, var(--aluminium) 46%, var(--aluminium-flat) 100%);
@@ -651,6 +661,16 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  @keyframes officehq-nightfall {
+    0%, 34% { opacity: 0; }
+    58% { opacity: 0.86; }
+    82%, 100% { opacity: 0; }
+  }
+
+  .officehq-layer--room-night {
+    animation: officehq-nightfall 360s linear infinite;
+  }
+
   .officehq-sweep {
     animation: officehq-sweep 360s linear infinite;
   }

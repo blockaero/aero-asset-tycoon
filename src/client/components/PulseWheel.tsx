@@ -53,6 +53,7 @@ const PACE_HINT: Record<LivePace, string> = {
 
 /** Disc face texture. Shot id only; the loader picks the format. */
 const FACE_ART = "wheel-face";
+const BEZEL_ART = "wheel-bezel";
 
 
 /* ---------------------------------------------------------------- *
@@ -231,6 +232,7 @@ export function PulseWheel({
 
   const [menuOpen, setMenuOpen] = useState(false);
   const faceArt = useArtSource(FACE_ART);
+  const bezelArt = useArtSource(BEZEL_ART);
   const [flash, setFlash] = useState<{ tone: "gain" | "loss"; nonce: number } | null>(null);
 
   const describedBy = useId();
@@ -455,6 +457,17 @@ export function PulseWheel({
             aria-hidden="true"
             draggable={false}
             onError={faceArt.onError}
+          />
+        )}
+        {/* The rim, over the face and under the readout. Absent, the CSS ring stands. */}
+        {!bezelArt.exhausted && (
+          <img
+            className="pulsewheel-bezel"
+            src={bezelArt.src}
+            alt=""
+            aria-hidden="true"
+            draggable={false}
+            onError={bezelArt.onError}
           />
         )}
         <span className="pulsewheel-plate" aria-hidden="true" />

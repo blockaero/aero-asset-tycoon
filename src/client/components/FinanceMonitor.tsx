@@ -42,6 +42,7 @@ import { ATA_GROUP_LABELS, ataGroupOf, ataLabel, ataTitle } from "../../sim/ata.
 import type { GameObservation } from "../../sim/observation.ts";
 import type { AccPulse, Condition } from "../../sim/types.ts";
 import "./FinanceMonitor.css";
+import { useArtSource } from "../art/ArtImage.tsx";
 
 /* ---------------------------------------------------------------- *
  * Contract
@@ -971,6 +972,19 @@ function DataTable({ summary, head, rows }: { summary: string; head: readonly st
  * header and the footer watermark share one shape at two weights.
  */
 function BlockAeroMark({ className }: { className?: string }) {
+  // The drawn mark when it exists, the inline geometry when it does not.
+  const art = useArtSource("brand-mark");
+  if (!art.exhausted) {
+    return (
+      <img
+        className={className}
+        src={art.src}
+        alt="Block Aero"
+        draggable={false}
+        onError={art.onError}
+      />
+    );
+  }
   return (
     <svg className={className} viewBox="0 0 24 24" role="img" aria-label="Block Aero" focusable="false">
       <rect className="fin-mark-frame" x="2.4" y="2.4" width="19.2" height="19.2" rx="1" />

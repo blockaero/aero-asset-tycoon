@@ -3658,6 +3658,10 @@ const TEAM_VARIANTS = ["buyer", "sales"].flatMap((role) =>
   ["a", "b", "c"].map((variant) => `team-${role}-${variant}`),
 );
 
+const SERIES_IDS = [
+  "737-800", "a320-200", "e175", "cfm56-5b", "cfm56-7b", "cf34-8e",
+];
+
 const CONDITION_CODES = ["ne", "ns", "oh", "sv", "rp", "ar", "ber", "scrap"];
 
 /**
@@ -3799,6 +3803,31 @@ const AWAITED = [
     h: 1024,
     fallback: "team-role-portrait",
   })),
+
+  // Asset-class and part-category marks, on the part inspector.
+  ["airframe", "engine", "component", "llp"].map((value) => ({
+    id: `class-${value}`, role: "badge", ratio: "1:1", w: 256, h: 256, fallback: "none",
+  })),
+  ["rotable", "repairable", "expendable", "consumable", "llp", "standard"].map((value) => ({
+    id: `category-${value}`, role: "badge", ratio: "1:1", w: 256, h: 256, fallback: "none",
+  })),
+  // Series marks, keyed by the catalog's series ids, on the part inspector.
+  SERIES_IDS.map((id) => ({
+    id: `series-${id}`, role: "series", ratio: "3:1", w: 768, h: 256, fallback: "none",
+  })),
+  // The drawn icon for the largest sites; smaller nodes keep the stroked glyph.
+  ["hangar", "engine-shop", "component-shop"].map((kind) => ({
+    id: `facility-${kind}-s5`, role: "facility", ratio: "1:1", w: 512, h: 512,
+    fallback: "netmapv2-node-glyph",
+  })),
+  [
+    { id: "brand-mark", role: "brand", ratio: "1:1", w: 512, h: 512, fallback: "inline-svg-mark" },
+    { id: "brand-wordmark", role: "brand", ratio: "3:1", w: 768, h: 256, fallback: "text" },
+    { id: "hq-room-night", role: "hq", ratio: "16:9", w: HQ_W, h: HQ_H, fallback: "hq-room" },
+    { id: "wheel-bezel", role: "wheel", ratio: "1:1", w: 1024, h: 1024, fallback: "css-ring" },
+    { id: "loading-plate", role: "chrome", ratio: "16:9", w: 1280, h: 720, fallback: "none" },
+    { id: "og-share", role: "chrome", ratio: "16:9", w: 1200, h: 630, fallback: "none" },
+  ],
 );
 
 /* ==========================================================================

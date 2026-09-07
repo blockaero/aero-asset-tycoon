@@ -30,6 +30,8 @@ import { TribalKnowledge } from "./components/TribalKnowledge.tsx";
 import { TeamScreen } from "./components/TeamScreen.tsx";
 import { tickDurationMs } from "../sim/balance.ts";
 import { ConditionBadge } from "./art/ConditionBadge.tsx";
+import { AssetClassMark, CategoryMark, SeriesMark } from "./art/ShotArt.tsx";
+import { ataAssetClass } from "../sim/ata.ts";
 
 /**
  * The office is the shell. Everything else is a surface opened from it: three
@@ -969,6 +971,21 @@ function InspectSheet({
       <>
         <p className="eyebrow">PART MASTER / ATA {part.ata}</p>
         <h2>{part.name}</h2>
+        <p className="part-marks">
+          <AssetClassMark assetClass={ataAssetClass(part.ata)} />
+          <CategoryMark category={part.category} />
+          <span className="part-marks-text">
+            {capitalise(part.category)} · {ataAssetClass(part.ata)}
+          </span>
+        </p>
+        <p className="part-series">
+          {part.seriesIds.map((seriesId) => (
+            <span className="part-series-item" key={seriesId}>
+              <SeriesMark seriesId={seriesId} />
+              <span>{seriesId}</span>
+            </span>
+          ))}
+        </p>
         <div className="metric-grid">
           <Metric label="Fictional P/N" value={part.id} />
           <Metric label="Removal model" value={part.removalMode} />
@@ -1090,6 +1107,10 @@ function Condition({ value }: { value: string }) {
       {value}
     </span>
   );
+}
+
+function capitalise(value: string): string {
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
 function Empty({ children }: { children: ReactNode }) {

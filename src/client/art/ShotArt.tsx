@@ -47,3 +47,23 @@ export function KnowledgeArt({ root, ops }: { root?: string; ops?: string }) {
   const id = root ? `knowledge-root-${slug(root)}` : `knowledge-ops-${slug(ops ?? "")}`;
   return <Shot id={id} className="shot-art shot-art--knowledge" />;
 }
+
+/** Asset-class mark: airframe, engine, component or LLP. */
+export function AssetClassMark({ assetClass }: { assetClass: string }) {
+  return <Shot id={`class-${slug(assetClass)}`} className="shot-art shot-art--mark" />;
+}
+
+/** Part-category mark: rotable, repairable, expendable, consumable, LLP, standard. */
+export function CategoryMark({ category }: { category: string }) {
+  return <Shot id={`category-${slug(category)}`} className="shot-art shot-art--mark" />;
+}
+
+/** Aircraft or engine series mark, keyed by the catalog's series id. */
+export function SeriesMark({ seriesId }: { seriesId: string }) {
+  return <Shot id={`series-${slug(seriesId)}`} className="shot-art shot-art--series" />;
+}
+
+/** The Block Aero mark. Callers pass their inline SVG as the fallback. */
+export function BrandMark({ wordmark = false, className = "" }: { wordmark?: boolean; className?: string }) {
+  return <Shot id={wordmark ? "brand-wordmark" : "brand-mark"} className={`shot-art shot-art--brand ${className}`.trim()} />;
+}

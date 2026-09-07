@@ -529,19 +529,21 @@
       "id": "brand-mark",
       "file": "assets/gen/brand-mark.webp",
       "role": "brand",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "inline-svg-mark"
     },
     {
       "id": "brand-wordmark",
       "file": "assets/gen/brand-wordmark.webp",
       "role": "brand",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:1",
+      "w": 768,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "text"
     },
     {
       "id": "card-consignment",
@@ -917,91 +919,101 @@
       "id": "category-consumable",
       "file": "assets/gen/category-consumable.webp",
       "role": "badge",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "category-expendable",
       "file": "assets/gen/category-expendable.webp",
       "role": "badge",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "category-llp",
       "file": "assets/gen/category-llp.webp",
       "role": "badge",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "category-repairable",
       "file": "assets/gen/category-repairable.webp",
       "role": "badge",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "category-rotable",
       "file": "assets/gen/category-rotable.webp",
       "role": "badge",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "category-standard",
       "file": "assets/gen/category-standard.webp",
       "role": "badge",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "class-airframe",
       "file": "assets/gen/class-airframe.webp",
       "role": "badge",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "class-component",
       "file": "assets/gen/class-component.webp",
       "role": "badge",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "class-engine",
       "file": "assets/gen/class-engine.webp",
       "role": "badge",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "class-llp",
       "file": "assets/gen/class-llp.webp",
       "role": "badge",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "condition-ar",
@@ -1165,10 +1177,11 @@
       "id": "facility-component-shop-s5",
       "file": "assets/gen/facility-component-shop-s5.webp",
       "role": "facility",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "netmapv2-node-glyph"
     },
     {
       "id": "facility-conference",
@@ -1201,10 +1214,11 @@
       "id": "facility-engine-shop-s5",
       "file": "assets/gen/facility-engine-shop-s5.webp",
       "role": "facility",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "netmapv2-node-glyph"
     },
     {
       "id": "facility-factory",
@@ -1228,10 +1242,11 @@
       "id": "facility-hangar-s5",
       "file": "assets/gen/facility-hangar-s5.webp",
       "role": "facility",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "netmapv2-node-glyph"
     },
     {
       "id": "facility-lessor",
@@ -1470,10 +1485,11 @@
       "id": "hq-room-night",
       "file": "assets/gen/hq-room-night.webp",
       "role": "hq",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "gemini",
+      "fallback": "hq-room"
     },
     {
       "id": "hq-side-screen",
@@ -1595,19 +1611,21 @@
       "id": "loading-plate",
       "file": "assets/gen/loading-plate.webp",
       "role": "chrome",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "16:9",
+      "w": 1280,
+      "h": 720,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "og-share",
       "file": "assets/gen/og-share.webp",
       "role": "chrome",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "16:9",
+      "w": 1200,
+      "h": 630,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "region-afr",
@@ -1753,55 +1771,61 @@
       "id": "series-737-800",
       "file": "assets/gen/series-737-800.webp",
       "role": "series",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:1",
+      "w": 768,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "series-a320-200",
       "file": "assets/gen/series-a320-200.webp",
       "role": "series",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:1",
+      "w": 768,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "series-cf34-8e",
       "file": "assets/gen/series-cf34-8e.webp",
       "role": "series",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:1",
+      "w": 768,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "series-cfm56-5b",
       "file": "assets/gen/series-cfm56-5b.webp",
       "role": "series",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:1",
+      "w": 768,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "series-cfm56-7b",
       "file": "assets/gen/series-cfm56-7b.webp",
       "role": "series",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:1",
+      "w": 768,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "series-e175",
       "file": "assets/gen/series-e175.webp",
       "role": "series",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:1",
+      "w": 768,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "sky-autumn",
@@ -1957,10 +1981,11 @@
       "id": "wheel-bezel",
       "file": "assets/gen/wheel-bezel.webp",
       "role": "wheel",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 1024,
+      "h": 1024,
+      "generated": "gemini",
+      "fallback": "css-ring"
     },
     {
       "id": "wheel-face",

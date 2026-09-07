@@ -48,6 +48,7 @@ import type { MarketShock, Season } from "../../sim/types.ts";
 import "./IntelMonitor.css";
 import { AtaGlyph } from "../art/AtaGlyph.tsx";
 import { EmptyArt, ShockArt } from "../art/ShotArt.tsx";
+import { useArtSource } from "../art/ArtImage.tsx";
 
 /* ---------------------------------------------------------------- *
  * Contract
@@ -1480,6 +1481,19 @@ function DataTable({
  * datum rule, inheriting currentColor so header and footer share one shape.
  */
 function BlockAeroMark({ className }: { className?: string }) {
+  // The drawn mark when it exists, the inline geometry when it does not.
+  const art = useArtSource("brand-mark");
+  if (!art.exhausted) {
+    return (
+      <img
+        className={className}
+        src={art.src}
+        alt="Block Aero"
+        draggable={false}
+        onError={art.onError}
+      />
+    );
+  }
   return (
     <svg className={className} viewBox="0 0 24 24" role="img" aria-label="Block Aero" focusable="false">
       <rect className="intel-mark-frame" x="2.4" y="2.4" width="19.2" height="19.2" rx="1" />

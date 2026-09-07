@@ -40,6 +40,7 @@ import type {
 import "./NetworkMapV2.css";
 import { AtaGlyph, AtaGroupPlate } from "../art/AtaGlyph.tsx";
 import { EmptyArt } from "../art/ShotArt.tsx";
+import { useArtSource } from "../art/ArtImage.tsx";
 
 /* ---------------------------------------------------------------- *
  * Constants
@@ -531,13 +532,7 @@ export function NetworkMapV2({
             <title>{label}</title>
             {selected ? <circle className="netmapv2-node-halo" r={radius * 2.1} /> : null}
             <circle className="netmapv2-node-body" r={radius} />
-            <g
-              className="netmapv2-node-glyph"
-              transform={`scale(${radius * 0.62})`}
-              aria-hidden="true"
-            >
-              <path d={FACILITY_GLYPH[node.kind]} />
-            </g>
+            <NodeGlyph kind={node.kind} scale={node.scale} radius={radius} />
             {som && node.opportunities > 0 ? (
               <g className="netmapv2-node-badge" transform={`translate(${radius} ${-radius})`}>
                 <circle r={unit * 0.78} />
@@ -1118,4 +1113,36 @@ function formatMoney(value: number): string {
 
 function funnelAria(funnel: { tam: number; sam: number; som: number }): string {
   return `TAM ${funnel.tam}, SAM ${funnel.sam}, SOM ${funnel.som}`;
+}
+
+/**
+ * The mark inside a node.
+ *
+ * The biggest sites carry a drawn icon where one exists (facility-<kind>-s5); every
+ * other node, and any kind with no render, keeps the stroked glyph. The two are the
+ * same size and centre, so a delivered icon replaces its glyph in place.
+ */
+function NodeGlyph({ kind, scale, radius }: { kind: FacilityKind; scale: number; radius: number }) {
+  const art = useArtSource(`facility-${kind.replace(/_/g, "-")}-s5`);
+  const side = radius * 1.9;
+  if (scale >= 5 && !art.exhausted) {
+    return (
+      <image
+        className="netmapv2-node-icon"
+        href={art.src}
+        x={-side / 2}
+        y={-side / 2}
+        width={side}
+        height={side}
+        preserveAspectRatio="xMidYMid meet"
+        aria-hidden="true"
+        onError={art.onError}
+      />
+    );
+  }
+  return (
+    <g className="netmapv2-node-glyph" transform={`scale(${radius * 0.62})`} aria-hidden="true">
+      <path d={FACILITY_GLYPH[kind]} />
+    </g>
+  );
 }

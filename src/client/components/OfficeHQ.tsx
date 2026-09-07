@@ -132,6 +132,11 @@ export function OfficeHQ({
 
         <HqLayer modifier="room" name="hq-room" alt="" />
 
+        {/* The office turns over once per six-minute ambient cycle: the night plate
+            cross-fades in and back out on the same 360s loop as everything else, and
+            holds at zero under reduced motion. */}
+        <HqLayer modifier="room-night" name="hq-room-night" alt="" />
+
         <HqLayer modifier="wall-empty" name="hq-wall-empty" alt="" />
         <HqLayer
           modifier="wall-filled"
