@@ -2,6 +2,7 @@
  * Client camera / location stack. Not part of the sim kernel.
  * See docs/ARCHITECTURE.md — P0 view contract.
  */
+import { regionIdForPoint } from "./chart-geometry.ts";
 import type { Facility, NetworkNode } from "../sim/types.ts";
 
 export type DeskWindow =
@@ -22,56 +23,38 @@ export const WORLD_NAV: Navigation = { layer: "world" };
 export const HQ_NODE_ID = "node-hq";
 
 export type RegionDefinition = {
-  id: string;
+  id: "kanto" | "pacific" | "atlantic";
   label: string;
   code: string;
+  numeral: string;
   blurb: string;
-  /** Closed polygon in the 0–100 map space used by NetworkNode x/y. Visual only. */
-  hull: readonly (readonly [number, number])[];
-  /** Nodes that always belong here regardless of x. */
+  /** Nodes that always belong here regardless of chart x/y. */
   homeNodeIds: readonly string[];
 };
 
 export const REGION_HULLS: readonly RegionDefinition[] = [
   {
-    id: "kanto",
-    label: "Kanto",
-    code: "KANTO / HOME",
-    blurb: "Tokyo HQ and the home aftermarket desk. Facilities here are the first places you can enter.",
-    hull: [
-      [28, 42],
-      [72, 42],
-      [78, 86],
-      [26, 86],
-    ],
-    homeNodeIds: ["node-hq", "node-mro-cheap", "node-mro-mid"],
-  },
-  {
     id: "pacific",
     label: "Pacific",
     code: "PAC / WEST",
+    numeral: "I",
     blurb: "Factory allocation and western operators. Survey the region to find interactable facilities.",
-    hull: [
-      [2, 8],
-      [42, 8],
-      [42, 40],
-      [30, 68],
-      [2, 92],
-    ],
     homeNodeIds: ["node-factory"],
+  },
+  {
+    id: "kanto",
+    label: "Kanto",
+    code: "KANTO / HOME",
+    numeral: "II",
+    blurb: "Tokyo HQ and the home aftermarket desk. Facilities here are the first places you can enter.",
+    homeNodeIds: ["node-hq", "node-mro-cheap", "node-mro-mid"],
   },
   {
     id: "atlantic",
     label: "Atlantic",
     code: "ATL / EAST",
+    numeral: "III",
     blurb: "Fast-response shops and transocean customers. Locked facilities stay fogged until the relationship ladder opens them.",
-    hull: [
-      [72, 8],
-      [98, 8],
-      [98, 92],
-      [68, 92],
-      [68, 40],
-    ],
     homeNodeIds: ["node-mro-fast"],
   },
 ];
@@ -89,11 +72,11 @@ export function regionById(regionId: string): RegionDefinition {
   return REGION_HULLS.find((region) => region.id === regionId) ?? REGION_HULLS[0]!;
 }
 
-export function regionIdForNode(node: Pick<NetworkNode, "id" | "x">): string {
+export function regionIdForNode(node: Pick<NetworkNode, "id" | "x"> & { y?: number }): string {
   for (const region of REGION_HULLS) {
     if (region.homeNodeIds.includes(node.id)) return region.id;
   }
-  return node.x < 45 ? "pacific" : "atlantic";
+  return regionIdForPoint(node.x, node.y ?? 50);
 }
 
 export function nodesInRegion(nodes: readonly NetworkNode[], regionId: string): NetworkNode[] {

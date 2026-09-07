@@ -32,7 +32,7 @@ function node(partial: Partial<NetworkNode> & Pick<NetworkNode, "id" | "x">): Ne
 }
 
 describe("client navigation stack", () => {
-  it("assigns HQ and Kanto shops to the home hull", () => {
+  it("assigns HQ and Kanto shops to the home theater", () => {
     expect(regionIdForNode({ id: HQ_NODE_ID, x: 50 })).toBe("kanto");
     expect(regionIdForNode({ id: "node-mro-cheap", x: 34 })).toBe("kanto");
     expect(regionIdForNode({ id: "node-mro-mid", x: 64 })).toBe("kanto");
@@ -42,11 +42,9 @@ describe("client navigation stack", () => {
     expect(regionIdForNode({ id: "node-airline-2", x: 84 })).toBe("atlantic");
   });
 
-  it("keeps three hard-coded region hulls", () => {
-    expect(REGION_HULLS.map((region) => region.id)).toEqual(["kanto", "pacific", "atlantic"]);
-    for (const region of REGION_HULLS) {
-      expect(region.hull.length).toBeGreaterThanOrEqual(3);
-    }
+  it("keeps three tessellated theaters in west-to-east order", () => {
+    expect(REGION_HULLS.map((region) => region.id)).toEqual(["pacific", "kanto", "atlantic"]);
+    expect(REGION_HULLS.map((region) => region.numeral)).toEqual(["I", "II", "III"]);
   });
 
   it("groups nodes without putting zoom state in the kernel", () => {

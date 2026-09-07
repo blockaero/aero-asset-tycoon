@@ -28,7 +28,7 @@ export const HQ_BOUND_SHOTS = [
 
 /**
  * Requested HQ ids with no gen file. Mixed-man / idle fall back to another plate.
- * No `region-*` gen tiles exist yet — world/region keep the hull chart.
+ * No `region-*` gen tiles exist yet — world/region use the tessellated aviation chart, not a US raster.
  */
 export const MISSING_GEN_SHOTS = new Set<string>([
   "hq-founder-mixed-man",

@@ -20,11 +20,11 @@ import {
 } from "./api.ts";
 import { ArtImage } from "./ArtImage.tsx";
 import { hqBackdropShot } from "./art.ts";
+import { RegionLandingChart, WorldAtlas } from "./Atlas.tsx";
 import { musicOn, startMusic, subscribeMusic, toggleMusic } from "./music.ts";
 import {
   DESK_WINDOWS,
   HQ_NODE_ID,
-  REGION_HULLS,
   WORLD_NAV,
   canGoBack,
   enterPlace,
@@ -586,83 +586,6 @@ function LocationBar({
   );
 }
 
-function WorldAtlas({
-  observation,
-  onEnterRegion,
-}: {
-  observation: GameObservation;
-  onEnterRegion: (regionId: string) => void;
-}) {
-  return (
-    <section className="atlas-scene" aria-label="World map">
-      <div className="map-layout">
-        <div className="network-map" role="img" aria-label="World regions">
-          <ArtImage shot="world-map" className="world-underlay" alt="" />
-          <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-            <defs>
-              <pattern id="smallGrid" width="5" height="5" patternUnits="userSpaceOnUse">
-                <path d="M 5 0 L 0 0 0 5" fill="none" className="grid-line" />
-              </pattern>
-            </defs>
-            <rect width="100" height="100" fill="url(#smallGrid)" opacity="0.3" />
-            {REGION_HULLS.map((region) => {
-              const nodes = nodesInRegion(observation.nodes, region.id);
-              const charted = nodes.some((node) => node.state !== "locked");
-              const centroid = regionCentroid(region.hull);
-              return (
-                <g key={region.id} className={`region-hull ${charted ? "charted" : "fogged"}`}>
-                  <polygon
-                    points={region.hull.map((point) => point.join(",")).join(" ")}
-                    tabIndex={0}
-                    role="button"
-                    aria-label={`Enter ${region.label} region`}
-                    onClick={() => onEnterRegion(region.id)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        onEnterRegion(region.id);
-                      }
-                    }}
-                  />
-                  <text x={centroid[0]} y={centroid[1]} textAnchor="middle">{region.label}</text>
-                </g>
-              );
-            })}
-            {observation.nodes.map((node) => (
-              <circle
-                key={node.id}
-                className={`atlas-dot ${node.state}`}
-                cx={node.x}
-                cy={node.y}
-                r={node.role === "hq" ? 1.6 : 0.9}
-              />
-            ))}
-          </svg>
-        </div>
-        <aside className="node-sheet">
-          <p className="eyebrow">WORLD / REGIONS</p>
-          <h3>Chart a region</h3>
-          <p className="locked-note">Facilities become interactable after you enter a hull. Discovery still follows the relationship ladder.</p>
-          {REGION_HULLS.map((region) => {
-            const nodes = nodesInRegion(observation.nodes, region.id);
-            const visible = nodes.filter((node) => node.state !== "locked").length;
-            return (
-              <article key={region.id} className="region-card">
-                <p className="eyebrow">{region.code}</p>
-                <strong>{region.label}</strong>
-                <p>{visible} of {nodes.length} facilities charted</p>
-                <button type="button" className="primary small" onClick={() => onEnterRegion(region.id)}>
-                  Enter {region.label}
-                </button>
-              </article>
-            );
-          })}
-        </aside>
-      </div>
-    </section>
-  );
-}
-
 function RegionSurvey({
   observation,
   regionId,
@@ -679,10 +602,11 @@ function RegionSurvey({
   return (
     <section className="region-scene" aria-label={`${region.label} region`}>
       <div className="region-copy">
-        <p className="eyebrow">{region.code}</p>
+        <p className="eyebrow">{region.numeral} · {region.code}</p>
         <h2>{region.label}</h2>
         <p>{region.blurb}</p>
       </div>
+      <RegionLandingChart observation={observation} regionId={regionId} onEnterPlace={onEnterPlace} />
       <div className="facility-grid">
         {nodes.map((node) => {
           const facility = facilityForNode(observation.facilities, node);
@@ -824,14 +748,6 @@ function renderDeskWindow(
   }
   if (desk === "kpis") return <KpiIndex />;
   return <PbhDesk observation={ctx.observation} onCommand={ctx.onCommand} />;
-}
-
-function regionCentroid(hull: readonly (readonly [number, number])[]): [number, number] {
-  const sum = hull.reduce(
-    (acc, point) => [acc[0] + point[0], acc[1] + point[1]] as [number, number],
-    [0, 0] as [number, number],
-  );
-  return [sum[0] / hull.length, sum[1] / hull.length];
 }
 
 function OpportunityRow({

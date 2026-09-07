@@ -18,7 +18,7 @@ Missing gen ids (loader fallbacks, not regenerated):
 
 - `hq-founder-mixed-man` → `hq-founder-mixed-woman`
 - `hq-founder-idle` → `hq-room`
-- `region-*` tiles — **none yet**. World/region keep the existing hull chart. World uses a legacy underlay (`public/assets/world-map.webp`, then solarpunk).
+- `region-*` tiles — **none yet**. World/region use the tessellated aviation chart (cream paper, shared green meridians, rectangular insets). Do not treat the legacy US map rasters as the game world.
 
 ## Tasks to observe
 

@@ -10,7 +10,7 @@ Investigation of the playable client as of `cfa11c0` (solarpunk overhaul) on `ma
 
 **Hypothesis (verified):** map/navigation is a flat panel/tab switcher, not a zoom stack. HQ and office windows are sibling tabs bolted onto the shell, not first-class view layers.
 
-**P0 spike status:** the client camera contract in §5 / §6 is now implemented in `src/client/navigation.ts` (campaign starts on **world**; Kanto / Pacific / Atlantic hulls; HQ is a **place**; desks are **windows** on a place). Kernel `RegionId` is still `"GLOBAL"` — that remains P1.
+**P0 spike status:** the client camera contract in §5 / §6 is now implemented in `src/client/navigation.ts` (campaign starts on **world**; Pacific / Kanto / Atlantic tessellated theaters with shared meridians; HQ is a **place**; desks are **windows** on a place). Kernel `RegionId` is still `"GLOBAL"` — that remains P1.
 
 ---
 
@@ -141,7 +141,7 @@ Player actions are `GameCommand` values (`purchase_listing`, `send_to_shop`, …
 
 Tokyo HQ binds the gen HQ plates that exist (`hq-room`, wall, monitors, seven founders). Missing: `hq-founder-mixed-man`, `hq-founder-idle`, and all `region-*` tiles. Chrome gen plates (cards, categories, team portraits, facility s5 icons) remain unbound.
 
-World/region still draw client hulls over the legacy map underlay. Facility interiors are still not a scene graph.
+World/region draw a tessellated aviation chart (shared emerald meridians + airmail insets) rather than overlapping hull blobs or a US raster. Facility interiors are still not a scene graph.
 
 ---
 

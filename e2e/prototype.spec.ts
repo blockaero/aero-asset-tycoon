@@ -7,7 +7,8 @@ test("founder zooms world → region → HQ, opens a market window, and walks ba
 
   await expect(page.getByRole("button", { name: "Enter Kanto", exact: true })).toBeVisible();
   await expect(page.getByRole("navigation", { name: "Location" })).toContainText("World");
-  await expect(page.locator(".world-underlay")).toHaveAttribute("src", /\/assets\/world-map\.webp/);
+  await expect(page.locator(".airmail-poster")).toBeVisible();
+  await expect(page.getByLabel("World regions")).toBeVisible();
   await page.screenshot({ path: "test-results/world-map.png", fullPage: true });
 
   await page.getByRole("button", { name: "Enter Kanto", exact: true }).click();

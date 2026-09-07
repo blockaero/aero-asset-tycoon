@@ -799,48 +799,306 @@ h4 {
 
 .atlas-scene,
 .region-scene {
+  --chart-paper: #f3ead2;
+  --chart-water: #c5d2d8;
+  --chart-land: #e2d6bc;
+  --chart-border: #2f6b4f;
+  --chart-route: #c43c32;
+  --chart-ink: #2a2a28;
+  --font-chart: Palatino, "Palatino Linotype", "Liberation Serif", Georgia, "Times New Roman", serif;
   min-height: calc(100vh - 162px);
 }
 
-.region-hull polygon {
-  fill: rgba(30, 90, 68, 0.16);
-  stroke: var(--cyan-deep);
-  stroke-width: 0.6;
+.atlas-layout {
+  align-items: start;
+}
+
+.airmail-poster {
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      #9e2b32 0 10px,
+      #f4efe4 10px 18px,
+      #2c4a8c 18px 28px,
+      #f4efe4 28px 36px
+    );
+}
+
+.airmail-poster > * {
+  background: var(--chart-paper);
+}
+
+.region-poster {
+  margin-bottom: 18px;
+}
+
+.chart-masthead {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 16px;
+  border-bottom: 1px solid rgba(42, 42, 40, 0.25);
+  padding: 10px 14px 8px;
+}
+
+.chart-masthead h2 {
+  grid-column: 1;
+  margin: 0;
+  color: var(--chart-ink);
+  font-family: var(--font-chart);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.chart-masthead .eyebrow {
+  color: var(--chart-border);
+}
+
+.chart-masthead span {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  color: #6a6256;
+  font-family: var(--font-chart);
+  font-size: 11px;
+  font-style: italic;
+}
+
+.world-chart,
+.region-chart {
+  width: 100%;
+  aspect-ratio: 1;
+  max-height: min(64vh, 640px);
+  height: auto;
+  background: var(--chart-paper);
+}
+
+.region-chart {
+  max-height: min(48vh, 420px);
+}
+
+.chart-water {
+  fill: var(--chart-water, #c5d2d8);
+}
+
+.chart-land {
+  fill: var(--chart-land, #e2d6bc);
+  stroke: #8a8170;
+  stroke-width: 0.25;
+}
+
+.chart-graticule line {
+  stroke: rgba(80, 72, 58, 0.16);
+  stroke-width: 0.18;
+  pointer-events: none;
+}
+
+.region-cell path {
+  stroke: none;
   cursor: pointer;
 }
 
-.region-hull.fogged polygon {
-  fill: rgba(45, 58, 46, 0.08);
-  stroke-dasharray: 1.5 1;
+.region-cell.pacific path,
+.region-cell-fill.pacific {
+  fill: rgba(47, 107, 79, 0.11);
 }
 
-.region-hull polygon:hover,
-.region-hull polygon:focus {
-  fill: rgba(61, 168, 127, 0.28);
+.region-cell.kanto path,
+.region-cell-fill.kanto {
+  fill: rgba(196, 154, 72, 0.1);
+}
+
+.region-cell.atlantic path,
+.region-cell-fill.atlantic {
+  fill: rgba(62, 92, 122, 0.1);
+}
+
+.region-cell.fogged path,
+.region-cell-fill.dim {
+  fill: rgba(47, 107, 79, 0.04);
+}
+
+.region-cell-fill.active {
+  fill: rgba(47, 107, 79, 0.16);
+}
+
+.region-cell path:hover,
+.region-cell path:focus {
+  fill: rgba(47, 107, 79, 0.22);
   outline: none;
 }
 
-.region-hull text {
-  fill: var(--ink);
-  font-family: var(--font-data);
-  font-size: 3.2px;
+.region-cell-fill {
+  stroke: none;
+  pointer-events: none;
+}
+
+.region-border-halo {
+  fill: none;
+  stroke: var(--chart-border, #2f6b4f);
+  stroke-width: 2.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+.region-border {
+  fill: none;
+  stroke: var(--chart-border, #2f6b4f);
+  stroke-width: 1.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.chart-frame {
+  fill: none;
+  stroke: var(--chart-border, #2f6b4f);
+  stroke-width: 0.7;
+  pointer-events: none;
+}
+
+.region-numeral {
+  fill: var(--chart-border, #2f6b4f);
+  font-family: var(--font-chart), Palatino, Georgia, serif;
+  font-size: 7px;
   font-weight: 700;
   pointer-events: none;
-  text-shadow: 0 0 3px rgba(245, 249, 240, 0.95);
 }
 
-.atlas-dot {
-  fill: var(--cyan-deep);
+.region-name {
+  fill: var(--chart-ink, #2a2a28);
+  font-family: var(--font-chart), Palatino, Georgia, serif;
+  font-size: 2.6px;
+  font-weight: 600;
+  pointer-events: none;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.airmail-route {
+  stroke: var(--chart-route, #c43c32);
+  stroke-width: 0.42;
+  opacity: 0.85;
   pointer-events: none;
 }
 
-.atlas-dot.locked {
-  fill: var(--muted);
-  opacity: 0.35;
+.aerodrome {
+  fill: #2f6b4f;
+  stroke: #f3ead2;
+  stroke-width: 0.35;
+  pointer-events: none;
 }
 
-.atlas-dot.partner {
-  fill: var(--green);
+.aerodrome.locked {
+  fill: none;
+  stroke: #2f6b4f;
+  stroke-width: 0.45;
+  opacity: 0.55;
+}
+
+.aerodrome.hq {
+  stroke-width: 0.5;
+}
+
+.aerodrome-tick {
+  stroke: #2f6b4f;
+  stroke-width: 0.35;
+  pointer-events: none;
+}
+
+.chart-insets {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  padding: 8px;
+  background: var(--chart-paper);
+}
+
+.chart-inset {
+  display: grid;
+  gap: 4px;
+  border: 1px solid #2f6b4f;
+  background: #efe6ce;
+  padding: 6px;
+  text-align: left;
+}
+
+.chart-inset svg {
+  width: 100%;
+  height: 110px;
+  background: var(--chart-water, #c5d2d8);
+}
+
+.inset-label {
+  color: #2f6b4f;
+  font-family: var(--font-chart), Palatino, Georgia, serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.chart-legend .aerodrome-key {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 10px;
+}
+
+.aerodrome-key li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.key-dot,
+.key-route {
+  width: 10px;
+  height: 10px;
+  border: 1px solid #2f6b4f;
+  border-radius: 50%;
+  background: #2f6b4f;
+}
+
+.key-dot.locked {
+  background: transparent;
+}
+
+.key-route {
+  height: 2px;
+  border: 0;
+  border-radius: 0;
+  background: #c43c32;
+}
+
+.landing-pin {
+  cursor: pointer;
+}
+
+.landing-pin .pin-hit {
+  fill: transparent;
+}
+
+.landing-pin .pin-label {
+  fill: #2a2a28;
+  font-family: var(--font-chart), Palatino, Georgia, serif;
+  font-size: 2.4px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.landing-pin[aria-disabled="true"] {
+  cursor: default;
 }
 
 .region-card {
