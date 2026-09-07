@@ -20,6 +20,7 @@ import {
 } from "./api.ts";
 import { musicOn, startMusic, subscribeMusic, toggleMusic } from "./music.ts";
 
+/** Flat desk-tab enum — not a zoom stack. See docs/ARCHITECTURE.md. */
 type View = "hq" | "map" | "market" | "strategy" | "sales" | "assets" | "kpis" | "pbh";
 type InspectTarget =
   | { kind: "asset"; id: number }
