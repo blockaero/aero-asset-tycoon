@@ -9,7 +9,7 @@ test("founder names a company, works the desk, and reaches every surface", async
   await page.getByRole("button", { name: /Roll a founder name and portrait/ }).click();
   await page.screenshot({ path: "test-results/new-game.png", fullPage: true });
 
-  await page.getByRole("button", { name: /Open the desk/ }).click();
+  await page.getByRole("button", { name: /Set up shop/ }).click();
 
   // --- Office HQ: the three monitors, the wall, and the side screen ----------
   const strip = page.getByRole("button", { name: "Fleet Manager", exact: false });

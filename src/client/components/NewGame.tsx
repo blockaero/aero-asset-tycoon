@@ -152,7 +152,7 @@ export function NewGame({ busy, error, saves, onStart, onLoad }: NewGameProps): 
           <h1 className="newgame-wordmark">Aero Asset Tycoon</h1>
           <p className="newgame-tagline">
             An aviation aftermarket book, built one asset at a time. Name the house, name
-            yourself, and open the desk.
+            yourself, and set up shop.
           </p>
         </header>
 
@@ -250,7 +250,7 @@ export function NewGame({ busy, error, saves, onStart, onLoad }: NewGameProps): 
                 <span className="newgame-step-title">Begin</span>
               </div>
               <button className="newgame-begin" type="submit" disabled={!canBegin}>
-                {busy ? "Establishing operations…" : "Open the desk"}
+                {busy ? "Setting up shop…" : "Set up shop"}
               </button>
               {/* Live region carries only what changed and matters: the blocking
                   problem, or whatever the shell reported. The settings echo below
