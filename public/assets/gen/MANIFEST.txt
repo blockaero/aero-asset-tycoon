@@ -1,0 +1,60 @@
+Aero Asset Tycoon Tier-3 art MANIFEST
+Source: ART-MANIFEST.md (non-founder) Tier 3 — 48 shots
+Generated: 2026-09-07 (Asia/Bangkok)
+Format: webp quality 82
+Method: PIL industrial aerospace graphic art (GenerateImage unavailable in executor)
+Palette: graphite / aluminium / warm white / accent blue
+
+id                                           w     h      bytes status
+----------------------------------------------------------------------
+category-llp                               128   128       6060 OK
+category-rotable                           128   128       6178 OK
+category-repairable                        128   128       5966 OK
+category-expendable                        128   128       5918 OK
+category-consumable                        128   128       6038 OK
+category-standard                          128   128       5914 OK
+class-airframe                             128   128       5794 OK
+class-engine                               128   128       7310 OK
+class-component                            128   128       5524 OK
+class-llp                                  128   128       5710 OK
+series-a320-200                           1280   720       5802 OK
+series-737-800                            1280   720       5946 OK
+series-e175                               1280   720       5778 OK
+series-cfm56-5b                           1280   720       7884 OK
+series-cfm56-7b                           1280   720       8918 OK
+series-cf34-8e                            1280   720       8324 OK
+knowledge-root-airframe-systems            256   256       5698 OK
+knowledge-root-propulsion                  256   256       8454 OK
+knowledge-root-avionics                    256   256       5354 OK
+knowledge-root-utilities                   256   256       5718 OK
+knowledge-root-structures                  256   256      11294 OK
+knowledge-ops-sales                        256   256       4952 OK
+knowledge-ops-operations                   256   256       7264 OK
+knowledge-ops-ai                           256   256       5902 OK
+card-shock-fuel-spike                     1500  1000      12524 OK
+card-shock-type-grounding                 1500  1000      12058 OK
+card-shock-lessor-default                 1500  1000       9832 OK
+card-shock-variant-launch                 1500  1000      11238 OK
+card-shock-supply-squeeze                 1500  1000      10762 OK
+card-shock-traffic-boom                   1500  1000      21122 OK
+card-shock-credit-crunch                  1500  1000      10048 OK
+card-milestone-first-sale                 1500  1000      10796 OK
+card-milestone-first-hire                 1500  1000       9362 OK
+card-milestone-first-cert                 1500  1000       9504 OK
+card-milestone-first-region               1500  1000      14948 OK
+card-milestone-solvent-year               1500  1000      10650 OK
+card-milestone-insolvent                  1500  1000       5946 OK
+empty-inventory                           1200   800       6654 OK
+empty-opportunities                       1200   800       8540 OK
+empty-team                                1200   800       6204 OK
+empty-shocks                              1200   800       7180 OK
+empty-knowledge                           1200   800       6876 OK
+empty-saves                               1200   800       6558 OK
+brand-mark                                 512   512      13880 OK
+brand-wordmark                            1024   256       9066 OK
+loading-plate                             1920  1080      18412 OK
+og-share                                  1200   630      12356 OK
+wheel-bezel                               1024  1024      30120 OK
+
+Completed: 48/48
+Failed: 0
