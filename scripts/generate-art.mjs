@@ -3642,6 +3642,11 @@ const SHOTS = [
  * avatar until these arrive. OfficeHQ prefers hq-founder-<who> and falls back to
  * hq-founder-idle, so a render is picked up with no code change.
  */
+const REGION_CODES = [
+  "na", "carib", "latam", "euw", "eue", "cis", "mea",
+  "afr", "sasia", "sea", "gchina", "neasia", "oce", "casia",
+];
+
 const AWAITED = [
   "white-woman",
   "white-man",
@@ -3658,7 +3663,18 @@ const AWAITED = [
   w: HQ_W,
   h: HQ_H,
   fallback: "hq-founder-idle",
-}));
+})).concat(
+  // Region relief tiles. The map draws a plain plate underneath, so a region with no
+  // tile yet degrades to exactly what it looked like before.
+  REGION_CODES.map((code) => ({
+    id: `region-${code}`,
+    role: "region",
+    ratio: "4:3",
+    w: 1600,
+    h: 1200,
+    fallback: "netmapv2-region-plate",
+  })),
+);
 
 /* ==========================================================================
    15. Write everything, then the manifest

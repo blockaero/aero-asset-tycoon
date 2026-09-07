@@ -424,6 +424,146 @@
       "generated": "procedural"
     },
     {
+      "id": "region-afr",
+      "file": "assets/gen/region-afr.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-carib",
+      "file": "assets/gen/region-carib.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-casia",
+      "file": "assets/gen/region-casia.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-cis",
+      "file": "assets/gen/region-cis.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-eue",
+      "file": "assets/gen/region-eue.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-euw",
+      "file": "assets/gen/region-euw.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-gchina",
+      "file": "assets/gen/region-gchina.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-latam",
+      "file": "assets/gen/region-latam.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-mea",
+      "file": "assets/gen/region-mea.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-na",
+      "file": "assets/gen/region-na.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-neasia",
+      "file": "assets/gen/region-neasia.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-oce",
+      "file": "assets/gen/region-oce.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-sasia",
+      "file": "assets/gen/region-sasia.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-sea",
+      "file": "assets/gen/region-sea.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
       "id": "sky-autumn",
       "file": "assets/gen/sky-autumn.svg",
       "role": "sky",

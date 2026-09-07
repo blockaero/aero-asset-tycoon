@@ -179,6 +179,7 @@ export function NetworkMapV2({
 }: NetworkMapV2Props): ReactNode {
   const rawId = useId();
   const hazeId = `netmapv2-haze-${rawId.replace(/[^a-zA-Z0-9]/g, "")}`;
+  const reliefClipId = `netmapv2-relief-${rawId.replace(/[^a-zA-Z0-9]/g, "")}`;
 
   const [view, setView] = useState<Viewport>({ cx: 50, cy: 50, k: 1 });
   const [size, setSize] = useState<Size>({ w: 960, h: 620 });
@@ -419,6 +420,16 @@ export function NetworkMapV2({
   }, [nudgeZoom]);
 
   /* --- memoised SVG children ------------------------------------------------ */
+  const reliefMarkup = useMemo(
+    () =>
+      observation.regions.map((region) => (
+        <clipPath key={region.code} id={`${reliefClipId}-${region.code}`}>
+          <rect x={region.x} y={region.y} width={region.width} height={region.height} rx={0.8} />
+        </clipPath>
+      )),
+    [observation.regions, reliefClipId],
+  );
+
   const regionMarkup = useMemo(
     () =>
       observation.regions.map((region) => {
@@ -433,6 +444,18 @@ export function NetworkMapV2({
               width={region.width}
               height={region.height}
               rx={0.8}
+            />
+            {/* Relief tile. The plate above stays underneath as the fallback, so a
+                region whose art has not been rendered yet looks as it did before. */}
+            <image
+              className="netmapv2-region-relief"
+              href={`${import.meta.env.BASE_URL}assets/gen/region-${region.code.toLowerCase()}.webp`}
+              x={region.x}
+              y={region.y}
+              width={region.width}
+              height={region.height}
+              preserveAspectRatio="xMidYMid slice"
+              clipPath={`url(#${reliefClipId}-${region.code})`}
             />
             {count > 0 ? (
               <rect
@@ -921,6 +944,7 @@ export function NetworkMapV2({
               <pattern id={hazeId} width="2.6" height="2.6" patternUnits="userSpaceOnUse">
                 <circle className="netmapv2-haze-dot" cx="1.3" cy="1.3" r="0.42" />
               </pattern>
+              {reliefMarkup}
             </defs>
             <rect className="netmapv2-void" x="-100" y="-100" width="300" height="300" />
             <rect className="netmapv2-world-plate" x="0" y="0" width="100" height="100" />

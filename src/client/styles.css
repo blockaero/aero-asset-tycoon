@@ -42,6 +42,10 @@
   --aluminium: linear-gradient(148deg, #d4d9de 0%, #eef1f3 26%, #c3cad1 52%, #e7eaed 74%, #cbd2d8 100%);
   --aluminium-flat: #d2d8dd;
 
+  /* The pulse wheel is fixed to the bottom-right of the viewport. Any surface whose
+     content can reach that corner reserves this much room so nothing hides under it. */
+  --wheel-safe: 190px;
+
   /* Seasonal hue, driven from the sim calendar by the Pulse wheel. */
   --season-hue: 210;
   --daylight: 0.5;
@@ -512,7 +516,7 @@ h4 {
 .workspace {
   padding: 20px;
   /* Clear the pulse wheel, which is fixed to the bottom-right of the viewport. */
-  padding-bottom: 200px;
+  padding-bottom: var(--wheel-safe);
 }
 
 .paper-sheet {

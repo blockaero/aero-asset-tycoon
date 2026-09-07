@@ -402,6 +402,13 @@
 
 /* --- regions ------------------------------------------------------------- */
 
+/* Relief tile. Held back a little so the fog haze, the node markers and the labels
+   drawn over it stay the things the eye goes to. */
+.netmapv2-region-relief {
+  opacity: 0.72;
+  pointer-events: none;
+}
+
 .netmapv2-region-plate {
   fill: var(--graphite-700);
   fill-opacity: 0.55;
@@ -751,6 +758,9 @@
   overflow-y: auto;
   min-height: 0;
   padding-right: 4px;
+  /* The panel runs to the bottom-right corner, where the pulse wheel sits. Without
+     this the last card can never be scrolled out from under it. */
+  padding-bottom: var(--wheel-safe);
 }
 
 .netmapv2-card {
