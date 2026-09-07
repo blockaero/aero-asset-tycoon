@@ -18,9 +18,30 @@ import {
   setCampaignPace,
   subscribeCampaign,
 } from "./api.ts";
+import { ArtImage } from "./ArtImage.tsx";
+import { hqBackdropShot } from "./art.ts";
+import { RegionLandingChart, WorldAtlas } from "./Atlas.tsx";
 import { musicOn, startMusic, subscribeMusic, toggleMusic } from "./music.ts";
+import {
+  DESK_WINDOWS,
+  HQ_NODE_ID,
+  WORLD_NAV,
+  canGoBack,
+  enterPlace,
+  enterRegion,
+  facilityForNode,
+  navigationCrumbs,
+  nodesInRegion,
+  openWindow,
+  openWindowOnPlace,
+  popNavigation,
+  regionById,
+  regionIdForNode,
+  windowLabel,
+  type DeskWindow,
+  type Navigation,
+} from "./navigation.ts";
 
-type View = "hq" | "map" | "market" | "strategy" | "sales" | "assets" | "kpis" | "pbh";
 type InspectTarget =
   | { kind: "asset"; id: number }
   | { kind: "part"; id: string }
@@ -29,7 +50,7 @@ type InspectTarget =
 
 export function App() {
   const [snapshot, setSnapshot] = useState<LiveSnapshot | null>(null);
-  const [view, setView] = useState<View>("hq");
+  const [nav, setNav] = useState<Navigation>(WORLD_NAV);
   const [inspect, setInspect] = useState<InspectTarget>(null);
   const [marketFocus, setMarketFocus] = useState<number | null>(null);
   const [notice, setNotice] = useState("The desk is live. The market is listening.");
@@ -106,9 +127,9 @@ export function App() {
           try {
             const created = await createCampaign(input);
             setSnapshot(created);
-            setView("hq");
+            setNav(WORLD_NAV);
             setError("");
-            setNotice("Opening inventory is positioned. The first demand pulse is approaching.");
+            setNotice("The world is open. Enter Kanto to reach Tokyo HQ.");
           } catch (cause) {
             setError(messageOf(cause));
           } finally {
@@ -121,9 +142,9 @@ export function App() {
           try {
             const loaded = await loadCampaign(saveId, pace);
             setSnapshot(loaded);
-            setView("hq");
+            setNav(WORLD_NAV);
             setError("");
-            setNotice(`Loaded ${saveId} at week ${loaded.observation.tick}.`);
+            setNotice(`Loaded ${saveId} at week ${loaded.observation.tick}. The world map is the entry.`);
           } catch (cause) {
             setError(messageOf(cause));
           } finally {
@@ -137,6 +158,35 @@ export function App() {
   const observation = snapshot.observation;
   const lastPulse = observation.pulses.at(-1);
   const finished = snapshot.status === "finished";
+  const placeNode =
+    nav.layer === "place"
+      ? observation.nodes.find((node) => node.id === nav.nodeId)
+      : undefined;
+  const placeLabel = placeNode
+    ? placeNode.role === "hq"
+      ? "Tokyo HQ"
+      : facilityForNode(observation.facilities, placeNode)?.name ?? placeNode.label
+    : "Place";
+
+  function goToWindow(desk: DeskWindow) {
+    if (desk === "market") setMarketFocus(null);
+    setNav((current) => openWindow(current, desk));
+  }
+
+  function openMarketAt(nodeId: string, listingId: number | null) {
+    setMarketFocus(listingId);
+    const node = observation.nodes.find((candidate) => candidate.id === nodeId);
+    const regionId = node ? regionIdForNode(node) : nav.layer === "world" ? "kanto" : nav.regionId;
+    setNav(openWindowOnPlace(regionId, nodeId, "market"));
+  }
+
+  const deskWindow = renderDeskWindow(nav.layer === "place" ? nav.window : undefined, {
+    observation,
+    marketFocus,
+    onCommand: command,
+    onInspectAsset: (id) => setInspect({ kind: "asset", id }),
+    onInspectPart: (id) => setInspect({ kind: "part", id }),
+  });
 
   return (
     <div className="app-shell">
@@ -160,25 +210,13 @@ export function App() {
         }}
       />
 
-      <nav className="view-tabs" aria-label="Headquarters">
-        {([
-          ["hq", "Operations Desk"],
-          ["map", "Network Map"],
-          ["market", "Marketplace"],
-          ["strategy", "Buying Strategy"],
-          ["sales", "Sales Office"],
-          ["assets", "Asset Control"],
-          ["kpis", "KPI Index"],
-          ["pbh", "PBH"],
-        ] as [View, string][]).map(([id, label]) => (
-          <button key={id} className={view === id ? "active" : ""} onClick={() => {
-            if (id === "market") setMarketFocus(null);
-            setView(id);
-          }}>
-            {label}
-          </button>
-        ))}
-      </nav>
+      <LocationBar
+        nav={nav}
+        placeLabel={placeLabel}
+        onNavigate={setNav}
+        onBack={() => setNav((current) => popNavigation(current))}
+        onOpenWindow={goToWindow}
+      />
 
       {(error || notice) && (
         <div className={`notice ${error ? "error" : ""}`} role="status">
@@ -187,57 +225,56 @@ export function App() {
       )}
 
       <main className="workspace">
-        {view === "hq" && (
-          <Headquarters
+        {nav.layer === "world" && (
+          <WorldAtlas
             observation={observation}
-            onOpen={setView}
-            lastPulse={lastPulse}
+            onEnterRegion={(regionId) => setNav(enterRegion(regionId))}
           />
         )}
-        {view === "map" && (
-          <NetworkMap
+        {nav.layer === "region" && (
+          <RegionSurvey
             observation={observation}
-            onHq={() => setView("hq")}
+            regionId={nav.regionId}
+            onEnterPlace={(nodeId) => setNav(enterPlace(nav.regionId, nodeId))}
             onInspect={(id) => setInspect({ kind: "node", id })}
-            onOpenListing={(listingId) => {
-              setMarketFocus(listingId);
-              setView("market");
-            }}
-            onCommand={command}
           />
         )}
-        {view === "market" && (
-          <Marketplace
-            observation={observation}
-            focusListingId={marketFocus}
-            onBuy={(listing) =>
-              command(
-                {
-                  type: "purchase_listing",
-                  listingId: listing.id,
-                  destinationFacilityId: observation.firm.warehouseFacilityId,
-                },
-                `${listing.kind === "package" ? "Package" : "Asset"} purchase`,
-              )
-            }
-            onInspectPart={(id) => setInspect({ kind: "part", id })}
-          />
+        {nav.layer === "place" && (
+          <div className="place-layer">
+            {nav.nodeId === HQ_NODE_ID ? (
+              <Headquarters
+                observation={observation}
+                lastPulse={lastPulse}
+                onOpenWindow={goToWindow}
+                onLeavePlace={() => setNav(enterRegion(nav.regionId))}
+              />
+            ) : (
+              <FacilityPlace
+                observation={observation}
+                nodeId={nav.nodeId}
+                regionId={nav.regionId}
+                onInspect={(id) => setInspect({ kind: "node", id })}
+                onOpenMarket={(listingId) => openMarketAt(nav.nodeId, listingId)}
+                onCommand={command}
+              />
+            )}
+            {nav.window && deskWindow && (
+              <div className="place-window" role="dialog" aria-label={`${windowLabel(nav.window)} window`}>
+                <div className="place-window-chrome">
+                  <p className="eyebrow">WINDOW ON {placeLabel.toUpperCase()}</p>
+                  <button
+                    type="button"
+                    onClick={() => setNav((current) => popNavigation(current))}
+                    aria-label="Close window"
+                  >
+                    Close window
+                  </button>
+                </div>
+                {deskWindow}
+              </div>
+            )}
+          </div>
         )}
-        {view === "strategy" && (
-          <StrategySheet observation={observation} onCommand={command} />
-        )}
-        {view === "sales" && (
-          <SalesOffice observation={observation} onCommand={command} />
-        )}
-        {view === "assets" && (
-          <AssetControl
-            observation={observation}
-            onCommand={command}
-            onInspect={(id) => setInspect({ kind: "asset", id })}
-          />
-        )}
-        {view === "kpis" && <KpiIndex />}
-        {view === "pbh" && <PbhDesk observation={observation} onCommand={command} />}
       </main>
 
       {inspect && (
@@ -315,7 +352,7 @@ function CampaignStart({
           </p>
           {error && <p className="form-error">{error}</p>}
           <button className="primary" type="submit" disabled={busy}>
-            {busy ? "Establishing operations…" : "Enter Operations Desk"}
+            {busy ? "Charting the world…" : "Enter the world"}
           </button>
           {saves.length > 0 && (
             <div className="load-saves">
@@ -404,7 +441,7 @@ function MusicToggle() {
       type="button"
       onClick={toggleMusic}
       aria-pressed={on}
-      title="Hangar theme — warm industrial loop"
+      title="Soundtrack shuffle — solarpunk & neoclassical hangar loops"
     >
       {on ? "♪ Music" : "♪ Muted"}
     </button>
@@ -431,22 +468,26 @@ function PulseTrail({ pulses }: { pulses: GameObservation["pulses"] }) {
 
 function Headquarters({
   observation,
-  onOpen,
+  onOpenWindow,
+  onLeavePlace,
   lastPulse,
 }: {
   observation: GameObservation;
-  onOpen: (view: View) => void;
+  onOpenWindow: (desk: DeskWindow) => void;
+  onLeavePlace: () => void;
   lastPulse: GameObservation["pulses"][number] | undefined;
 }) {
   const available = observation.inventory.filter((asset) => asset.facilityId === observation.firm.warehouseFacilityId).length;
   const inTransit = observation.inventory.filter((asset) => asset.transferId !== null).length;
   const reachableNodes = observation.nodes.filter((node) => node.state !== "locked").length;
   return (
-    <section className="hq-scene" aria-label="Operations desk overlooking a global aviation network">
-      <div className="hq-backdrop" aria-hidden="true" />
+    <section className="hq-scene" aria-label="Tokyo HQ operations desk" data-hq-shot={hqBackdropShot()}>
+      <div className="hq-backdrop" aria-hidden="true">
+        <ArtImage shot={hqBackdropShot()} className="hq-plate" alt="" />
+      </div>
       <div className="hq-overlay" aria-hidden="true" />
       <div className="office-copy">
-        <p className="eyebrow">OPERATIONS DESK / GLOBAL NETWORK</p>
+        <p className="eyebrow">PLACE / TOKYO HQ / KANTO</p>
         <h2>The book is moving.</h2>
         <p>
           {lastPulse
@@ -472,128 +513,241 @@ function Headquarters({
         <span className={observation.nodes.some((node) => node.state === "partner" && node.role !== "hq") ? "complete" : ""}>4 · Establish a partner</span>
         <span className={observation.pbhContracts.some((contract) => contract.status === "active" || contract.status === "completed") ? "complete" : ""}>5 · Operate PBH</span>
       </div>
-      <button className="hotspot monitors" onClick={() => onOpen("market")}>
+      <button className="hotspot monitors" onClick={() => onOpenWindow("market")}>
         <span>Connected monitors</span>
         <strong>Open Marketplace</strong>
       </button>
-      <button className="hotspot phone" onClick={() => onOpen("sales")}>
+      <button className="hotspot phone" onClick={() => onOpenWindow("sales")}>
         <span>Buyer line</span>
         <strong>Sales Office</strong>
       </button>
-      <button className="hotspot manifest" onClick={() => onOpen("assets")}>
+      <button className="hotspot manifest" onClick={() => onOpenWindow("assets")}>
         <span>Asset manifest</span>
         <strong>{available} in warehouse</strong>
       </button>
-      <button className="hotspot strategy-board" onClick={() => onOpen("strategy")}>
+      <button className="hotspot strategy-board" onClick={() => onOpenWindow("strategy")}>
         <span>Acquisition policy</span>
         <strong>Buying Strategy</strong>
       </button>
-      <button className="hotspot map-window" onClick={() => onOpen("map")}>
-        <span>Network reach</span>
-        <strong>{reachableNodes} reachable nodes</strong>
+      <button className="hotspot map-window" onClick={onLeavePlace}>
+        <span>Leave HQ</span>
+        <strong>Return to Kanto · {reachableNodes} charted</strong>
       </button>
     </section>
   );
 }
 
-function NetworkMap({
+function LocationBar({
+  nav,
+  placeLabel,
+  onNavigate,
+  onBack,
+  onOpenWindow,
+}: {
+  nav: Navigation;
+  placeLabel: string;
+  onNavigate: (next: Navigation) => void;
+  onBack: () => void;
+  onOpenWindow: (desk: DeskWindow) => void;
+}) {
+  const crumbs = navigationCrumbs(nav, placeLabel);
+  return (
+    <nav className="nav-stack" aria-label="Location">
+      <ol className="nav-crumbs">
+        {crumbs.map((crumb) => (
+          <li key={`${crumb.label}-${crumb.current ? "here" : "up"}`}>
+            {crumb.current ? (
+              <span aria-current="page">{crumb.label}</span>
+            ) : (
+              <button type="button" onClick={() => onNavigate(crumb.target)}>{crumb.label}</button>
+            )}
+          </li>
+        ))}
+      </ol>
+      <button type="button" className="nav-back" disabled={!canGoBack(nav)} onClick={onBack}>
+        Back
+      </button>
+      <details className="desk-menu">
+        <summary>Desks</summary>
+        <div className="desk-menu-list">
+          {DESK_WINDOWS.map((desk) => (
+            <button
+              key={desk.id}
+              type="button"
+              className={nav.layer === "place" && nav.window === desk.id ? "active" : ""}
+              onClick={() => onOpenWindow(desk.id)}
+            >
+              {desk.label}
+            </button>
+          ))}
+        </div>
+      </details>
+    </nav>
+  );
+}
+
+function RegionSurvey({
   observation,
-  onHq,
+  regionId,
+  onEnterPlace,
   onInspect,
-  onOpenListing,
+}: {
+  observation: GameObservation;
+  regionId: string;
+  onEnterPlace: (nodeId: string) => void;
+  onInspect: (id: string) => void;
+}) {
+  const region = regionById(regionId);
+  const nodes = nodesInRegion(observation.nodes, regionId);
+  return (
+    <section className="region-scene" aria-label={`${region.label} region`}>
+      <div className="region-copy">
+        <p className="eyebrow">{region.numeral} · {region.code}</p>
+        <h2>{region.label}</h2>
+        <p>{region.blurb}</p>
+      </div>
+      <RegionLandingChart observation={observation} regionId={regionId} onEnterPlace={onEnterPlace} />
+      <div className="facility-grid">
+        {nodes.map((node) => {
+          const facility = facilityForNode(observation.facilities, node);
+          const locked = node.state === "locked";
+          const title = locked
+            ? "Uncharted facility"
+            : node.role === "hq"
+              ? "Tokyo HQ"
+              : facility?.name ?? node.label;
+          return (
+            <article key={node.id} className={`facility-card ${node.state}`}>
+              <div className="card-heading">
+                <span className="stamp">{(facility?.kind ?? node.role).replaceAll("_", " ")}</span>
+                <span className={`stamp ${node.state}`}>{node.state.toUpperCase()}</span>
+              </div>
+              <h3>{title}</h3>
+              <p>
+                {locked
+                  ? `Needs reputation ${node.reputationRequired}. Private terms remain hidden.`
+                  : `${node.role} · logistics ${node.logisticsTatTicks} wk`}
+              </p>
+              <div className="facility-actions">
+                <button
+                  type="button"
+                  className="primary small"
+                  disabled={locked}
+                  onClick={() => onEnterPlace(node.id)}
+                >
+                  {node.role === "hq" ? "Enter Tokyo HQ" : locked ? "Not yet discovered" : `Enter ${title}`}
+                </button>
+                {!locked && node.role !== "hq" && (
+                  <button type="button" className="secondary" onClick={() => onInspect(node.id)}>
+                    Inspect organization
+                  </button>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function FacilityPlace({
+  observation,
+  nodeId,
+  regionId,
+  onInspect,
+  onOpenMarket,
   onCommand,
 }: {
   observation: GameObservation;
-  onHq: () => void;
+  nodeId: string;
+  regionId: string;
   onInspect: (id: string) => void;
-  onOpenListing: (listingId: number) => void;
+  onOpenMarket: (listingId: number | null) => void;
   onCommand: (command: unknown, message: string) => void;
 }) {
-  const [selectedId, setSelectedId] = useState("node-hq");
-  const selected = observation.nodes.find((node) => node.id === selectedId) ?? observation.nodes[0];
-  const hq = observation.nodes.find((node) => node.role === "hq");
-  const opportunities = observation.opportunities.filter((opportunity) => opportunity.nodeId === selected?.id);
+  const node = observation.nodes.find((candidate) => candidate.id === nodeId);
+  const facility = node ? facilityForNode(observation.facilities, node) : undefined;
+  const region = regionById(regionId);
+  const opportunities = observation.opportunities.filter((opportunity) => opportunity.nodeId === nodeId);
+  const listingsHere = observation.listings.filter((listing) => listing.nodeId === nodeId);
+  if (!node) return <Empty>Place not found.</Empty>;
   return (
-    <Sheet title="Network Map" code="NET / GLOBAL / 01">
-      <div className="map-layout">
-        <div className="network-map" role="img" aria-label="Global aviation aftermarket network">
-          <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-            <defs>
-              <pattern id="smallGrid" width="5" height="5" patternUnits="userSpaceOnUse">
-                <path d="M 5 0 L 0 0 0 5" fill="none" className="grid-line" />
-              </pattern>
-            </defs>
-            <rect width="100" height="100" fill="url(#smallGrid)" opacity="0.3" />
-            {hq && observation.nodes.filter((node) => node.id !== hq.id).map((node) => (
-              <line key={`route-${node.id}`} x1={hq.x} y1={hq.y} x2={node.x} y2={node.y} className={`route ${node.state}`} />
-            ))}
-            {observation.nodes.map((node) => {
-              const edgeLabelX = node.x < 20 ? 5 : node.x > 80 ? -5 : 0;
-              const labelAnchor = node.x < 20 ? "start" : node.x > 80 ? "end" : "middle";
-              const labelY =
-                node.y > 86 ||
-                (node.role === "customer" && node.y < 30) ||
-                (node.role === "mro" && node.x > 75)
-                  ? -6
-                  : node.role === "hq"
-                    ? 9
-                    : 7;
-              return (
-                <g
-                  key={node.id}
-                  className={`map-node ${node.state} ${selectedId === node.id ? "selected" : ""}`}
-                  transform={`translate(${node.x} ${node.y})`}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`${node.label}; ${node.state}`}
-                  onClick={() => {
-                    if (node.role === "hq") onHq();
-                    else setSelectedId(node.id);
-                  }}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
-                      event.preventDefault();
-                      if (node.role === "hq") onHq();
-                      else setSelectedId(node.id);
-                    }
-                  }}
-                >
-                  <circle r={node.role === "hq" ? 5 : 3.8} />
-                  <text x={edgeLabelX} y={labelY} textAnchor={labelAnchor}>{node.label}</text>
-                  {observation.opportunities.some((item) => item.nodeId === node.id) && <circle className="opportunity-dot" cx="4" cy="-4" r="1.6" />}
-                </g>
-              );
-            })}
-          </svg>
-        </div>
-        <aside className="node-sheet">
-          {selected ? (
-            <>
-              <p className="eyebrow">{selected.role.toUpperCase()} / {selected.state.toUpperCase()}</p>
-              <h3>{selected.label}</h3>
-              <Metric label="Logistics TAT" value={`${selected.logisticsTatTicks} wk`} />
-              <Metric label="Reputation required" value={String(selected.reputationRequired)} />
-              <Metric
-                label="Relationship"
-                value={String(observation.relationships.find((relationship) => relationship.organizationId === selected.organizationId)?.score ?? 0)}
-              />
-              {selected.state === "locked" && <p className="locked-note">Needs reputation {selected.reputationRequired}. Private terms remain hidden.</p>}
-              {selected.state !== "locked" && (
-                <>
-                  <button className="secondary" onClick={() => onInspect(selected.id)}>Inspect organization</button>
-                  <h4>Opportunities</h4>
-                  {opportunities.length === 0 && <Empty>No active opportunity at this node.</Empty>}
-                  {opportunities.map((opportunity) => (
-                    <OpportunityRow key={opportunity.id} opportunity={opportunity} onCommand={onCommand} onOpenListing={onOpenListing} />
-                  ))}
-                </>
-              )}
-            </>
-          ) : <Empty>Select a node.</Empty>}
-        </aside>
+    <section className="place-frame" aria-label={facility?.name ?? node.label}>
+      <p className="eyebrow">{region.code} / {(facility?.kind ?? node.role).replaceAll("_", " ").toUpperCase()} / {node.state.toUpperCase()}</p>
+      <h2>{facility?.name ?? node.label}</h2>
+      <p>{node.hiddenDetail || `${node.role} place in ${region.label}.`}</p>
+      <div className="metric-grid">
+        <Metric label="Logistics TAT" value={`${node.logisticsTatTicks} wk`} />
+        <Metric
+          label="Relationship"
+          value={String(observation.relationships.find((relationship) => relationship.organizationId === node.organizationId)?.score ?? 0)}
+        />
+        <Metric label="Listings here" value={String(listingsHere.length)} />
       </div>
-    </Sheet>
+      <div className="facility-actions">
+        <button type="button" className="secondary" onClick={() => onInspect(node.id)}>Inspect organization</button>
+        <button type="button" className="primary" onClick={() => onOpenMarket(listingsHere[0]?.id ?? null)}>
+          Open marketplace window
+        </button>
+      </div>
+      <h3>Opportunities</h3>
+      {opportunities.length === 0 && <Empty>No active opportunity at this place.</Empty>}
+      {opportunities.map((opportunity) => (
+        <OpportunityRow
+          key={opportunity.id}
+          opportunity={opportunity}
+          onCommand={onCommand}
+          onOpenListing={(listingId) => onOpenMarket(listingId)}
+        />
+      ))}
+    </section>
   );
+}
+
+function renderDeskWindow(
+  desk: DeskWindow | undefined,
+  ctx: {
+    observation: GameObservation;
+    marketFocus: number | null;
+    onCommand: (command: unknown, message: string) => void;
+    onInspectAsset: (id: number) => void;
+    onInspectPart: (id: string) => void;
+  },
+): ReactNode {
+  if (!desk) return null;
+  if (desk === "market") {
+    return (
+      <Marketplace
+        observation={ctx.observation}
+        focusListingId={ctx.marketFocus}
+        onBuy={(listing) =>
+          ctx.onCommand(
+            {
+              type: "purchase_listing",
+              listingId: listing.id,
+              destinationFacilityId: ctx.observation.firm.warehouseFacilityId,
+            },
+            `${listing.kind === "package" ? "Package" : "Asset"} purchase`,
+          )
+        }
+        onInspectPart={ctx.onInspectPart}
+      />
+    );
+  }
+  if (desk === "strategy") return <StrategySheet observation={ctx.observation} onCommand={ctx.onCommand} />;
+  if (desk === "sales") return <SalesOffice observation={ctx.observation} onCommand={ctx.onCommand} />;
+  if (desk === "assets") {
+    return (
+      <AssetControl
+        observation={ctx.observation}
+        onCommand={ctx.onCommand}
+        onInspect={ctx.onInspectAsset}
+      />
+    );
+  }
+  if (desk === "kpis") return <KpiIndex />;
+  return <PbhDesk observation={ctx.observation} onCommand={ctx.onCommand} />;
 }
 
 function OpportunityRow({
