@@ -441,7 +441,7 @@ function MusicToggle() {
       type="button"
       onClick={toggleMusic}
       aria-pressed={on}
-      title="Hangar theme — warm industrial loop"
+      title="Soundtrack shuffle — solarpunk & neoclassical hangar loops"
     >
       {on ? "♪ Music" : "♪ Muted"}
     </button>
