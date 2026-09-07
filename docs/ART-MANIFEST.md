@@ -6,11 +6,17 @@ The eight founder portraits and the eight founder back views are **not** here. T
 
 **196 shots**, across 17 groups.
 
+## What is fixed, and what is yours
+
+The list below says what each image is **for** and what has to be **true** of it. It deliberately does not say how to draw it. Where a spec sounds prescriptive it is because something downstream breaks otherwise, and those cases are called out as hard requirements. Everything else is a decision for you, and you will make it better than a written brief can.
+
+The three that genuinely cannot move: the Office HQ layers stack, so they must register pixel-for-pixel; icons have a size they must survive; and the guardrails below are legal and product constraints, not taste.
+
 ## Rules that apply to every shot here
 
 - The id is the filename. Lower case, hyphens, no version suffixes, `.webp` at quality 82.
 - Save to `public/assets/gen/<id>.webp`. Commit the images and nothing else.
-- Aero corporate: graphite, warm white, brushed aluminium, one accent blue. Navigation red and green only as small status indicators.
+- The world is aero corporate: graphite, warm white, brushed aluminium, one accent blue, with navigation red and green reserved for status. Hold the palette and the register; the rest of the look is open.
 - No text, numbers or lettering inside any image, with the single exception of the brand wordmark.
 - No real airline liveries, manufacturer marks, certification-body logos or identifiable people.
 - No flight boards, departure schedules, routes or passenger scenes. This company manages assets and is not an airline.
@@ -33,18 +39,18 @@ The eight founder portraits and the eight founder back views are **not** here. T
 
 *Why.* The nine base layers are specced in the brief. These are the states the scene needs beyond them. The window currently tints through a CSS hue filter, which is a stand-in for four real skies; the monitor plates are drawn as flat SVG.
 
-*Spec.* 16:9, 2560x1440, transparent outside the subject, registered pixel-for-pixel to hq-room. Same standing desk, three portrait monitors, glazed back wall, certificates on the left pier.
+*Spec.* 16:9, 2560x1440. These stack, so the one hard requirement is that they register pixel-for-pixel with hq-room and stay transparent outside their subject. Match that room's architecture and light. Everything else about how you render them is your call.
 
 | Shot id | Ratio | Pixels | What it is |
 | --- | --- | --- | --- |
-| `hq-window-winter` | 16:9 | 2560x1440 | The view through the curtain wall in winter. Replaces the hue filter. |
-| `hq-window-spring` | 16:9 | 2560x1440 | The view through the curtain wall in spring. Replaces the hue filter. |
-| `hq-window-summer` | 16:9 | 2560x1440 | The view through the curtain wall in summer. Replaces the hue filter. |
-| `hq-window-autumn` | 16:9 | 2560x1440 | The view through the curtain wall in autumn. Replaces the hue filter. |
-| `hq-room-night` | 16:9 | 2560x1440 | The same room after dark: interior lighting on, apron lights through the glass. |
-| `hq-screen-finance` | 9:16 | 720x1280 | Left monitor content plate: charts and tiles, no legible text. |
-| `hq-screen-fleet` | 9:16 | 720x1280 | Centre monitor content plate: a grid of chips. |
-| `hq-screen-intel` | 9:16 | 720x1280 | Right monitor content plate: indices and a node tree. |
+| `hq-window-winter` | 16:9 | 2560x1440 | Whatever winter looks like out of this window. Currently faked with a hue filter. |
+| `hq-window-spring` | 16:9 | 2560x1440 | Whatever spring looks like out of this window. Currently faked with a hue filter. |
+| `hq-window-summer` | 16:9 | 2560x1440 | Whatever summer looks like out of this window. Currently faked with a hue filter. |
+| `hq-window-autumn` | 16:9 | 2560x1440 | Whatever autumn looks like out of this window. Currently faked with a hue filter. |
+| `hq-room-night` | 16:9 | 2560x1440 | The same room after dark. |
+| `hq-screen-finance` | 9:16 | 720x1280 | Left monitor: what a finance screen looks like from across a room. |
+| `hq-screen-fleet` | 9:16 | 720x1280 | Centre monitor: an inventory screen, seen the same way. |
+| `hq-screen-intel` | 9:16 | 720x1280 | Right monitor: a market intelligence screen. |
 
 ## Team portraits
 
@@ -52,7 +58,7 @@ The eight founder portraits and the eight founder back views are **not** here. T
 
 *Why.* Candidates roll continuously and the board refreshes every pulse, so one face per role means every buyer you are ever offered is the same person. Three variants each is the minimum that stops the board looking broken.
 
-*Spec.* 3:4, 900x1200. Video-call framing, chest up, slight webcam angle, a backdrop hinting the role. Visibly distinct from the founder portraits, which are shot straighter and closer.
+*Spec.* 3:4, 900x1200. These appear in a video-call panel, so they should read as a call rather than a headshot, and they need to be tellable apart from the founder portraits. Beyond that, framing and backdrop are yours. Within a role the three variants must be three different people.
 
 | Shot id | Ratio | Pixels | What it is |
 | --- | --- | --- | --- |
@@ -81,43 +87,43 @@ The eight founder portraits and the eight founder back views are **not** here. T
 
 *Why.* The map sizes a marker by node scale 1 to 5, and one icon scaled up reads soft at the small end and empty at the large end. Three tiers per kind lets a component bench and a mega engine shop read as different businesses, not just different sizes.
 
-*Spec.* 1:1, isometric, single object, centred, graphite base plate, soft shadow. The s1 tier must stay readable at 32 pixels.
+*Spec.* 1:1. Eleven kinds of business that a player has to tell apart at a glance on a crowded map. How you differentiate them is the interesting problem and it is yours: silhouette, viewpoint, framing, whatever works. Keep one consistent treatment across the set, and make sure the s1 tier still reads at 32 pixels.
 
 | Shot id | Ratio | Pixels | What it is |
 | --- | --- | --- | --- |
-| `facility-component-shop-s1` | 1:1 | 128 | Component Services, single bench, minimal detail. |
-| `facility-component-shop-s3` | 1:1 | 256 | Component Services, mid-size site. |
-| `facility-component-shop-s5` | 1:1 | 512 | Component Services, mega site, full detail. |
-| `facility-repair-shop-s1` | 1:1 | 128 | Repair Station, single bench, minimal detail. |
-| `facility-repair-shop-s3` | 1:1 | 256 | Repair Station, mid-size site. |
-| `facility-repair-shop-s5` | 1:1 | 512 | Repair Station, mega site, full detail. |
-| `facility-engine-shop-s1` | 1:1 | 128 | Engine Overhaul, single bench, minimal detail. |
-| `facility-engine-shop-s3` | 1:1 | 256 | Engine Overhaul, mid-size site. |
-| `facility-engine-shop-s5` | 1:1 | 512 | Engine Overhaul, mega site, full detail. |
-| `facility-hangar-s1` | 1:1 | 128 | Line Maintenance, single bench, minimal detail. |
-| `facility-hangar-s3` | 1:1 | 256 | Line Maintenance, mid-size site. |
-| `facility-hangar-s5` | 1:1 | 512 | Line Maintenance, mega site, full detail. |
-| `facility-warehouse-s1` | 1:1 | 128 | Rotables Warehouse, single bench, minimal detail. |
-| `facility-warehouse-s3` | 1:1 | 256 | Rotables Warehouse, mid-size site. |
-| `facility-warehouse-s5` | 1:1 | 512 | Rotables Warehouse, mega site, full detail. |
-| `facility-distribution-s1` | 1:1 | 128 | Distribution Hub, single bench, minimal detail. |
-| `facility-distribution-s3` | 1:1 | 256 | Distribution Hub, mid-size site. |
-| `facility-distribution-s5` | 1:1 | 512 | Distribution Hub, mega site, full detail. |
-| `facility-factory-s1` | 1:1 | 128 | Manufacturing, single bench, minimal detail. |
-| `facility-factory-s3` | 1:1 | 256 | Manufacturing, mid-size site. |
-| `facility-factory-s5` | 1:1 | 512 | Manufacturing, mega site, full detail. |
-| `facility-teardown-s1` | 1:1 | 128 | Teardown Yard, single bench, minimal detail. |
-| `facility-teardown-s3` | 1:1 | 256 | Teardown Yard, mid-size site. |
-| `facility-teardown-s5` | 1:1 | 512 | Teardown Yard, mega site, full detail. |
-| `facility-lessor-s1` | 1:1 | 128 | Leasing Office, single bench, minimal detail. |
-| `facility-lessor-s3` | 1:1 | 256 | Leasing Office, mid-size site. |
-| `facility-lessor-s5` | 1:1 | 512 | Leasing Office, mega site, full detail. |
-| `facility-broker-s1` | 1:1 | 128 | Brokerage, single bench, minimal detail. |
-| `facility-broker-s3` | 1:1 | 256 | Brokerage, mid-size site. |
-| `facility-broker-s5` | 1:1 | 512 | Brokerage, mega site, full detail. |
-| `facility-conference-s1` | 1:1 | 128 | Industry Forum, single bench, minimal detail. |
-| `facility-conference-s3` | 1:1 | 256 | Industry Forum, mid-size site. |
-| `facility-conference-s5` | 1:1 | 512 | Industry Forum, mega site, full detail. |
+| `facility-component-shop-s1` | 1:1 | 128 | Component Services — single bench, minimal detail. |
+| `facility-component-shop-s3` | 1:1 | 256 | Component Services — mid-size site. |
+| `facility-component-shop-s5` | 1:1 | 512 | Component Services — mega site, full detail. |
+| `facility-repair-shop-s1` | 1:1 | 128 | Repair Station — single bench, minimal detail. |
+| `facility-repair-shop-s3` | 1:1 | 256 | Repair Station — mid-size site. |
+| `facility-repair-shop-s5` | 1:1 | 512 | Repair Station — mega site, full detail. |
+| `facility-engine-shop-s1` | 1:1 | 128 | Engine Overhaul — single bench, minimal detail. |
+| `facility-engine-shop-s3` | 1:1 | 256 | Engine Overhaul — mid-size site. |
+| `facility-engine-shop-s5` | 1:1 | 512 | Engine Overhaul — mega site, full detail. |
+| `facility-hangar-s1` | 1:1 | 128 | Line Maintenance — single bench, minimal detail. |
+| `facility-hangar-s3` | 1:1 | 256 | Line Maintenance — mid-size site. |
+| `facility-hangar-s5` | 1:1 | 512 | Line Maintenance — mega site, full detail. |
+| `facility-warehouse-s1` | 1:1 | 128 | Rotables Warehouse — single bench, minimal detail. |
+| `facility-warehouse-s3` | 1:1 | 256 | Rotables Warehouse — mid-size site. |
+| `facility-warehouse-s5` | 1:1 | 512 | Rotables Warehouse — mega site, full detail. |
+| `facility-distribution-s1` | 1:1 | 128 | Distribution Hub — single bench, minimal detail. |
+| `facility-distribution-s3` | 1:1 | 256 | Distribution Hub — mid-size site. |
+| `facility-distribution-s5` | 1:1 | 512 | Distribution Hub — mega site, full detail. |
+| `facility-factory-s1` | 1:1 | 128 | Manufacturing — single bench, minimal detail. |
+| `facility-factory-s3` | 1:1 | 256 | Manufacturing — mid-size site. |
+| `facility-factory-s5` | 1:1 | 512 | Manufacturing — mega site, full detail. |
+| `facility-teardown-s1` | 1:1 | 128 | Teardown Yard — single bench, minimal detail. |
+| `facility-teardown-s3` | 1:1 | 256 | Teardown Yard — mid-size site. |
+| `facility-teardown-s5` | 1:1 | 512 | Teardown Yard — mega site, full detail. |
+| `facility-lessor-s1` | 1:1 | 128 | Leasing Office — single bench, minimal detail. |
+| `facility-lessor-s3` | 1:1 | 256 | Leasing Office — mid-size site. |
+| `facility-lessor-s5` | 1:1 | 512 | Leasing Office — mega site, full detail. |
+| `facility-broker-s1` | 1:1 | 128 | Brokerage — single bench, minimal detail. |
+| `facility-broker-s3` | 1:1 | 256 | Brokerage — mid-size site. |
+| `facility-broker-s5` | 1:1 | 512 | Brokerage — mega site, full detail. |
+| `facility-conference-s1` | 1:1 | 128 | Industry Forum — single bench, minimal detail. |
+| `facility-conference-s3` | 1:1 | 256 | Industry Forum — mid-size site. |
+| `facility-conference-s5` | 1:1 | 512 | Industry Forum — mega site, full detail. |
 
 ## Certificates for the wall
 
@@ -125,7 +131,7 @@ The eight founder portraits and the eight founder back views are **not** here. T
 
 *Why.* Tribal Knowledge hangs earned certifications in frames on the pier, and the frames currently hold blank plates. These are the faces that go in them, and they are the reward for a multi-week investment, so they should feel earned.
 
-*Spec.* 3:4, 900x1200. A framed certificate face: seal, rule work, signature block. NO LEGIBLE TEXT and no real issuing-body logos or marks. The look of a certificate at a glance, not a forgery of one.
+*Spec.* 3:4, 900x1200. It has to read as a certificate at a glance and feel worth the weeks it costs to earn. Two hard limits: no legible text, and nothing resembling a real issuing body's marks. Within that, what makes a certificate look earned is your call.
 
 | Shot id | Ratio | Pixels | What it is |
 | --- | --- | --- | --- |
@@ -149,7 +155,7 @@ The eight founder portraits and the eight founder back views are **not** here. T
 
 *Why.* The map draws 14 regions as plain graphite rectangles today. Relief plates give the world shape and make the fog read as geography rather than an empty grid.
 
-*Spec.* 4:3, 1600x1200. Stylised relief: graphite land, darker sea, faint aluminium coastline. No labels, no political borders, no city dots.
+*Spec.* 4:3, 1600x1200. The job is to give each region a recognisable shape without turning the map into an atlas. No labels and no political borders; how much relief, coastline or texture that needs is your judgement.
 
 | Shot id | Ratio | Pixels | What it is |
 | --- | --- | --- | --- |
@@ -174,7 +180,7 @@ The eight founder portraits and the eight founder back views are **not** here. T
 
 *Why.* The ATA chapter is the axis the whole game trades and learns on. Chips, the knowledge tree, the map filter bar and every opportunity card name a chapter, and they all currently show a number in a box. One glyph per chapter that actually appears on a part in the catalog.
 
-*Spec.* 1:1, 256x256. A single abstract glyph suggesting the system, not a literal part drawing. Must be distinguishable from its neighbours at 24 pixels. Monochrome plus the accent.
+*Spec.* 1:1, 256x256. Each needs to stand for its system and, more importantly, to be distinguishable from the chapters next to it at 24 pixels. Abstract or literal is your call; consistency across the set and legibility when small are what actually matter.
 
 | Shot id | Ratio | Pixels | What it is |
 | --- | --- | --- | --- |
@@ -219,7 +225,7 @@ The eight founder portraits and the eight founder back views are **not** here. T
 
 *Why.* Section headings above the chapter chips, and the map filter bar's groupings.
 
-*Spec.* 1:1, 512x512. Distinct at 24 pixels. Already specced in the brief; listed here for completeness.
+*Spec.* 1:1, 512x512. Distinct at 24 pixels, and clearly a tier above the individual chapter glyphs they sit over. Listed here for completeness; also in the brief.
 
 | Shot id | Ratio | Pixels | What it is |
 | --- | --- | --- | --- |
@@ -236,7 +242,7 @@ The eight founder portraits and the eight founder back views are **not** here. T
 
 *Why.* Condition is on every chip, every listing and every unit row. It is currently a two-letter code in a pill, which is correct but does not let you scan a shelf.
 
-*Spec.* 1:1, 128x128. A shape-plus-tone system that survives greyscale, since condition must not rely on colour alone. Serviceable grades read calm, AR and below read urgent.
+*Spec.* 1:1, 128x128. These must stay distinguishable in greyscale, because condition cannot rely on colour alone. They also need an obvious ordering, since the set runs from new down to scrap. How you encode that is open.
 
 | Shot id | Ratio | Pixels | What it is |
 | --- | --- | --- | --- |
@@ -255,7 +261,7 @@ The eight founder portraits and the eight founder back views are **not** here. T
 
 *Why.* Every opportunity on the map is a card, and there is one kind per template. A card per kind lets the board be read by shape before it is read by word.
 
-*Spec.* 3:2, 1500x1000. Cinematic, quiet, one point of warm light. A scene, not an icon.
+*Spec.* 3:2, 1500x1000. A scene rather than an icon, and different enough between kinds that the board can be scanned by picture. Mood and staging are yours.
 
 | Shot id | Ratio | Pixels | What it is |
 | --- | --- | --- | --- |
@@ -274,7 +280,7 @@ The eight founder portraits and the eight founder back views are **not** here. T
 
 *Why.* The ten seeded rare finds. These are the moments a player screenshots, and each has a specific aviation premise already written, so each deserves its own image rather than a shared generic card.
 
-*Spec.* 3:2, 1500x1000. Same cinematic treatment as the opportunity cards, warmer and rarer.
+*Spec.* 3:2, 1500x1000. Each row carries the premise; read it and decide what the image should be. They should feel rarer than the ordinary opportunity cards.
 
 | Shot id | Ratio | Pixels | What it is |
 | --- | --- | --- | --- |
@@ -299,7 +305,7 @@ The eight founder portraits and the eight founder back views are **not** here. T
 
 *Why.* Categories drive the standing-order filters and the buy side; asset class drives the cohort market and the intelligence screen.
 
-*Spec.* 1:1, 128x128. Same shape system as the condition badges so the two read as one family.
+*Spec.* 1:1, 128x128. They sit beside the condition badges, so they should feel like the same family without being confusable with them.
 
 | Shot id | Ratio | Pixels | What it is |
 | --- | --- | --- | --- |
@@ -320,7 +326,7 @@ The eight founder portraits and the eight founder back views are **not** here. T
 
 *Why.* Every part is applicable to one or more series, and the fleet groups, RFQs and listings all name them. A silhouette lets a player recognise applicability faster than a code.
 
-*Spec.* 16:9, 1280x720. Side-on silhouette, graphite on transparent, no livery, no registration marks, no manufacturer branding. Generic enough to be fictional.
+*Spec.* 16:9, 1280x720, transparent background. Recognisable as the right size and class of aircraft or engine, and generic enough to be fictional: no livery, no registration marks, no manufacturer branding. Viewpoint is yours.
 
 | Shot id | Ratio | Pixels | What it is |
 | --- | --- | --- | --- |
@@ -337,7 +343,7 @@ The eight founder portraits and the eight founder back views are **not** here. T
 
 *Why.* Headings in the capability tree: five asset roots and three operations sub-branches.
 
-*Spec.* 1:1, 256x256. Quiet, structural, clearly a section mark rather than a button.
+*Spec.* 1:1, 256x256. Section marks rather than buttons; they should not compete with the chapter glyphs.
 
 | Shot id | Ratio | Pixels | What it is |
 | --- | --- | --- | --- |
@@ -356,7 +362,7 @@ The eight founder portraits and the eight founder back views are **not** here. T
 
 *Why.* Shocks drive the whole price and demand story and appear on the intelligence monitor as bare text. One card per shock kind makes the economy legible.
 
-*Spec.* 3:2, 1500x1000. Editorial rather than dramatic. No charts, no arrows, no text.
+*Spec.* 3:2, 1500x1000. These stand for market conditions rather than events, which is the hard part. No charts, arrows or text; how you show an abstraction is yours.
 
 | Shot id | Ratio | Pixels | What it is |
 | --- | --- | --- | --- |
@@ -374,7 +380,7 @@ The eight founder portraits and the eight founder back views are **not** here. T
 
 *Why.* The campaign has no punctuation. These mark the handful of moments that change how the company operates.
 
-*Spec.* 3:2, 1500x1000. Warmer than the opportunity cards. The insolvency card is sober, not cruel.
+*Spec.* 3:2, 1500x1000. Moments worth marking. The only steer is that the insolvency card should be sober rather than punishing.
 
 | Shot id | Ratio | Pixels | What it is |
 | --- | --- | --- | --- |
@@ -391,7 +397,7 @@ The eight founder portraits and the eight founder back views are **not** here. T
 
 *Why.* Every surface has a first-run state where it has nothing to show. They currently show a sentence on a blank panel, which is the least confident the game ever looks.
 
-*Spec.* 3:2, 1200x800. Understated, mostly negative space, a single object. These sit behind explanatory text so they must not compete with it.
+*Spec.* 3:2, 1200x800. These sit behind explanatory text, so the one real constraint is that they must not compete with it. They should suggest potential rather than failure.
 
 | Shot id | Ratio | Pixels | What it is |
 | --- | --- | --- | --- |
@@ -408,7 +414,7 @@ The eight founder portraits and the eight founder back views are **not** here. T
 
 *Why.* The shell around the game: the mark, the loading state, and the card it shows when shared.
 
-*Spec.* As listed. The mark and wordmark are the only shots where lettering is allowed.
+*Spec.* Sizes as listed. The mark and wordmark are the only shots where lettering is allowed.
 
 | Shot id | Ratio | Pixels | What it is |
 | --- | --- | --- | --- |

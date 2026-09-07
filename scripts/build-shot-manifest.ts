@@ -66,39 +66,40 @@ const groups: Group[] = [
       "needs beyond them. The window currently tints through a CSS hue filter, which " +
       "is a stand-in for four real skies; the monitor plates are drawn as flat SVG.",
     spec:
-      "16:9, 2560x1440, transparent outside the subject, registered pixel-for-pixel to " +
-      "hq-room. Same standing desk, three portrait monitors, glazed back wall, " +
-      "certificates on the left pier.",
+      "16:9, 2560x1440. These stack, so the one hard requirement is that they register " +
+      "pixel-for-pixel with hq-room and stay transparent outside their subject. Match " +
+      "that room's architecture and light. Everything else about how you render them is " +
+      "your call.",
     shots: [
       ...(["winter", "spring", "summer", "autumn"] as const).map((season) => ({
         id: `hq-window-${season}`,
         ratio: "16:9",
         px: "2560x1440",
-        note: `The view through the curtain wall in ${season}. Replaces the hue filter.`,
+        note: `Whatever ${season} looks like out of this window. Currently faked with a hue filter.`,
       })),
       {
         id: "hq-room-night",
         ratio: "16:9",
         px: "2560x1440",
-        note: "The same room after dark: interior lighting on, apron lights through the glass.",
+        note: "The same room after dark.",
       },
       {
         id: "hq-screen-finance",
         ratio: "9:16",
         px: "720x1280",
-        note: "Left monitor content plate: charts and tiles, no legible text.",
+        note: "Left monitor: what a finance screen looks like from across a room.",
       },
       {
         id: "hq-screen-fleet",
         ratio: "9:16",
         px: "720x1280",
-        note: "Centre monitor content plate: a grid of chips.",
+        note: "Centre monitor: an inventory screen, seen the same way.",
       },
       {
         id: "hq-screen-intel",
         ratio: "9:16",
         px: "720x1280",
-        note: "Right monitor content plate: indices and a node tree.",
+        note: "Right monitor: a market intelligence screen.",
       },
     ],
   },
@@ -111,9 +112,10 @@ const groups: Group[] = [
       "per role means every buyer you are ever offered is the same person. Three " +
       "variants each is the minimum that stops the board looking broken.",
     spec:
-      "3:4, 900x1200. Video-call framing, chest up, slight webcam angle, a backdrop " +
-      "hinting the role. Visibly distinct from the founder portraits, which are shot " +
-      "straighter and closer.",
+      "3:4, 900x1200. These appear in a video-call panel, so they should read as a call " +
+      "rather than a headshot, and they need to be tellable apart from the founder " +
+      "portraits. Beyond that, framing and backdrop are yours. Within a role the three " +
+      "variants must be three different people.",
     shots: TEAM_ROLES.flatMap((role) =>
       ["a", "b", "c"].map((variant) => ({
         id: `team-${role}-${variant}`,
@@ -133,14 +135,16 @@ const groups: Group[] = [
       "component bench and a mega engine shop read as different businesses, not just " +
       "different sizes.",
     spec:
-      "1:1, isometric, single object, centred, graphite base plate, soft shadow. The " +
-      "s1 tier must stay readable at 32 pixels.",
+      "1:1. Eleven kinds of business that a player has to tell apart at a glance on a " +
+      "crowded map. How you differentiate them is the interesting problem and it is " +
+      "yours: silhouette, viewpoint, framing, whatever works. Keep one consistent " +
+      "treatment across the set, and make sure the s1 tier still reads at 32 pixels.",
     shots: FACILITY_ARCHETYPES.flatMap((archetype) =>
       SCALE_TIERS.map((tier) => ({
         id: `facility-${slug(archetype.kind)}-${tier.suffix}`,
         ratio: "1:1",
         px: tier.px,
-        note: `${archetype.label}, ${tier.note}.`,
+        note: `${archetype.label} — ${tier.note}.`,
       })),
     ),
   },
@@ -152,8 +156,9 @@ const groups: Group[] = [
       "The map draws 14 regions as plain graphite rectangles today. Relief plates give " +
       "the world shape and make the fog read as geography rather than an empty grid.",
     spec:
-      "4:3, 1600x1200. Stylised relief: graphite land, darker sea, faint aluminium " +
-      "coastline. No labels, no political borders, no city dots.",
+      "4:3, 1600x1200. The job is to give each region a recognisable shape without " +
+      "turning the map into an atlas. No labels and no political borders; how much " +
+      "relief, coastline or texture that needs is your judgement.",
     shots: REGIONS.map((entry) => ({
       id: `region-${slug(entry.code)}`,
       ratio: "4:3",
@@ -171,9 +176,10 @@ const groups: Group[] = [
       "and they all currently show a number in a box. One glyph per chapter that " +
       "actually appears on a part in the catalog.",
     spec:
-      "1:1, 256x256. A single abstract glyph suggesting the system, not a literal part " +
-      "drawing. Must be distinguishable from its neighbours at 24 pixels. Monochrome " +
-      "plus the accent.",
+      "1:1, 256x256. Each needs to stand for its system and, more importantly, to be " +
+      "distinguishable from the chapters next to it at 24 pixels. Abstract or literal " +
+      "is your call; consistency across the set and legibility when small are what " +
+      "actually matter.",
     shots: CATALOG_ATA.map((code) => ({
       id: `ata-ch-${String(code).padStart(2, "0")}`,
       ratio: "1:1",
@@ -186,7 +192,9 @@ const groups: Group[] = [
     role: "ata",
     tier: 2,
     why: "Section headings above the chapter chips, and the map filter bar's groupings.",
-    spec: "1:1, 512x512. Distinct at 24 pixels. Already specced in the brief; listed here for completeness.",
+    spec:
+      "1:1, 512x512. Distinct at 24 pixels, and clearly a tier above the individual " +
+      "chapter glyphs they sit over. Listed here for completeness; also in the brief.",
     shots: ATA_GROUPS.map((group) => ({
       id: `ata-${slug(group)}`,
       ratio: "1:1",
@@ -202,8 +210,9 @@ const groups: Group[] = [
       "Condition is on every chip, every listing and every unit row. It is currently a " +
       "two-letter code in a pill, which is correct but does not let you scan a shelf.",
     spec:
-      "1:1, 128x128. A shape-plus-tone system that survives greyscale, since condition " +
-      "must not rely on colour alone. Serviceable grades read calm, AR and below read urgent.",
+      "1:1, 128x128. These must stay distinguishable in greyscale, because condition " +
+      "cannot rely on colour alone. They also need an obvious ordering, since the set " +
+      "runs from new down to scrap. How you encode that is open.",
     shots: [
       ["ne", "New"],
       ["ns", "New surplus"],
@@ -227,7 +236,9 @@ const groups: Group[] = [
     why:
       "Categories drive the standing-order filters and the buy side; asset class drives " +
       "the cohort market and the intelligence screen.",
-    spec: "1:1, 128x128. Same shape system as the condition badges so the two read as one family.",
+    spec:
+      "1:1, 128x128. They sit beside the condition badges, so they should feel like the " +
+      "same family without being confusable with them.",
     shots: [
       ...["llp", "rotable", "repairable", "expendable", "consumable", "standard"].map((name) => ({
         id: `category-${name}`,
@@ -251,8 +262,9 @@ const groups: Group[] = [
       "Every part is applicable to one or more series, and the fleet groups, RFQs and " +
       "listings all name them. A silhouette lets a player recognise applicability faster than a code.",
     spec:
-      "16:9, 1280x720. Side-on silhouette, graphite on transparent, no livery, no " +
-      "registration marks, no manufacturer branding. Generic enough to be fictional.",
+      "16:9, 1280x720, transparent background. Recognisable as the right size and class " +
+      "of aircraft or engine, and generic enough to be fictional: no livery, no " +
+      "registration marks, no manufacturer branding. Viewpoint is yours.",
     shots: SERIES.map((series) => ({
       id: `series-${slug(series.id)}`,
       ratio: "16:9",
@@ -269,9 +281,10 @@ const groups: Group[] = [
       "frames currently hold blank plates. These are the faces that go in them, and " +
       "they are the reward for a multi-week investment, so they should feel earned.",
     spec:
-      "3:4, 900x1200. A framed certificate face: seal, rule work, signature block. NO " +
-      "LEGIBLE TEXT and no real issuing-body logos or marks. The look of a certificate " +
-      "at a glance, not a forgery of one.",
+      "3:4, 900x1200. It has to read as a certificate at a glance and feel worth the " +
+      "weeks it costs to earn. Two hard limits: no legible text, and nothing resembling " +
+      "a real issuing body's marks. Within that, what makes a certificate look earned " +
+      "is your call.",
     shots: [
       ...nodesInBranch("certification").map((node) => ({
         id: `cert-${slug(node.shortTitle)}`,
@@ -298,7 +311,7 @@ const groups: Group[] = [
     role: "knowledge",
     tier: 3,
     why: "Headings in the capability tree: five asset roots and three operations sub-branches.",
-    spec: "1:1, 256x256. Quiet, structural, clearly a section mark rather than a button.",
+    spec: "1:1, 256x256. Section marks rather than buttons; they should not compete with the chapter glyphs.",
     shots: [
       ...nodesInBranch("asset")
         .filter((node) => node.requires.length === 0)
@@ -328,7 +341,8 @@ const groups: Group[] = [
       "Every opportunity on the map is a card, and there is one kind per template. A " +
       "card per kind lets the board be read by shape before it is read by word.",
     spec:
-      "3:2, 1500x1000. Cinematic, quiet, one point of warm light. A scene, not an icon.",
+      "3:2, 1500x1000. A scene rather than an icon, and different enough between kinds " +
+      "that the board can be scanned by picture. Mood and staging are yours.",
     shots: [...new Set(OPPORTUNITY_TEMPLATES.map((template) => template.kind))].map((kind) => ({
       id: `card-opp-${slug(kind)}`,
       ratio: "3:2",
@@ -344,7 +358,9 @@ const groups: Group[] = [
       "The ten seeded rare finds. These are the moments a player screenshots, and each " +
       "has a specific aviation premise already written, so each deserves its own image " +
       "rather than a shared generic card.",
-    spec: "3:2, 1500x1000. Same cinematic treatment as the opportunity cards, warmer and rarer.",
+    spec:
+      "3:2, 1500x1000. Each row carries the premise; read it and decide what the image " +
+      "should be. They should feel rarer than the ordinary opportunity cards.",
     shots: EASTER_EGGS.map((egg) => ({
       id: `card-egg-${slug(egg.id)}`,
       ratio: "3:2",
@@ -359,7 +375,9 @@ const groups: Group[] = [
     why:
       "Shocks drive the whole price and demand story and appear on the intelligence " +
       "monitor as bare text. One card per shock kind makes the economy legible.",
-    spec: "3:2, 1500x1000. Editorial rather than dramatic. No charts, no arrows, no text.",
+    spec:
+      "3:2, 1500x1000. These stand for market conditions rather than events, which is " +
+      "the hard part. No charts, arrows or text; how you show an abstraction is yours.",
     shots: SHOCKS.map(([id, label]) => ({
       id: `card-shock-${id}`,
       ratio: "3:2",
@@ -374,7 +392,9 @@ const groups: Group[] = [
     why:
       "The campaign has no punctuation. These mark the handful of moments that change " +
       "how the company operates.",
-    spec: "3:2, 1500x1000. Warmer than the opportunity cards. The insolvency card is sober, not cruel.",
+    spec:
+      "3:2, 1500x1000. Moments worth marking. The only steer is that the insolvency card " +
+      "should be sober rather than punishing.",
     shots: [
       ["first-sale", "The first asset sold"],
       ["first-hire", "The first person hired"],
@@ -397,8 +417,9 @@ const groups: Group[] = [
       "Every surface has a first-run state where it has nothing to show. They currently " +
       "show a sentence on a blank panel, which is the least confident the game ever looks.",
     spec:
-      "3:2, 1200x800. Understated, mostly negative space, a single object. These sit " +
-      "behind explanatory text so they must not compete with it.",
+      "3:2, 1200x800. These sit behind explanatory text, so the one real constraint is " +
+      "that they must not compete with it. They should suggest potential rather than " +
+      "failure.",
     shots: [
       ["inventory", "Fleet Manager with nothing on the shelves"],
       ["opportunities", "The map with no open opportunities"],
@@ -418,7 +439,7 @@ const groups: Group[] = [
     role: "brand",
     tier: 3,
     why: "The shell around the game: the mark, the loading state, and the card it shows when shared.",
-    spec: "As listed. The mark and wordmark are the only shots where lettering is allowed.",
+    spec: "Sizes as listed. The mark and wordmark are the only shots where lettering is allowed.",
     shots: [
       { id: "brand-mark", ratio: "1:1", px: "512", note: "The Block Aero mark, monochrome, no wordmark." },
       { id: "brand-wordmark", ratio: "4:1", px: "1024x256", note: "Wordmark lockup for the header." },
@@ -450,6 +471,22 @@ function render(): string {
   lines.push(`**${total} shots**, across ${groups.length} groups.`);
   lines.push("");
 
+  lines.push("## What is fixed, and what is yours");
+  lines.push("");
+  lines.push(
+    "The list below says what each image is **for** and what has to be **true** of it. " +
+      "It deliberately does not say how to draw it. Where a spec sounds prescriptive it " +
+      "is because something downstream breaks otherwise, and those cases are called out " +
+      "as hard requirements. Everything else is a decision for you, and you will make it " +
+      "better than a written brief can.",
+  );
+  lines.push("");
+  lines.push(
+    "The three that genuinely cannot move: the Office HQ layers stack, so they must " +
+      "register pixel-for-pixel; icons have a size they must survive; and the guardrails " +
+      "below are legal and product constraints, not taste.",
+  );
+  lines.push("");
   lines.push("## Rules that apply to every shot here");
   lines.push("");
   lines.push(
@@ -457,8 +494,9 @@ function render(): string {
   );
   lines.push("- Save to `public/assets/gen/<id>.webp`. Commit the images and nothing else.");
   lines.push(
-    "- Aero corporate: graphite, warm white, brushed aluminium, one accent blue. " +
-      "Navigation red and green only as small status indicators.",
+    "- The world is aero corporate: graphite, warm white, brushed aluminium, one accent " +
+      "blue, with navigation red and green reserved for status. Hold the palette and the " +
+      "register; the rest of the look is open.",
   );
   lines.push(
     "- No text, numbers or lettering inside any image, with the single exception of the brand wordmark.",

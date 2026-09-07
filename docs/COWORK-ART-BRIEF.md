@@ -93,12 +93,15 @@ angle, a subtle backdrop hinting the role. Visibly distinct from the founder set
 team-buyer   team-sales   team-records   team-repair   team-regional   team-analyst
 ```
 
-**Office HQ layers — 16:9, 2560x1440, role `hq`.** These stack, so they must align pixel for
-pixel. Render the room first and use it as the reference for every other layer. The desk is a
-**standing** desk with **three portrait-oriented** monitors angled toward the viewer, plus a
-portrait monitor on an arm to the side. The back wall is **floor-to-ceiling glazing** in five
-bays; the framed certificates hang on the solid pier at the left of frame, not behind the
-founder.
+**Office HQ layers — 16:9, 2560x1440, role `hq`.** These stack, so the hard requirement is that
+they align pixel for pixel. Render the room first and treat it as the reference for everything
+else.
+
+The room is a founder's office that has to hold a standing desk, three portrait monitors, a
+side monitor on an arm, and a wall of framed certificates. Two things are load-bearing and
+everything else is yours: the space directly behind the founder must stay open, because that is
+where the daylight comes from, and the certificates must hang somewhere solid rather than
+floating over glass.
 
 ```
 hq-room             full scene, monitors off, large window right
@@ -175,15 +178,14 @@ Each `hq-founder-<who>` is the same person as the matching `founder-<who>` portr
 tone, same hair silhouette and colour, same suit. A player who picks portrait 3 must recognise
 themselves at the desk.
 
-**The shot.** The founder stands at a standing desk, seen from BEHIND, facing away from the
-viewer, out through the floor-to-ceiling glazing. Head, neck, sloping shoulders, upper arms
-reading as separate masses, torso narrowing to a waist. No face, no three-quarter turn, no
-glance back over the shoulder. Standing, not seated: no chair, no chair back, no armrests, no
-wheels. Arms hang naturally or rest lightly on the desk edge.
+**The shot.** The founder at the desk, seen from behind, facing away from the viewer and out
+through the glazing. Two things have to be unambiguous, because both have gone wrong before:
+no face, and clearly standing rather than seated, with no chair anywhere in the figure. Pose
+and gesture beyond that are yours.
 
-**Registration.** These stack on `hq-room`, so the figure has to land in the same place every
-time. Everything outside the figure is transparent. Against the 2560x1440 frame, with the
-figure centred on x 1280:
+**Registration — the one hard part.** These stack on `hq-room`, so the figure has to land in
+the same place every time or the scene comes apart. Everything outside the figure is
+transparent. Against the 2560x1440 frame, with the figure centred on x 1280:
 
 | Landmark | Value |
 | --- | --- |
@@ -202,9 +204,8 @@ Shoulder tips must sit about 120 px above the desk back edge. That gap is what m
 read as standing at the desk rather than sitting behind it. The widest point must stay inside
 x 1084 to 1476 so the figure never overlaps the flanking monitors.
 
-**Lighting.** The light is behind them, coming through the glazing, so expect a rim light along
-the shoulders and the top of the head and a body that sits in relative shade. That contre-jour
-is what sells the pose.
+**Lighting.** The light source is behind them, through the glass. How you handle that is your
+call, but it is the thing that will sell the pose.
 
 That takes the shot list from 49 to 57.
 
@@ -234,8 +235,11 @@ That is 57 files.
 > `docs/COWORK-ART-BRIEF.md` for the filenames, ratios and manifest format. The brief is
 > authoritative on naming; the skill is authoritative on style.
 >
-> Style, applied to every image without exception: aero corporate, near-future, quietly premium.
-> Graphite, warm white, brushed aluminium, and one accent, Block Aero blue. Navigation red and
+> The world is aero corporate, near-future, quietly premium. Hold the palette and the register
+> and make your own decisions about everything else; the briefs say what each image is for and
+> what has to be true of it, not how to draw it.
+>
+> Palette: graphite, warm white, brushed aluminium, and one accent, Block Aero blue. Navigation red and
 > green only as small status indicators. Soft global illumination, long shadows, clean geometry,
 > a little haze. Painterly-digital, not photoreal and not cartoon. Think a Civilization leader
 > screen designed by an aviation asset manager.
