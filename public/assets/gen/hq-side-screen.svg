@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2560" height="1440" viewBox="0 0 2560 1440">
+<!-- aero-asset-tycoon procedural stand-in: hq-side-screen -->
+<defs><linearGradient id="sideGlass" x1="1920" y1="462" x2="2216" y2="848" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#161d24"/><stop offset="1" stop-color="#0c1115"/></linearGradient><linearGradient id="armG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e2e6ea"/><stop offset="0.5" stop-color="#aab3bb"/><stop offset="1" stop-color="#6f7982"/></linearGradient><clipPath id="sideClip"><polygon points="1920,462 2216,470 2216,848 1920,840"/></clipPath></defs>
+<rect x="2234" y="1009" width="72" height="44" rx="6" fill="#2b333a"/>
+<rect x="2224" y="1001" width="92" height="14" rx="5" fill="url(#armG)"/>
+<rect x="2257" y="636" width="26" height="379" fill="url(#armG)"/>
+<rect x="2257" y="636" width="6" height="379" fill="#ffffff" opacity="0.35"/>
+<g transform="rotate(28 2270 640)"><rect x="2174" y="627" width="108" height="26" rx="13" fill="url(#armG)"/></g>
+<circle cx="2270" cy="640" r="21" fill="#39424b"/>
+<circle cx="2270" cy="640" r="8" fill="#8f99a2"/>
+<circle cx="2210" cy="588" r="17" fill="#39424b"/>
+<rect x="2182" y="570" width="34" height="96" rx="8" fill="#39424b"/>
+<polygon points="1904,446 2232,454 2232,864 1904,856" fill="#20262c"/>
+<polygon points="1915,457 2221,465 2221,853 1915,845" fill="#2e363e"/>
+<polygon points="1920,462 2216,470 2216,848 1920,840" fill="url(#sideGlass)"/>
+<g clip-path="url(#sideClip)"><polygon points="1920,848 2068,462 2127.2,462 1979.2,848" fill="#ffffff" opacity="0.04"/></g>
+<rect x="2038" y="432" width="60" height="12" rx="5" fill="#2b333a"/>
+<circle cx="2068" cy="438" r="4" fill="#0d1114"/>
+</svg>

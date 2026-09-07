@@ -1,0 +1,1543 @@
+/* ==========================================================================
+   IntelMonitor — the right monitor.
+
+   Every class is prefixed intel- so nothing collides with the app shell or the
+   other two monitors. Colour comes only from the tokens in styles.css; the
+   chart ramp steps below are color-mix() blends of those tokens, so there is
+   not a single new colour literal in this file. The SVG marks inherit these
+   same custom properties rather than carrying colours of their own.
+   ========================================================================== */
+
+.intel-monitor {
+  /* ---- Chart palette -----------------------------------------------------
+     Fog funnel: an ORDERED three-step ramp of the accent, monotone in
+     lightness (light TAM → deep SOM). Ordinal data, ordinal ramp. Identity is
+     additionally carried by the stage code inside the band, the legend swatch
+     in the definition list, and the data table.
+     Seasonality: a two-slot categorical pair — accent blue against graphite.
+     The two separate on hue AND lightness, so they hold under every CVD type
+     and in greyscale print; a legend and direct end labels back them up.
+     Single-series marks (the world count line, the regional bars) are one hue
+     for every mark. Length already encodes magnitude; hue is not spent twice. */
+  --intel-tam: color-mix(in srgb, var(--cyan) 20%, var(--paper));
+  --intel-sam: color-mix(in srgb, var(--cyan) 56%, var(--paper));
+  --intel-som: var(--cyan-deep);
+  --intel-demand: var(--cyan);
+  --intel-price: var(--graphite-600);
+
+  /* Recessive furniture. One step off the chart surface, never louder. */
+  --intel-surface: color-mix(in srgb, var(--paper-glow) 90%, transparent);
+  --intel-grid: color-mix(in srgb, var(--hairline) 52%, var(--paper));
+  --intel-deemphasis: color-mix(in srgb, var(--hairline) 78%, var(--muted));
+
+  position: relative;
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+  border: 1px solid var(--ink);
+  background-color: color-mix(in srgb, var(--paper) 62%, var(--paper-glow));
+  background-image: var(--grid);
+  background-size: 20px 20px;
+  padding: 22px 24px 26px;
+  color: var(--ink);
+  box-shadow: 0 4px 24px color-mix(in srgb, var(--ink) 7%, transparent);
+}
+
+/* Status ink, scoped to this monitor. Only ever on a signed number, always
+   beside a word — never a series colour. */
+.intel-monitor .is-gain {
+  color: var(--green);
+}
+
+.intel-monitor .is-loss {
+  color: var(--red);
+}
+
+.intel-monitor .is-flat {
+  color: var(--muted);
+}
+
+/* ==========================================================================
+   Bezel — brushed aluminium strip. The token gradient is also the fallback
+   block, so a missing art file never leaves a hole in the layout.
+   ========================================================================== */
+
+.intel-bezel {
+  position: absolute;
+  inset: 0 0 auto;
+  overflow: hidden;
+  height: 8px;
+  background: var(--aluminium);
+  pointer-events: none;
+}
+
+.intel-bezel-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.5;
+  mix-blend-mode: luminosity;
+}
+
+/* ==========================================================================
+   Header & branding
+   ========================================================================== */
+
+.intel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 12px;
+}
+
+.intel-brand {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.intel-mark {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  margin-top: 2px;
+  color: var(--graphite-800);
+}
+
+.intel-mark--small {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  color: var(--hairline);
+}
+
+.intel-mark-frame {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+.intel-mark-slash {
+  fill: currentColor;
+}
+
+.intel-mark-datum {
+  stroke: currentColor;
+  stroke-width: 1.1;
+  opacity: 0.55;
+}
+
+.intel-brand-text {
+  min-width: 0;
+}
+
+.intel-eyebrow {
+  margin: 0 0 3px;
+  color: var(--cyan-deep);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.intel-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.intel-subtitle {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 11px;
+}
+
+.intel-head-right {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+}
+
+/* This screen reports; it never acts. The badge says so once, up front. */
+.intel-readonly {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  border: 1px solid var(--hairline);
+  color: var(--muted);
+  background: var(--intel-surface);
+  padding: 4px 9px;
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.intel-readonly-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cyan);
+}
+
+.intel-close {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+}
+
+.intel-close svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: square;
+  fill: none;
+}
+
+/* ==========================================================================
+   Blocks & section headings
+   ========================================================================== */
+
+.intel-block {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.intel-section-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.intel-chart-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.intel-chart-sub {
+  margin: 4px 0 0;
+  max-width: 74ch;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.intel-chart-figure {
+  flex: none;
+  max-width: 15ch;
+  margin: 0;
+  text-align: right;
+  font-family: var(--font-data);
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.intel-chart-figure small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.intel-prose {
+  margin: 0;
+  max-width: 86ch;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   1. Headline indices — stat tiles, not charts
+   ========================================================================== */
+
+.intel-indices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--hairline);
+  background: var(--hairline);
+}
+
+.intel-index {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(112px, 190px);
+  grid-template-areas:
+    "label spark"
+    "value spark"
+    "delta spark"
+    "note  note";
+  align-content: start;
+  align-items: start;
+  gap: 6px 18px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--paper-glow) 98%, transparent), color-mix(in srgb, var(--paper-deep) 62%, var(--paper-glow)));
+  padding: 16px 18px 18px;
+}
+
+.intel-index-label {
+  grid-area: label;
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Proportional figures on the big number — tabular digits read loose at size. */
+.intel-index-value {
+  grid-area: value;
+  margin: 0;
+  font-family: var(--font-data);
+  font-size: 44px;
+  font-weight: 600;
+  font-variant-numeric: normal;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.intel-index-delta {
+  grid-area: delta;
+  margin: 0;
+  font-family: var(--font-data);
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.intel-index-delta small {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.intel-index-flat {
+  color: var(--muted);
+}
+
+.intel-index-note {
+  grid-area: note;
+  margin: 2px 0 0;
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+/* ---- Sparkline ---------------------------------------------------------- */
+
+.intel-spark {
+  display: block;
+  width: 100%;
+  max-width: 190px;
+  height: auto;
+  overflow: visible;
+}
+
+.intel-index > .intel-spark,
+.intel-index > .intel-spark--empty {
+  grid-area: spark;
+  align-self: center;
+  justify-self: end;
+}
+
+.intel-spark--empty {
+  display: grid;
+  align-items: end;
+  width: 100%;
+  max-width: 190px;
+  height: 38px;
+  border-bottom: 1px solid var(--intel-grid);
+  color: var(--hairline);
+  font-family: var(--font-data);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Par: a threshold, dashed so it is never confused with a gridline. */
+.intel-spark-par {
+  stroke: var(--hairline);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.intel-spark-line {
+  fill: none;
+  stroke: var(--intel-deemphasis);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.intel-spark-ring {
+  fill: var(--intel-surface);
+}
+
+.intel-spark-dot {
+  fill: var(--cyan);
+}
+
+/* ==========================================================================
+   2. The world — fact strip
+   ========================================================================== */
+
+.intel-world-facts,
+.intel-season-facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--hairline);
+  background: var(--hairline);
+}
+
+.intel-fact {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  background: var(--intel-surface);
+  padding: 11px 13px 12px;
+}
+
+.intel-fact-label {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.intel-fact-value {
+  margin: 0;
+  font-family: var(--font-data);
+  font-size: 19px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+}
+
+.intel-fact-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   Chart frame
+   ========================================================================== */
+
+.intel-figure {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  min-width: 0;
+}
+
+.intel-plot {
+  position: relative;
+  border: 1px solid var(--hairline);
+  background: var(--intel-surface);
+  padding: 10px 12px;
+}
+
+.intel-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  touch-action: none;
+}
+
+/* ---- Axes & grid — recessive, hairline, never dashed -------------------- */
+
+.intel-grid {
+  stroke: var(--intel-grid);
+  stroke-width: 1;
+}
+
+.intel-axis {
+  stroke: var(--hairline);
+  stroke-width: 1;
+}
+
+.intel-axis-text {
+  fill: var(--muted);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Lines & areas ------------------------------------------------------ */
+
+.intel-line {
+  fill: none;
+  stroke: var(--cyan);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.intel-line--demand {
+  stroke: var(--intel-demand);
+}
+
+.intel-line--price {
+  stroke: var(--intel-price);
+}
+
+.intel-area {
+  fill: var(--cyan);
+  opacity: 0.1;
+}
+
+.intel-end-ring {
+  fill: var(--intel-surface);
+}
+
+.intel-end-dot {
+  fill: var(--cyan);
+}
+
+.intel-end-dot.is-price {
+  fill: var(--intel-price);
+}
+
+.intel-end-label {
+  fill: var(--ink);
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.intel-hover-dot {
+  fill: var(--graphite-800);
+}
+
+.intel-crosshair {
+  stroke: var(--graphite-500);
+  stroke-width: 1;
+  opacity: 0.4;
+}
+
+/* Threshold, not a gridline — dashed so the two never get confused. */
+.intel-reference {
+  stroke: var(--graphite-500);
+  stroke-width: 1;
+  stroke-dasharray: 5 4;
+  opacity: 0.75;
+}
+
+.intel-reference-text {
+  fill: var(--muted);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   3. Fog funnel
+   ========================================================================== */
+
+.intel-funnel {
+  grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+  grid-template-areas:
+    "plot rings"
+    "table table";
+  gap: 16px;
+  align-items: start;
+}
+
+.intel-funnel-plot {
+  grid-area: plot;
+  justify-self: start;
+  width: 100%;
+  max-width: 320px;
+}
+
+.intel-funnel .intel-rings {
+  grid-area: rings;
+}
+
+.intel-funnel .intel-table {
+  grid-area: table;
+}
+
+.intel-funnel-fill {
+  stroke: none;
+}
+
+.intel-funnel-band.is-tam .intel-funnel-fill {
+  fill: var(--intel-tam);
+}
+
+.intel-funnel-band.is-sam .intel-funnel-fill {
+  fill: var(--intel-sam);
+}
+
+.intel-funnel-band.is-som .intel-funnel-fill {
+  fill: var(--intel-som);
+}
+
+/* A label set inside a fill picks white or ink by the fill's luminance. */
+.intel-funnel-code {
+  fill: var(--ink);
+  font-family: var(--font-data);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+}
+
+/* White only where the label sits ON the deep fill; outside it is on the chart
+   surface and stays ink. */
+.intel-funnel-band.is-som .intel-funnel-code:not(.intel-funnel-code--outside) {
+  fill: var(--paper);
+}
+
+.intel-funnel-band .intel-funnel-code--outside {
+  fill: var(--ink-soft);
+  font-size: 12px;
+}
+
+.intel-rings {
+  display: grid;
+  gap: 1px;
+  margin: 0;
+  border: 1px solid var(--hairline);
+  padding: 0;
+  background: var(--hairline);
+  list-style: none;
+}
+
+.intel-ring {
+  display: grid;
+  gap: 4px;
+  background: var(--intel-surface);
+  padding: 12px 14px 13px;
+}
+
+.intel-ring-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.intel-ring-code {
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+}
+
+.intel-ring-name {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.intel-ring-value {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0;
+  font-family: var(--font-data);
+  font-size: 22px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.intel-ring-value small {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.intel-ring-def {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.intel-ring-exact {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 10px;
+}
+
+/* ---- Swatches — the legend key, mirroring the SVG fills ----------------- */
+
+.intel-swatch {
+  display: inline-block;
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+.intel-swatch--tam {
+  background: var(--intel-tam);
+}
+
+.intel-swatch--sam {
+  background: var(--intel-sam);
+}
+
+.intel-swatch--som {
+  background: var(--intel-som);
+}
+
+.intel-swatch--demand {
+  background: var(--intel-demand);
+}
+
+.intel-swatch--price {
+  background: var(--intel-price);
+}
+
+/* ==========================================================================
+   4. Shocks
+   ========================================================================== */
+
+.intel-shocks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(296px, 1fr));
+  gap: 12px;
+}
+
+.intel-shock {
+  display: grid;
+  align-content: start;
+  gap: 9px;
+  border: 1px solid var(--hairline);
+  background: var(--intel-surface);
+  padding: 14px 15px 15px;
+}
+
+/* A live shock is the one you can still trade against, so it gets the accent
+   rule. Everything else stays quiet. */
+.intel-shock.is-peak,
+.intel-shock.is-building,
+.intel-shock.is-fading {
+  box-shadow: inset 3px 0 0 var(--cyan);
+}
+
+.intel-shock.is-closed {
+  background: color-mix(in srgb, var(--paper-glow) 57%, transparent);
+}
+
+.intel-shock.is-closed .intel-shock-title,
+.intel-shock.is-closed .intel-envelope {
+  opacity: 0.68;
+}
+
+.intel-shock-head {
+  display: grid;
+  gap: 3px;
+}
+
+.intel-shock-kind {
+  margin: 0;
+  color: var(--cyan-deep);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.intel-shock-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.intel-shock-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Navigation-light status pips — small indicators, never decoration. */
+.intel-shock-pip {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.intel-shock-status.is-peak {
+  color: var(--red);
+}
+
+.intel-shock-status.is-building,
+.intel-shock-status.is-fading {
+  color: var(--amber);
+}
+
+.intel-shock-status.is-pending {
+  color: var(--cyan-deep);
+}
+
+.intel-shock-status.is-closed {
+  color: var(--muted);
+}
+
+.intel-shock-impacts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  border: 1px solid var(--hairline);
+  background: var(--hairline);
+}
+
+.intel-shock-impacts > div {
+  background: color-mix(in srgb, var(--paper-glow) 96%, transparent);
+  padding: 8px 10px;
+}
+
+.intel-shock-impacts dt {
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.intel-shock-impacts dd {
+  margin: 3px 0 0;
+  font-family: var(--font-data);
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.intel-shock-window {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.intel-shock-focus {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---- Shock envelope ----------------------------------------------------- */
+
+.intel-envelope {
+  display: block;
+  width: 100%;
+  max-width: 340px;
+  height: auto;
+}
+
+.intel-envelope-axis {
+  stroke: var(--hairline);
+  stroke-width: 1;
+}
+
+.intel-envelope-fill {
+  fill: var(--cyan);
+  opacity: 0.12;
+}
+
+.intel-envelope-line {
+  fill: none;
+  stroke: var(--cyan);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.intel-envelope-now {
+  stroke: var(--graphite-800);
+  stroke-width: 1.6;
+}
+
+.intel-envelope-now.is-outside {
+  stroke: var(--intel-deemphasis);
+  stroke-width: 1.2;
+}
+
+.intel-envelope-tick {
+  fill: var(--muted);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Chips — ATA is first class wherever a market appears --------------- */
+
+.intel-chip {
+  display: inline-grid;
+  gap: 1px;
+  border: 1px solid var(--hairline);
+  background: color-mix(in srgb, var(--paper-glow) 75%, transparent);
+  padding: 4px 8px 5px;
+  max-width: 100%;
+}
+
+.intel-chip--ata {
+  border-left: 3px solid var(--cyan);
+}
+
+.intel-chip--region {
+  border-left: 3px solid var(--graphite-500);
+}
+
+.intel-chip--more {
+  align-items: center;
+  border-style: dashed;
+  background: transparent;
+}
+
+.intel-chip-key {
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.intel-chip-value {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.intel-chip-count {
+  color: var(--cyan-deep);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+/* ---- Fog notice — a deliberate state, not a broken panel ---------------- */
+
+.intel-fog {
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+  border: 1px dashed var(--hairline);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--paper-glow) 65%, transparent), color-mix(in srgb, var(--paper-deep) 50%, transparent));
+  padding: 22px 24px;
+}
+
+.intel-fog-glyph {
+  width: 100%;
+  height: auto;
+}
+
+.intel-fog-band {
+  fill: none;
+  stroke: var(--hairline);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.intel-fog-eye {
+  fill: none;
+  stroke: var(--graphite-500);
+  stroke-width: 2;
+  opacity: 0.55;
+}
+
+.intel-fog-copy {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.intel-fog-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.intel-fog-body {
+  margin: 0;
+  max-width: 78ch;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.intel-fog-paths {
+  display: grid;
+  gap: 10px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.intel-fog-paths li {
+  display: grid;
+  grid-template-columns: 148px minmax(0, 1fr);
+  gap: 14px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 10px;
+}
+
+.intel-fog-path-key {
+  color: var(--cyan-deep);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.intel-fog-path-body {
+  max-width: 70ch;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   5. Regional mix
+   ========================================================================== */
+
+.intel-hit {
+  fill: transparent;
+}
+
+.intel-region-name {
+  fill: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: 12px;
+}
+
+.intel-region-bar {
+  fill: var(--cyan);
+}
+
+.intel-region-bar.is-other {
+  fill: var(--intel-deemphasis);
+}
+
+.intel-region-value {
+  fill: var(--ink);
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.intel-region-share {
+  fill: var(--muted);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.intel-plot:hover .intel-region-row:not(.is-active) .intel-region-bar {
+  opacity: 0.55;
+}
+
+.intel-region-row.is-active .intel-region-name {
+  fill: var(--cyan-deep);
+}
+
+/* ---- ATA strip ---------------------------------------------------------- */
+
+.intel-ata {
+  display: grid;
+  gap: 7px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 12px;
+}
+
+.intel-ata-label {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.intel-ata-empty {
+  margin: 0;
+  max-width: 72ch;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.intel-ata-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ==========================================================================
+   6. Seasonality
+   ========================================================================== */
+
+.intel-season-edge {
+  stroke: var(--intel-grid);
+  stroke-width: 1;
+}
+
+.intel-season-name {
+  fill: var(--muted);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.intel-series-label {
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Text never wears the data colour, so the direct labels take text tokens and
+   the coloured mark beside them carries the identity. */
+.intel-series-label.is-demand {
+  fill: var(--ink);
+}
+
+.intel-series-label.is-price {
+  fill: var(--muted);
+}
+
+.intel-now {
+  stroke: var(--graphite-800);
+  stroke-width: 1.4;
+}
+
+.intel-now-label {
+  fill: var(--ink);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   Legend, tooltip, table, placeholder
+   ========================================================================== */
+
+.intel-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.intel-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.intel-legend-note {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.intel-tooltip {
+  position: absolute;
+  z-index: 3;
+  min-width: 176px;
+  border: 1px solid var(--graphite-700);
+  background: var(--paper-glow);
+  padding: 8px 10px;
+  transform: translate(-50%, calc(-100% - 12px));
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--ink) 16%, transparent);
+  pointer-events: none;
+}
+
+.intel-tooltip-title {
+  margin: 0 0 5px;
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 4px;
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.intel-tooltip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.intel-tooltip-row span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.intel-tooltip-row strong {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Data table — the keyboard and screen-reader path to every value ---- */
+
+.intel-table > summary {
+  color: var(--cyan-deep);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.intel-table > summary:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+.intel-table-scroll {
+  overflow-x: auto;
+  overflow-y: auto;
+  border: 1px solid var(--hairline);
+  margin-top: 8px;
+  max-height: 260px;
+}
+
+.intel-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--intel-surface);
+  font-size: 11px;
+}
+
+.intel-table th,
+.intel-table td {
+  border-bottom: 1px solid var(--hairline);
+  padding: 6px 9px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.intel-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  color: var(--muted);
+  background: var(--paper-deep);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.intel-table tbody th {
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.intel-table td {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+}
+
+.intel-visually-hidden {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- Empty state -------------------------------------------------------- */
+
+.intel-placeholder {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  border: 1px dashed var(--hairline);
+  background: color-mix(in srgb, var(--paper-glow) 47%, transparent);
+  padding: 30px 24px;
+  text-align: center;
+}
+
+.intel-placeholder-glyph {
+  width: 104px;
+  height: auto;
+  opacity: 0.6;
+}
+
+.intel-placeholder-axis {
+  stroke: var(--hairline);
+  stroke-width: 1.4;
+}
+
+.intel-placeholder-line {
+  fill: none;
+  stroke: var(--intel-deemphasis);
+  stroke-width: 1.6;
+  stroke-dasharray: 4 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.intel-placeholder-title {
+  margin: 4px 0 0;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.intel-placeholder-note {
+  margin: 0;
+  max-width: 48ch;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   Footer watermark
+   ========================================================================== */
+
+.intel-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 10px;
+}
+
+.intel-wordmark {
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.intel-foot-note {
+  margin-left: auto;
+  color: var(--hairline);
+  font-family: var(--font-data);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 1300px) {
+  .intel-index-value {
+    font-size: 38px;
+  }
+
+  .intel-world-facts,
+  .intel-season-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .intel-fog {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .intel-fog-paths li {
+    grid-template-columns: 124px minmax(0, 1fr);
+    gap: 10px;
+  }
+}
+
+/* Below the shell's own minimum every paired layout folds to one column. */
+@media (max-width: 980px) {
+  .intel-indices,
+  .intel-shock-impacts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .intel-index {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "label"
+      "value"
+      "delta"
+      "spark"
+      "note";
+  }
+
+  .intel-index > .intel-spark,
+  .intel-index > .intel-spark--empty {
+    justify-self: start;
+  }
+
+  .intel-funnel {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "plot"
+      "rings"
+      "table";
+  }
+
+  .intel-fog,
+  .intel-fog-paths li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .intel-world-facts,
+  .intel-season-facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ==========================================================================
+   Motion — opt-in only. Nothing moves under a reduce preference.
+   ========================================================================== */
+
+.intel-region-bar {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .intel-line {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: intel-draw 700ms var(--ease-out) forwards;
+  }
+
+  .intel-region-bar {
+    transform-box: fill-box;
+    transform-origin: left center;
+    transform: scaleX(0);
+    animation: intel-grow 420ms var(--ease-out) forwards;
+    animation-delay: calc(var(--intel-i, 0) * 30ms);
+    transition: opacity 140ms var(--ease-out);
+  }
+
+  .intel-shock,
+  .intel-index {
+    transition: background 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
+  }
+}
+
+@keyframes intel-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes intel-grow {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Two columns only while the glyph is there: the mark on the left, the existing
+   key/value/count stack on the right. */
+.intel-chip--ata:has(.ata-glyph) {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 7px;
+}
+
+.intel-chip--ata .ata-glyph {
+  grid-row: 1 / -1;
+  width: 26px;
+  height: 26px;
+}

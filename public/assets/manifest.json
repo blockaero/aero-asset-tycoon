@@ -1,0 +1,2008 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "id": "ata-airframe-systems",
+      "file": "assets/gen/ata-airframe-systems.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini"
+    },
+    {
+      "id": "ata-avionics",
+      "file": "assets/gen/ata-avionics.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini"
+    },
+    {
+      "id": "ata-ch-05",
+      "file": "assets/gen/ata-ch-05.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "awaited",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-06",
+      "file": "assets/gen/ata-ch-06.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "awaited",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-07",
+      "file": "assets/gen/ata-ch-07.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "awaited",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-10",
+      "file": "assets/gen/ata-ch-10.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "awaited",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-11",
+      "file": "assets/gen/ata-ch-11.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "awaited",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-12",
+      "file": "assets/gen/ata-ch-12.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "awaited",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-20",
+      "file": "assets/gen/ata-ch-20.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "awaited",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-21",
+      "file": "assets/gen/ata-ch-21.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-22",
+      "file": "assets/gen/ata-ch-22.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-23",
+      "file": "assets/gen/ata-ch-23.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-24",
+      "file": "assets/gen/ata-ch-24.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-25",
+      "file": "assets/gen/ata-ch-25.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-26",
+      "file": "assets/gen/ata-ch-26.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-27",
+      "file": "assets/gen/ata-ch-27.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-28",
+      "file": "assets/gen/ata-ch-28.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-29",
+      "file": "assets/gen/ata-ch-29.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-30",
+      "file": "assets/gen/ata-ch-30.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-31",
+      "file": "assets/gen/ata-ch-31.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-32",
+      "file": "assets/gen/ata-ch-32.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-33",
+      "file": "assets/gen/ata-ch-33.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-34",
+      "file": "assets/gen/ata-ch-34.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-35",
+      "file": "assets/gen/ata-ch-35.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-36",
+      "file": "assets/gen/ata-ch-36.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-38",
+      "file": "assets/gen/ata-ch-38.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-45",
+      "file": "assets/gen/ata-ch-45.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-46",
+      "file": "assets/gen/ata-ch-46.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "awaited",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-49",
+      "file": "assets/gen/ata-ch-49.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-51",
+      "file": "assets/gen/ata-ch-51.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "awaited",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-52",
+      "file": "assets/gen/ata-ch-52.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-53",
+      "file": "assets/gen/ata-ch-53.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "awaited",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-54",
+      "file": "assets/gen/ata-ch-54.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-55",
+      "file": "assets/gen/ata-ch-55.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "awaited",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-56",
+      "file": "assets/gen/ata-ch-56.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-57",
+      "file": "assets/gen/ata-ch-57.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-61",
+      "file": "assets/gen/ata-ch-61.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "awaited",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-71",
+      "file": "assets/gen/ata-ch-71.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-72",
+      "file": "assets/gen/ata-ch-72.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-73",
+      "file": "assets/gen/ata-ch-73.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-74",
+      "file": "assets/gen/ata-ch-74.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-75",
+      "file": "assets/gen/ata-ch-75.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-76",
+      "file": "assets/gen/ata-ch-76.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-77",
+      "file": "assets/gen/ata-ch-77.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-78",
+      "file": "assets/gen/ata-ch-78.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-79",
+      "file": "assets/gen/ata-ch-79.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-80",
+      "file": "assets/gen/ata-ch-80.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-82",
+      "file": "assets/gen/ata-ch-82.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "awaited",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-ch-83",
+      "file": "assets/gen/ata-ch-83.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "ata-general",
+      "file": "assets/gen/ata-general.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini"
+    },
+    {
+      "id": "ata-propulsion",
+      "file": "assets/gen/ata-propulsion.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini"
+    },
+    {
+      "id": "ata-structures",
+      "file": "assets/gen/ata-structures.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini"
+    },
+    {
+      "id": "ata-utilities",
+      "file": "assets/gen/ata-utilities.webp",
+      "role": "ata",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini"
+    },
+    {
+      "id": "brand-mark",
+      "file": "assets/gen/brand-mark.webp",
+      "role": "brand",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "inline-svg-mark"
+    },
+    {
+      "id": "brand-wordmark",
+      "file": "assets/gen/brand-wordmark.webp",
+      "role": "brand",
+      "ratio": "3:1",
+      "w": 768,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "text"
+    },
+    {
+      "id": "card-consignment",
+      "file": "assets/gen/card-consignment.svg",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1500,
+      "h": 1000,
+      "generated": "procedural"
+    },
+    {
+      "id": "card-egg-bonded-store-release",
+      "file": "assets/gen/card-egg-bonded-store-release.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-egg-broker-favour",
+      "file": "assets/gen/card-egg-broker-favour.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-egg-chapter-specialist",
+      "file": "assets/gen/card-egg-chapter-specialist.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-egg-idle-overhaul-capacity",
+      "file": "assets/gen/card-egg-idle-overhaul-capacity.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-egg-misfiled-llp-consignment",
+      "file": "assets/gen/card-egg-misfiled-llp-consignment.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-egg-portfolio-rebalance",
+      "file": "assets/gen/card-egg-portfolio-rebalance.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-egg-records-archive",
+      "file": "assets/gen/card-egg-records-archive.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-egg-restructuring-package",
+      "file": "assets/gen/card-egg-restructuring-package.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-egg-spare-capacity-lease",
+      "file": "assets/gen/card-egg-spare-capacity-lease.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-egg-unlisted-qec",
+      "file": "assets/gen/card-egg-unlisted-qec.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-favor",
+      "file": "assets/gen/card-favor.svg",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1500,
+      "h": 1000,
+      "generated": "procedural"
+    },
+    {
+      "id": "card-idle-shop",
+      "file": "assets/gen/card-idle-shop.svg",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1500,
+      "h": 1000,
+      "generated": "procedural"
+    },
+    {
+      "id": "card-milestone-first-cert",
+      "file": "assets/gen/card-milestone-first-cert.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "card-milestone-first-hire",
+      "file": "assets/gen/card-milestone-first-hire.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "card-milestone-first-region",
+      "file": "assets/gen/card-milestone-first-region.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "card-milestone-first-sale",
+      "file": "assets/gen/card-milestone-first-sale.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "card-milestone-insolvent",
+      "file": "assets/gen/card-milestone-insolvent.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "card-milestone-solvent-year",
+      "file": "assets/gen/card-milestone-solvent-year.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "card-opp-agreement",
+      "file": "assets/gen/card-opp-agreement.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-buyer-need",
+      "file": "assets/gen/card-opp-buyer-need.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-candidate",
+      "file": "assets/gen/card-opp-candidate.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-conference",
+      "file": "assets/gen/card-opp-conference.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-intel",
+      "file": "assets/gen/card-opp-intel.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-introduction",
+      "file": "assets/gen/card-opp-introduction.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-listing",
+      "file": "assets/gen/card-opp-listing.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-teardown",
+      "file": "assets/gen/card-opp-teardown.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-warehouse-as-removed",
+      "file": "assets/gen/card-opp-warehouse-as-removed.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-warehouse-questionable",
+      "file": "assets/gen/card-opp-warehouse-questionable.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-warehouse-rotables",
+      "file": "assets/gen/card-opp-warehouse-rotables.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-restructuring",
+      "file": "assets/gen/card-restructuring.svg",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1500,
+      "h": 1000,
+      "generated": "procedural"
+    },
+    {
+      "id": "card-shock-credit-crunch",
+      "file": "assets/gen/card-shock-credit-crunch.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "card-shock-fuel-spike",
+      "file": "assets/gen/card-shock-fuel-spike.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "card-shock-lessor-default",
+      "file": "assets/gen/card-shock-lessor-default.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "card-shock-supply-squeeze",
+      "file": "assets/gen/card-shock-supply-squeeze.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "card-shock-traffic-boom",
+      "file": "assets/gen/card-shock-traffic-boom.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "card-shock-type-grounding",
+      "file": "assets/gen/card-shock-type-grounding.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "card-shock-variant-launch",
+      "file": "assets/gen/card-shock-variant-launch.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "category-consumable",
+      "file": "assets/gen/category-consumable.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "category-expendable",
+      "file": "assets/gen/category-expendable.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "category-llp",
+      "file": "assets/gen/category-llp.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "category-repairable",
+      "file": "assets/gen/category-repairable.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "category-rotable",
+      "file": "assets/gen/category-rotable.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "category-standard",
+      "file": "assets/gen/category-standard.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "class-airframe",
+      "file": "assets/gen/class-airframe.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "class-component",
+      "file": "assets/gen/class-component.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "class-engine",
+      "file": "assets/gen/class-engine.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "class-llp",
+      "file": "assets/gen/class-llp.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 256,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "condition-ar",
+      "file": "assets/gen/condition-ar.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 128,
+      "h": 128,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "condition-ber",
+      "file": "assets/gen/condition-ber.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 128,
+      "h": 128,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "condition-ne",
+      "file": "assets/gen/condition-ne.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 128,
+      "h": 128,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "condition-ns",
+      "file": "assets/gen/condition-ns.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 128,
+      "h": 128,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "condition-oh",
+      "file": "assets/gen/condition-oh.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 128,
+      "h": 128,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "condition-rp",
+      "file": "assets/gen/condition-rp.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 128,
+      "h": 128,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "condition-scrap",
+      "file": "assets/gen/condition-scrap.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 128,
+      "h": 128,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "condition-sv",
+      "file": "assets/gen/condition-sv.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 128,
+      "h": 128,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "empty-inventory",
+      "file": "assets/gen/empty-inventory.webp",
+      "role": "empty",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "empty-knowledge",
+      "file": "assets/gen/empty-knowledge.webp",
+      "role": "empty",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "empty-opportunities",
+      "file": "assets/gen/empty-opportunities.webp",
+      "role": "empty",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "empty-saves",
+      "file": "assets/gen/empty-saves.webp",
+      "role": "empty",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "empty-shocks",
+      "file": "assets/gen/empty-shocks.webp",
+      "role": "empty",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "empty-team",
+      "file": "assets/gen/empty-team.webp",
+      "role": "empty",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "facility-broker",
+      "file": "assets/gen/facility-broker.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-component-shop",
+      "file": "assets/gen/facility-component-shop.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-component-shop-s5",
+      "file": "assets/gen/facility-component-shop-s5.webp",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "netmapv2-node-glyph"
+    },
+    {
+      "id": "facility-conference",
+      "file": "assets/gen/facility-conference.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-distribution",
+      "file": "assets/gen/facility-distribution.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-engine-shop",
+      "file": "assets/gen/facility-engine-shop.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-engine-shop-s5",
+      "file": "assets/gen/facility-engine-shop-s5.webp",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "netmapv2-node-glyph"
+    },
+    {
+      "id": "facility-factory",
+      "file": "assets/gen/facility-factory.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-hangar",
+      "file": "assets/gen/facility-hangar.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-hangar-s5",
+      "file": "assets/gen/facility-hangar-s5.webp",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "netmapv2-node-glyph"
+    },
+    {
+      "id": "facility-lessor",
+      "file": "assets/gen/facility-lessor.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-repair-shop",
+      "file": "assets/gen/facility-repair-shop.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-teardown",
+      "file": "assets/gen/facility-teardown.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "facility-warehouse",
+      "file": "assets/gen/facility-warehouse.svg",
+      "role": "facility",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "procedural"
+    },
+    {
+      "id": "founder-asian-man",
+      "file": "assets/gen/founder-asian-man.webp",
+      "role": "founder",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "gemini"
+    },
+    {
+      "id": "founder-asian-woman",
+      "file": "assets/gen/founder-asian-woman.webp",
+      "role": "founder",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "gemini"
+    },
+    {
+      "id": "founder-black-man",
+      "file": "assets/gen/founder-black-man.webp",
+      "role": "founder",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "gemini"
+    },
+    {
+      "id": "founder-black-woman",
+      "file": "assets/gen/founder-black-woman.webp",
+      "role": "founder",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "gemini"
+    },
+    {
+      "id": "founder-mixed-man",
+      "file": "assets/gen/founder-mixed-man.webp",
+      "role": "founder",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "gemini"
+    },
+    {
+      "id": "founder-mixed-woman",
+      "file": "assets/gen/founder-mixed-woman.webp",
+      "role": "founder",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "gemini"
+    },
+    {
+      "id": "founder-white-man",
+      "file": "assets/gen/founder-white-man.svg",
+      "role": "founder",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "founder-white-woman",
+      "file": "assets/gen/founder-white-woman.webp",
+      "role": "founder",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "gemini"
+    },
+    {
+      "id": "hq-foreground",
+      "file": "assets/gen/hq-foreground.svg",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "procedural"
+    },
+    {
+      "id": "hq-founder-asian-man",
+      "file": "assets/gen/hq-founder-asian-man.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "gemini",
+      "fallback": "hq-founder-idle"
+    },
+    {
+      "id": "hq-founder-asian-woman",
+      "file": "assets/gen/hq-founder-asian-woman.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "gemini",
+      "fallback": "hq-founder-idle"
+    },
+    {
+      "id": "hq-founder-black-man",
+      "file": "assets/gen/hq-founder-black-man.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "gemini",
+      "fallback": "hq-founder-idle"
+    },
+    {
+      "id": "hq-founder-black-woman",
+      "file": "assets/gen/hq-founder-black-woman.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "gemini",
+      "fallback": "hq-founder-idle"
+    },
+    {
+      "id": "hq-founder-idle",
+      "file": "assets/gen/hq-founder-idle.svg",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "procedural"
+    },
+    {
+      "id": "hq-founder-mixed-man",
+      "file": "assets/gen/hq-founder-mixed-man.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "awaited",
+      "fallback": "hq-founder-idle"
+    },
+    {
+      "id": "hq-founder-mixed-woman",
+      "file": "assets/gen/hq-founder-mixed-woman.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "gemini",
+      "fallback": "hq-founder-idle"
+    },
+    {
+      "id": "hq-founder-white-man",
+      "file": "assets/gen/hq-founder-white-man.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "gemini",
+      "fallback": "hq-founder-idle"
+    },
+    {
+      "id": "hq-founder-white-woman",
+      "file": "assets/gen/hq-founder-white-woman.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "gemini",
+      "fallback": "hq-founder-idle"
+    },
+    {
+      "id": "hq-monitors-idle",
+      "file": "assets/gen/hq-monitors-idle.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "gemini"
+    },
+    {
+      "id": "hq-monitors-lit",
+      "file": "assets/gen/hq-monitors-lit.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "gemini"
+    },
+    {
+      "id": "hq-room",
+      "file": "assets/gen/hq-room.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "gemini"
+    },
+    {
+      "id": "hq-room-night",
+      "file": "assets/gen/hq-room-night.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "gemini",
+      "fallback": "hq-room"
+    },
+    {
+      "id": "hq-side-screen",
+      "file": "assets/gen/hq-side-screen.svg",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "procedural"
+    },
+    {
+      "id": "hq-wall-empty",
+      "file": "assets/gen/hq-wall-empty.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "gemini"
+    },
+    {
+      "id": "hq-wall-filled",
+      "file": "assets/gen/hq-wall-filled.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "gemini"
+    },
+    {
+      "id": "hq-window",
+      "file": "assets/gen/hq-window.svg",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "procedural"
+    },
+    {
+      "id": "knowledge-ops-ai",
+      "file": "assets/gen/knowledge-ops-ai.webp",
+      "role": "knowledge",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "knowledge-ops-operations",
+      "file": "assets/gen/knowledge-ops-operations.webp",
+      "role": "knowledge",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "knowledge-ops-sales",
+      "file": "assets/gen/knowledge-ops-sales.webp",
+      "role": "knowledge",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "knowledge-root-airframe-systems",
+      "file": "assets/gen/knowledge-root-airframe-systems.webp",
+      "role": "knowledge",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "knowledge-root-avionics",
+      "file": "assets/gen/knowledge-root-avionics.webp",
+      "role": "knowledge",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "knowledge-root-propulsion",
+      "file": "assets/gen/knowledge-root-propulsion.webp",
+      "role": "knowledge",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "knowledge-root-structures",
+      "file": "assets/gen/knowledge-root-structures.webp",
+      "role": "knowledge",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "knowledge-root-utilities",
+      "file": "assets/gen/knowledge-root-utilities.webp",
+      "role": "knowledge",
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "loading-plate",
+      "file": "assets/gen/loading-plate.webp",
+      "role": "chrome",
+      "ratio": "16:9",
+      "w": 1280,
+      "h": 720,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "og-share",
+      "file": "assets/gen/og-share.webp",
+      "role": "chrome",
+      "ratio": "16:9",
+      "w": 1200,
+      "h": 630,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "region-afr",
+      "file": "assets/gen/region-afr.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-carib",
+      "file": "assets/gen/region-carib.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-casia",
+      "file": "assets/gen/region-casia.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-cis",
+      "file": "assets/gen/region-cis.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-eue",
+      "file": "assets/gen/region-eue.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-euw",
+      "file": "assets/gen/region-euw.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-gchina",
+      "file": "assets/gen/region-gchina.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-latam",
+      "file": "assets/gen/region-latam.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-mea",
+      "file": "assets/gen/region-mea.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-na",
+      "file": "assets/gen/region-na.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-neasia",
+      "file": "assets/gen/region-neasia.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-oce",
+      "file": "assets/gen/region-oce.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-sasia",
+      "file": "assets/gen/region-sasia.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "region-sea",
+      "file": "assets/gen/region-sea.webp",
+      "role": "region",
+      "ratio": "4:3",
+      "w": 1600,
+      "h": 1200,
+      "generated": "gemini",
+      "fallback": "netmapv2-region-plate"
+    },
+    {
+      "id": "series-737-800",
+      "file": "assets/gen/series-737-800.webp",
+      "role": "series",
+      "ratio": "3:1",
+      "w": 768,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "series-a320-200",
+      "file": "assets/gen/series-a320-200.webp",
+      "role": "series",
+      "ratio": "3:1",
+      "w": 768,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "series-cf34-8e",
+      "file": "assets/gen/series-cf34-8e.webp",
+      "role": "series",
+      "ratio": "3:1",
+      "w": 768,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "series-cfm56-5b",
+      "file": "assets/gen/series-cfm56-5b.webp",
+      "role": "series",
+      "ratio": "3:1",
+      "w": 768,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "series-cfm56-7b",
+      "file": "assets/gen/series-cfm56-7b.webp",
+      "role": "series",
+      "ratio": "3:1",
+      "w": 768,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "series-e175",
+      "file": "assets/gen/series-e175.webp",
+      "role": "series",
+      "ratio": "3:1",
+      "w": 768,
+      "h": 256,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "sky-autumn",
+      "file": "assets/gen/sky-autumn.svg",
+      "role": "sky",
+      "ratio": "21:9",
+      "w": 2520,
+      "h": 1080,
+      "generated": "procedural"
+    },
+    {
+      "id": "sky-spring",
+      "file": "assets/gen/sky-spring.svg",
+      "role": "sky",
+      "ratio": "21:9",
+      "w": 2520,
+      "h": 1080,
+      "generated": "procedural"
+    },
+    {
+      "id": "sky-summer",
+      "file": "assets/gen/sky-summer.svg",
+      "role": "sky",
+      "ratio": "21:9",
+      "w": 2520,
+      "h": 1080,
+      "generated": "procedural"
+    },
+    {
+      "id": "sky-winter",
+      "file": "assets/gen/sky-winter.svg",
+      "role": "sky",
+      "ratio": "21:9",
+      "w": 2520,
+      "h": 1080,
+      "generated": "procedural"
+    },
+    {
+      "id": "team-analyst",
+      "file": "assets/gen/team-analyst.svg",
+      "role": "team",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "team-buyer",
+      "file": "assets/gen/team-buyer.svg",
+      "role": "team",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "team-buyer-a",
+      "file": "assets/gen/team-buyer-a.webp",
+      "role": "team",
+      "ratio": "3:4",
+      "w": 768,
+      "h": 1024,
+      "generated": "gemini",
+      "fallback": "team-role-portrait"
+    },
+    {
+      "id": "team-buyer-b",
+      "file": "assets/gen/team-buyer-b.webp",
+      "role": "team",
+      "ratio": "3:4",
+      "w": 768,
+      "h": 1024,
+      "generated": "gemini",
+      "fallback": "team-role-portrait"
+    },
+    {
+      "id": "team-buyer-c",
+      "file": "assets/gen/team-buyer-c.webp",
+      "role": "team",
+      "ratio": "3:4",
+      "w": 768,
+      "h": 1024,
+      "generated": "gemini",
+      "fallback": "team-role-portrait"
+    },
+    {
+      "id": "team-records",
+      "file": "assets/gen/team-records.svg",
+      "role": "team",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "team-regional",
+      "file": "assets/gen/team-regional.svg",
+      "role": "team",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "team-repair",
+      "file": "assets/gen/team-repair.svg",
+      "role": "team",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "team-sales",
+      "file": "assets/gen/team-sales.svg",
+      "role": "team",
+      "ratio": "3:4",
+      "w": 900,
+      "h": 1200,
+      "generated": "procedural"
+    },
+    {
+      "id": "team-sales-a",
+      "file": "assets/gen/team-sales-a.webp",
+      "role": "team",
+      "ratio": "3:4",
+      "w": 768,
+      "h": 1024,
+      "generated": "gemini",
+      "fallback": "team-role-portrait"
+    },
+    {
+      "id": "team-sales-b",
+      "file": "assets/gen/team-sales-b.webp",
+      "role": "team",
+      "ratio": "3:4",
+      "w": 768,
+      "h": 1024,
+      "generated": "gemini",
+      "fallback": "team-role-portrait"
+    },
+    {
+      "id": "team-sales-c",
+      "file": "assets/gen/team-sales-c.webp",
+      "role": "team",
+      "ratio": "3:4",
+      "w": 768,
+      "h": 1024,
+      "generated": "gemini",
+      "fallback": "team-role-portrait"
+    },
+    {
+      "id": "wheel-bezel",
+      "file": "assets/gen/wheel-bezel.webp",
+      "role": "wheel",
+      "ratio": "1:1",
+      "w": 1024,
+      "h": 1024,
+      "generated": "gemini",
+      "fallback": "css-ring"
+    },
+    {
+      "id": "wheel-face",
+      "file": "assets/gen/wheel-face.svg",
+      "role": "wheel",
+      "ratio": "1:1",
+      "w": 1024,
+      "h": 1024,
+      "generated": "procedural"
+    }
+  ],
+  "regions": {
+    "wall": {
+      "top": 9.01,
+      "left": 6.73,
+      "width": 15.15,
+      "height": 49.8
+    }
+  }
+}

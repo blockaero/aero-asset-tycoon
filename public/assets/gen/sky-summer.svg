@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2520" height="1080" viewBox="0 0 2520 1080">
+<!-- aero-asset-tycoon procedural stand-in: sky-summer -->
+<defs><linearGradient id="skyBand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4d86bf"/><stop offset="0.36" stop-color="#79a9d4"/><stop offset="0.7" stop-color="#b6d0e5"/><stop offset="0.86" stop-color="#e2ecf3"/><stop offset="1" stop-color="#c2ccd3"/></linearGradient><radialGradient id="skySun" cx="1562.4" cy="194.4" r="655.2" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffffff" stop-opacity="0.75"/><stop offset="0.4" stop-color="#ffffff" stop-opacity="0.24"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient><linearGradient id="skyHaze" x1="0" y1="665.6" x2="0" y2="885.6" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#e8eff4" stop-opacity="0"/><stop offset="1" stop-color="#e8eff4" stop-opacity="0.72"/></linearGradient><linearGradient id="skyGround" x1="0" y1="885.6" x2="0" y2="1080" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#232a31"/><stop offset="1" stop-color="#14181c"/></linearGradient></defs>
+<rect x="0" y="0" width="2520" height="1080" fill="url(#skyBand)"/>
+<rect x="0" y="0" width="2520" height="1080" fill="url(#skySun)"/>
+<ellipse cx="2503.38" cy="397.76" rx="197.11" ry="19.29" fill="#ffffff" opacity="0.25"/>
+<ellipse cx="2562.51" cy="380.4" rx="98.56" ry="17.36" fill="#ffffff" opacity="0.18"/>
+<ellipse cx="2346.83" cy="325.38" rx="241.58" ry="20.74" fill="#ffffff" opacity="0.41"/>
+<ellipse cx="2419.3" cy="306.71" rx="120.79" ry="18.67" fill="#ffffff" opacity="0.29"/>
+<ellipse cx="-73.4" cy="134.2" rx="139.92" ry="12.33" fill="#ffffff" opacity="0.46"/>
+<ellipse cx="-31.43" cy="123.1" rx="69.96" ry="11.1" fill="#ffffff" opacity="0.32"/>
+<ellipse cx="2179.3" cy="560.7" rx="484.99" ry="37.78" fill="#ffffff" opacity="0.42"/>
+<ellipse cx="2324.79" cy="526.7" rx="242.49" ry="34" fill="#ffffff" opacity="0.3"/>
+<ellipse cx="-41.98" cy="691.82" rx="224.85" ry="23.57" fill="#ffffff" opacity="0.37"/>
+<ellipse cx="25.48" cy="670.6" rx="112.42" ry="21.22" fill="#ffffff" opacity="0.26"/>
+<ellipse cx="1947.83" cy="241.4" rx="186.05" ry="10.92" fill="#ffffff" opacity="0.36"/>
+<ellipse cx="2003.64" cy="231.57" rx="93.03" ry="9.83" fill="#ffffff" opacity="0.25"/>
+<ellipse cx="2249.07" cy="506.47" rx="259.98" ry="13.37" fill="#ffffff" opacity="0.24"/>
+<ellipse cx="2327.06" cy="494.43" rx="129.99" ry="12.03" fill="#ffffff" opacity="0.17"/>
+<ellipse cx="2415.2" cy="240.32" rx="293.98" ry="28.8" fill="#ffffff" opacity="0.28"/>
+<ellipse cx="2503.4" cy="214.4" rx="146.99" ry="25.92" fill="#ffffff" opacity="0.2"/>
+<ellipse cx="1135.03" cy="365.48" rx="344.23" ry="30.22" fill="#ffffff" opacity="0.33"/>
+<ellipse cx="1238.3" cy="338.29" rx="172.11" ry="27.2" fill="#ffffff" opacity="0.23"/>
+<ellipse cx="1382" cy="786.1" rx="604.71" ry="43.06" fill="#ffffff" opacity="0.36"/>
+<ellipse cx="1563.41" cy="747.35" rx="302.35" ry="38.75" fill="#ffffff" opacity="0.26"/>
+<ellipse cx="305.26" cy="731.86" rx="459.07" ry="38.63" fill="#ffffff" opacity="0.33"/>
+<ellipse cx="442.98" cy="697.09" rx="229.54" ry="34.77" fill="#ffffff" opacity="0.23"/>
+<ellipse cx="1386.08" cy="488.15" rx="439.81" ry="45.17" fill="#ffffff" opacity="0.4"/>
+<ellipse cx="1518.03" cy="447.5" rx="219.91" ry="40.65" fill="#ffffff" opacity="0.28"/>
+<ellipse cx="2517.82" cy="231.03" rx="266.86" ry="27.57" fill="#ffffff" opacity="0.29"/>
+<ellipse cx="2597.88" cy="206.22" rx="133.43" ry="24.81" fill="#ffffff" opacity="0.2"/>
+<ellipse cx="1100.53" cy="250.88" rx="334.34" ry="32.4" fill="#ffffff" opacity="0.3"/>
+<ellipse cx="1200.83" cy="221.72" rx="167.17" ry="29.16" fill="#ffffff" opacity="0.21"/>
+<ellipse cx="20.77" cy="518.43" rx="548.59" ry="54.44" fill="#ffffff" opacity="0.31"/>
+<ellipse cx="185.34" cy="469.43" rx="274.3" ry="49" fill="#ffffff" opacity="0.21"/>
+<ellipse cx="-43.97" cy="769.36" rx="292.8" ry="27.61" fill="#ffffff" opacity="0.29"/>
+<ellipse cx="43.87" cy="744.51" rx="146.4" ry="24.85" fill="#ffffff" opacity="0.2"/>
+<line x1="120" y1="324" x2="1562.4" y2="129.6" stroke="#ffffff" stroke-width="5" opacity="0.16"/>
+<line x1="1108.8" y1="453.6" x2="2520" y2="259.2" stroke="#ffffff" stroke-width="4" opacity="0.10"/>
+<rect x="0" y="665.6" width="2520" height="220" fill="url(#skyHaze)"/>
+<rect x="0" y="885.6" width="2520" height="194.4" fill="url(#skyGround)"/>
+<rect x="0" y="885.6" width="2520" height="3" fill="#0d1114" opacity="0.6"/>
+<rect x="-60" y="841.07" width="121.91" height="44.53" fill="#1d2429" opacity="0.68"/>
+<rect x="119.17" y="857.94" width="155.45" height="27.66" fill="#1d2429" opacity="0.63"/>
+<rect x="181.35" y="813.81" width="8" height="65.78" fill="#1d2429" opacity="0.8"/>
+<rect x="294.97" y="841.92" width="128.97" height="43.68" fill="#1d2429" opacity="0.75"/>
+<rect x="498.94" y="858.62" width="232.04" height="26.98" fill="#1d2429" opacity="0.87"/>
+<rect x="591.76" y="806.09" width="8" height="76.67" fill="#1d2429" opacity="0.8"/>
+<rect x="812.64" y="871.57" width="310.13" height="14.03" fill="#1d2429" opacity="0.56"/>
+<rect x="1206.61" y="861.28" width="244.93" height="24.32" fill="#1d2429" opacity="0.78"/>
+<rect x="1473.96" y="850.16" width="201.62" height="35.44" fill="#1d2429" opacity="0.64"/>
+<rect x="1702.14" y="855.09" width="156.06" height="30.51" fill="#1d2429" opacity="0.58"/>
+<rect x="1764.56" y="769.02" width="8" height="62.28" fill="#1d2429" opacity="0.8"/>
+<rect x="1910.73" y="863.19" width="192.6" height="22.41" fill="#1d2429" opacity="0.89"/>
+<rect x="2189.03" y="836.79" width="147.33" height="48.81" fill="#1d2429" opacity="0.58"/>
+<rect x="2415.02" y="869.34" width="304.55" height="16.26" fill="#1d2429" opacity="0.65"/>
+<rect x="1713.6" y="735.6" width="26" height="150" fill="#1d2429" opacity="0.9"/>
+<rect x="1675.8" y="709.6" width="56" height="30" fill="#1d2429" opacity="0.9"/>
+</svg>

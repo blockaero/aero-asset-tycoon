@@ -8,9 +8,22 @@
       content="Aero Asset Tycoon — aviation aftermarket strategy prototype"
     />
     <title>Aero Asset Tycoon</title>
+    <meta property="og:title" content="Aero Asset Tycoon" />
+    <meta
+      property="og:description"
+      content="Aero Asset Tycoon — aviation aftermarket strategy prototype"
+    />
+    <meta property="og:image" content="/assets/gen/og-share.webp" />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Held until React paints, then replaced by the app. A missing plate leaves
+         an empty shell rather than a broken image. -->
+    <div id="root">
+      <div class="boot-plate">
+        <img src="/assets/gen/loading-plate.webp" alt="" onerror="this.remove()" />
+      </div>
+    </div>
     <script type="module" src="/src/client/main.tsx"></script>
   </body>
 </html>

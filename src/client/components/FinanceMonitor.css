@@ -1,0 +1,958 @@
+/* ==========================================================================
+   FinanceMonitor — the left monitor.
+
+   Every class is prefixed fin- so nothing collides with the app shell or the
+   other monitors. Colour comes only from the tokens in styles.css; the chart
+   ramp steps below are color-mix() blends of those tokens, so there is not a
+   single new colour literal in this file. The only drawn colours that are not
+   tokens live inside the inline SVG marks, and those inherit these same
+   properties.
+   ========================================================================== */
+
+.fin-monitor {
+  /* ---- Chart palette -----------------------------------------------------
+     Money in: a 2-step accent-blue categorical pair. Validated — lightness
+     band, chroma floor, CVD separation (ΔE 17.7 protan) and normal-vision
+     floor (ΔE 18.1) all pass against a near-white chart surface.
+     Money out: an ORDERED graphite ramp, validated as an ordinal scale — monotone
+     in OKLab lightness (0.25 · 0.38 · 0.52 · 0.66 · 0.79), every adjacent gap
+     over the 0.06 floor, the light end clearing the surface at 2.09:1, single
+     hue (4° spread). Identity is additionally carried by the 2px surface gaps,
+     the 45° hatch on the palest step, the legend and the data table. */
+  --fin-gain-1: var(--cyan);
+  --fin-gain-2: color-mix(in srgb, var(--cyan-bright) 74%, var(--paper));
+  --fin-loss-1: var(--graphite-800);
+  --fin-loss-2: color-mix(in srgb, var(--graphite-600) 70%, var(--graphite-500));
+  --fin-loss-3: color-mix(in srgb, var(--muted) 53%, var(--graphite-500));
+  --fin-loss-4: color-mix(in srgb, var(--muted) 83%, var(--paper));
+  --fin-loss-5: color-mix(in srgb, var(--hairline) 81%, var(--muted));
+
+  /* Recessive furniture. One step off the chart surface, never louder. */
+  --fin-surface: rgba(255, 255, 255, 0.86);
+  --fin-grid: color-mix(in srgb, var(--hairline) 52%, var(--paper));
+  --fin-deemphasis: color-mix(in srgb, var(--hairline) 78%, var(--muted));
+
+  position: relative;
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+  border: 1px solid var(--ink);
+  background-color: rgba(246, 248, 250, 0.97);
+  background-image: var(--grid);
+  background-size: 20px 20px;
+  padding: 22px 24px 26px;
+  color: var(--ink);
+  box-shadow: 0 4px 24px rgba(28, 33, 38, 0.07);
+}
+
+/* ==========================================================================
+   Bezel — brushed aluminium strip. The token gradient is also the fallback
+   block, so a missing art file never leaves a hole in the layout.
+   ========================================================================== */
+
+.fin-bezel {
+  position: absolute;
+  inset: 0 0 auto;
+  overflow: hidden;
+  height: 8px;
+  background: var(--aluminium);
+  pointer-events: none;
+}
+
+.fin-bezel-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.5;
+  mix-blend-mode: luminosity;
+}
+
+/* ==========================================================================
+   Header & branding
+   ========================================================================== */
+
+.fin-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 12px;
+}
+
+.fin-brand {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.fin-mark {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  margin-top: 2px;
+  color: var(--graphite-800);
+}
+
+.fin-mark--small {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  color: var(--hairline);
+}
+
+.fin-mark-frame {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+.fin-mark-slash {
+  fill: currentColor;
+}
+
+.fin-mark-datum {
+  stroke: currentColor;
+  stroke-width: 1.1;
+  opacity: 0.55;
+}
+
+.fin-brand-text {
+  min-width: 0;
+}
+
+.fin-eyebrow {
+  margin: 0 0 3px;
+  color: var(--cyan-deep);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.fin-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.fin-subtitle {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 11px;
+}
+
+.fin-close {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+}
+
+.fin-close svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: square;
+  fill: none;
+}
+
+/* ==========================================================================
+   Blocks & section headings
+   ========================================================================== */
+
+.fin-block {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.fin-section-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.fin-chart-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.fin-chart-sub {
+  margin: 4px 0 0;
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.fin-chart-figure {
+  flex: none;
+  margin: 0;
+  text-align: right;
+  font-family: var(--font-data);
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.fin-chart-figure small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Status ink. Only ever on a signed number, always beside a word. */
+.is-gain {
+  color: var(--green);
+}
+
+.is-loss {
+  color: var(--red);
+}
+
+/* ==========================================================================
+   KPI tiles
+   ========================================================================== */
+
+/* Seven tiles, one of them two rows tall — 8 cells over 4 columns fills exactly
+   two rows, so the grid never ends on an empty cell. */
+.fin-kpis {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--hairline);
+  background: var(--hairline);
+}
+
+.fin-asset-kpis {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1px;
+  border: 1px solid var(--hairline);
+  background: var(--hairline);
+}
+
+.fin-tile {
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  background: var(--fin-surface);
+  padding: 12px 14px 13px;
+}
+
+.fin-tile--hero {
+  grid-row: span 2;
+  align-content: space-between;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(233, 238, 243, 0.9));
+}
+
+.fin-tile--adverse {
+  box-shadow: inset 3px 0 0 var(--red);
+}
+
+.fin-tile-label {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.fin-tile-value {
+  margin: 0;
+  font-family: var(--font-data);
+  font-size: 19px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+}
+
+/* The one hero figure on this monitor. Proportional figures, not tabular —
+   at display size tabular digits read loose. */
+.fin-tile--hero .fin-tile-value {
+  font-size: 48px;
+  font-variant-numeric: normal;
+  letter-spacing: -0.02em;
+}
+
+.fin-tile-delta {
+  margin: 0;
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.fin-tile-delta small {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.fin-tile-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+/* ---- Sparkline ---------------------------------------------------------- */
+
+.fin-spark {
+  display: block;
+  width: 100%;
+  max-width: 150px;
+  height: auto;
+  overflow: visible;
+}
+
+.fin-spark-line {
+  fill: none;
+  stroke: var(--fin-deemphasis);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fin-spark-ring {
+  fill: var(--fin-surface);
+}
+
+.fin-spark-dot {
+  fill: var(--cyan);
+}
+
+/* ---- Meter -------------------------------------------------------------- */
+
+.fin-meter {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.fin-meter-track {
+  fill: color-mix(in srgb, var(--cyan) 14%, var(--paper));
+}
+
+.fin-meter-fill.is-good {
+  fill: var(--cyan);
+}
+
+.fin-meter-fill.is-warn {
+  fill: var(--amber);
+}
+
+.fin-meter-fill.is-poor {
+  fill: var(--red);
+}
+
+.fin-meter-fill.is-idle {
+  fill: var(--fin-deemphasis);
+}
+
+/* ==========================================================================
+   Chart frame
+   ========================================================================== */
+
+.fin-figure {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  min-width: 0;
+}
+
+/* No padding: the chart geometry carries its own insets, which keeps a viewBox
+   percentage identical to a container percentage for tooltip placement. */
+.fin-plot {
+  position: relative;
+  border: 1px solid var(--hairline);
+  background: var(--fin-surface);
+  padding: 0;
+}
+
+.fin-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  touch-action: none;
+}
+
+/* ---- Axes & grid — recessive, hairline, never dashed -------------------- */
+
+.fin-grid {
+  stroke: var(--fin-grid);
+  stroke-width: 1;
+}
+
+.fin-axis {
+  stroke: var(--hairline);
+  stroke-width: 1;
+}
+
+.fin-axis-text {
+  fill: var(--muted);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Balance line ------------------------------------------------------- */
+
+.fin-line {
+  fill: none;
+  stroke: var(--cyan);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fin-area-top {
+  stop-color: var(--cyan);
+  stop-opacity: 0.14;
+}
+
+.fin-area-bottom {
+  stop-color: var(--cyan);
+  stop-opacity: 0.01;
+}
+
+/* Threshold, not a gridline — dashed so the two never get confused. */
+.fin-reference {
+  stroke: var(--graphite-500);
+  stroke-width: 1;
+  stroke-dasharray: 5 4;
+  opacity: 0.8;
+}
+
+.fin-reference-text {
+  fill: var(--muted);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.fin-end-ring {
+  fill: var(--fin-surface);
+}
+
+.fin-end-dot {
+  fill: var(--cyan);
+}
+
+.fin-hover-dot {
+  fill: var(--graphite-800);
+}
+
+.fin-crosshair {
+  stroke: var(--graphite-500);
+  stroke-width: 1;
+  opacity: 0.4;
+}
+
+/* ---- Stacked breakdown -------------------------------------------------- */
+
+.fin-fill--gain-1 {
+  fill: var(--fin-gain-1);
+}
+
+.fin-fill--gain-2 {
+  fill: var(--fin-gain-2);
+}
+
+.fin-fill--loss-1 {
+  fill: var(--fin-loss-1);
+}
+
+.fin-fill--loss-2 {
+  fill: var(--fin-loss-2);
+}
+
+.fin-fill--loss-3 {
+  fill: var(--fin-loss-3);
+}
+
+.fin-fill--loss-4 {
+  fill: var(--fin-loss-4);
+}
+
+.fin-fill--loss-5 {
+  fill: var(--fin-loss-5);
+}
+
+.fin-hatch-ground {
+  fill: var(--fin-loss-5);
+}
+
+.fin-hatch-line {
+  stroke: var(--fin-loss-3);
+  stroke-width: 1.7;
+}
+
+.fin-bar {
+  opacity: 1;
+}
+
+.fin-bar.is-active .fin-seg {
+  opacity: 1;
+}
+
+.fin-plot:hover .fin-bar:not(.is-active) .fin-seg {
+  opacity: 0.55;
+}
+
+.fin-hit {
+  fill: transparent;
+  cursor: crosshair;
+}
+
+/* ---- ATA rows ----------------------------------------------------------- */
+
+.fin-ata-code {
+  fill: var(--ink);
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.fin-ata-title {
+  fill: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: 12px;
+}
+
+.fin-ata-group {
+  fill: var(--muted);
+  font-family: var(--font-data);
+  font-size: 8.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.fin-ata-bar {
+  fill: var(--cyan);
+}
+
+.fin-ata-bar.is-other {
+  fill: var(--fin-deemphasis);
+}
+
+.fin-ata-value {
+  fill: var(--ink);
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.fin-ata-units {
+  fill: var(--muted);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.fin-plot:hover .fin-ata-row:not(.is-active) .fin-ata-bar {
+  opacity: 0.55;
+}
+
+.fin-ata-row.is-active .fin-ata-title,
+.fin-ata-row.is-active .fin-ata-code {
+  fill: var(--cyan-deep);
+}
+
+/* ==========================================================================
+   Legend, tooltip, table, placeholder
+   ========================================================================== */
+
+.fin-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.fin-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fin-legend-group {
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.fin-legend-group:not(:first-child) {
+  border-left: 1px solid var(--hairline);
+  padding-left: 14px;
+}
+
+.fin-swatch {
+  display: inline-block;
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+/* The swatch reuses the same fill declarations the SVG marks do. */
+.fin-swatch.fin-fill--gain-1 {
+  background: var(--fin-gain-1);
+}
+
+.fin-swatch.fin-fill--gain-2 {
+  background: var(--fin-gain-2);
+}
+
+.fin-swatch.fin-fill--loss-1 {
+  background: var(--fin-loss-1);
+}
+
+.fin-swatch.fin-fill--loss-2 {
+  background: var(--fin-loss-2);
+}
+
+.fin-swatch.fin-fill--loss-3 {
+  background: var(--fin-loss-3);
+}
+
+.fin-swatch.fin-fill--loss-4 {
+  background: var(--fin-loss-4);
+}
+
+/* Penalties: the hatch, mirrored from the SVG pattern so legend and mark match. */
+.fin-swatch.fin-fill--loss-5 {
+  background:
+    repeating-linear-gradient(
+      45deg,
+      var(--fin-loss-3) 0 1.6px,
+      var(--fin-loss-5) 1.6px 5px
+    );
+}
+
+.fin-tooltip {
+  position: absolute;
+  z-index: 3;
+  min-width: 170px;
+  border: 1px solid var(--graphite-700);
+  background: var(--paper-glow);
+  padding: 8px 10px;
+  transform: translate(-50%, calc(-100% - 12px));
+  box-shadow: 0 6px 20px rgba(28, 33, 38, 0.16);
+  pointer-events: none;
+}
+
+.fin-tooltip--below {
+  transform: translate(-50%, 14px);
+}
+
+.fin-tooltip--corner {
+  transform: none;
+}
+
+.fin-tooltip-title {
+  margin: 0 0 5px;
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 4px;
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.fin-tooltip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.fin-tooltip-row span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fin-tooltip-row strong {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+}
+
+.fin-tooltip-total {
+  border-top: 1px solid var(--hairline);
+  margin-top: 4px;
+  padding-top: 4px;
+}
+
+/* ---- Data table (the relief path for low-contrast marks and for keyboard) */
+
+.fin-table > summary {
+  color: var(--cyan-deep);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.fin-table > summary:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+.fin-table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--hairline);
+  margin-top: 8px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.fin-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--fin-surface);
+  font-size: 11px;
+}
+
+.fin-table th,
+.fin-table td {
+  border-bottom: 1px solid var(--hairline);
+  padding: 6px 9px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.fin-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  color: var(--muted);
+  background: var(--paper-deep);
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.fin-table tbody th {
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.fin-table td {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+}
+
+.fin-visually-hidden {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- Empty state -------------------------------------------------------- */
+
+.fin-placeholder {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  border: 1px dashed var(--hairline);
+  background: rgba(255, 255, 255, 0.45);
+  padding: 30px 24px;
+  text-align: center;
+}
+
+.fin-placeholder-glyph {
+  width: 104px;
+  height: auto;
+  opacity: 0.6;
+}
+
+.fin-placeholder-axis {
+  stroke: var(--hairline);
+  stroke-width: 1.4;
+}
+
+.fin-placeholder-line {
+  fill: none;
+  stroke: var(--fin-deemphasis);
+  stroke-width: 1.6;
+  stroke-dasharray: 4 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fin-placeholder-title {
+  margin: 4px 0 0;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.fin-placeholder-note {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   Footer watermark
+   ========================================================================== */
+
+.fin-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 10px;
+}
+
+.fin-wordmark {
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.fin-foot-note {
+  margin-left: auto;
+  color: var(--hairline);
+  font-family: var(--font-data);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 1300px) {
+  .fin-tile--hero .fin-tile-value {
+    font-size: 38px;
+  }
+
+  .fin-tile {
+    padding: 10px 11px 11px;
+  }
+
+  .fin-chart-sub {
+    max-width: 52ch;
+  }
+}
+
+/* ==========================================================================
+   Motion — opt-in only. Nothing moves under a reduce preference.
+   ========================================================================== */
+
+.fin-seg,
+.fin-ata-bar {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fin-line {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: fin-draw 900ms var(--ease-out) forwards;
+  }
+
+  /* The entrance rides the bar GROUP, so the per-segment hover de-emphasis
+     below is never overridden by the animation's forwards fill. */
+  .fin-bar {
+    opacity: 0;
+    animation: fin-fade 320ms var(--ease-out) forwards;
+    animation-delay: calc(var(--fin-i, 0) * 16ms);
+  }
+
+  .fin-ata-bar {
+    transform-box: fill-box;
+    transform-origin: left center;
+    transform: scaleX(0);
+    animation: fin-grow 420ms var(--ease-out) forwards;
+    animation-delay: calc(var(--fin-i, 0) * 34ms);
+  }
+
+  .fin-seg,
+  .fin-ata-bar {
+    transition: opacity 140ms var(--ease-out);
+  }
+
+  .fin-tile {
+    transition: background 140ms var(--ease-out);
+  }
+}
+
+@keyframes fin-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fin-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fin-grow {
+  to {
+    transform: scaleX(1);
+  }
+}

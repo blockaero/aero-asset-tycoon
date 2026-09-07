@@ -1,0 +1,719 @@
+/* ==========================================================================
+   Office HQ — the founder's standing desk.
+   Every class is prefixed officehq- so nothing collides with the app shell.
+   Colour comes from the tokens in styles.css; the only literals are inside
+   the small SVG the component draws for the coffee steam.
+   ========================================================================== */
+
+.officehq {
+  display: grid;
+  gap: 12px;
+}
+
+/* --- Stage: a 16:9 plate that scales to whatever room the viewport gives it --- */
+.officehq-stage {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: max(640px, calc((100vh - 400px) * 16 / 9));
+  aspect-ratio: 16 / 9;
+  container-type: inline-size;
+  border: 1px solid var(--ink);
+  margin: 0 auto;
+  background: var(--graphite-800);
+  box-shadow: inset 0 0 60px color-mix(in srgb, var(--graphite-900) 55%, transparent);
+  isolation: isolate;
+
+  /* Overridden inline from the sim calendar. */
+  --officehq-season-hue: var(--season-hue);
+  --officehq-wall-fill: 0;
+}
+
+.officehq-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.officehq-art,
+.officehq-portrait img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* --- 1. Window: sky, tinted by the season hue ---------------------------- */
+.officehq-layer--window {
+  z-index: 1;
+  background:
+    linear-gradient(
+      180deg,
+      hsl(var(--officehq-season-hue) 44% 74%) 0%,
+      hsl(var(--officehq-season-hue) 30% 88%) 58%,
+      var(--paper) 100%
+    );
+}
+
+.officehq-sweep {
+  position: absolute;
+  top: 0;
+  left: -40%;
+  width: 40%;
+  height: 100%;
+  opacity: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    hsl(var(--officehq-season-hue) 90% 92% / 0.55) 50%,
+    transparent 100%
+  );
+  mix-blend-mode: screen;
+}
+
+/* --- 2. Room and standing desk ------------------------------------------- */
+.officehq-layer--room {
+  z-index: 2;
+}
+
+.officehq-layer--room-night {
+  z-index: 3;
+  opacity: 0;
+}
+
+/* No stand-in: without the night render the office simply stays in daylight. */
+.officehq-layer--room-night[data-missing="true"] {
+  display: none;
+}
+
+.officehq-layer--room[data-missing="true"] {
+  background:
+    linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 44%, var(--aluminium) 46%, var(--aluminium-flat) 100%);
+}
+
+.officehq-layer--room[data-missing="true"]::after {
+  content: "";
+  position: absolute;
+  top: 8.2%;
+  right: 0;
+  width: 76.6%;
+  height: 66%;
+  border: 1px solid var(--aluminium-flat);
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 19.4%,
+      var(--aluminium-flat) 19.4% 20%
+    ),
+    linear-gradient(
+      180deg,
+      hsl(var(--officehq-season-hue) 44% 78%) 0%,
+      hsl(var(--officehq-season-hue) 26% 90%) 100%
+    );
+}
+
+/* --- 3. Certificate wall, cross-faded by Tribal Knowledge ----------------- */
+.officehq-layer--wall-empty {
+  z-index: 3;
+}
+
+.officehq-layer--wall-filled {
+  z-index: 4;
+  transition: opacity 420ms var(--ease-out);
+}
+
+.officehq-layer--wall-empty[data-missing="true"]::after,
+.officehq-layer--wall-filled[data-missing="true"]::after {
+  content: "";
+  position: absolute;
+  top: 8.6%;
+  left: 6.5%;
+  width: 15.6%;
+  height: 50.7%;
+  background-color: transparent;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 2%,
+      var(--graphite-500) 2% 47%,
+      transparent 47% 53%,
+      var(--graphite-500) 53% 98%,
+      transparent 98% 100%
+    ),
+    repeating-linear-gradient(
+      180deg,
+      var(--graphite-500) 0 15.5%,
+      transparent 15.5% 16.667%
+    );
+  background-blend-mode: multiply;
+}
+
+.officehq-layer--wall-filled[data-missing="true"]::after {
+  background-color: var(--paper-deep);
+}
+
+/* --- 4. Monitors: idle plate, lit plate, and the live overlays ------------ */
+.officehq-layer--monitors {
+  z-index: 5;
+}
+
+.officehq-layer--monitors-lit {
+  z-index: 6;
+  transition: opacity 200ms var(--ease-out);
+}
+
+.officehq-screen {
+  position: absolute;
+  border: 1px solid var(--graphite-900);
+  background: linear-gradient(170deg, var(--graphite-700) 0%, var(--graphite-900) 100%);
+  box-shadow: inset 0 0 0 2px var(--aluminium-flat);
+}
+
+.officehq-screen--left {
+  top: 27.8%;
+  left: 28.2%;
+  width: 12.5%;
+  height: 40.4%;
+}
+
+.officehq-screen--centre {
+  top: 27%;
+  left: 43.3%;
+  width: 13.4%;
+  height: 42.5%;
+}
+
+.officehq-screen--right {
+  top: 27.8%;
+  left: 59.3%;
+  width: 12.5%;
+  height: 40.4%;
+}
+
+.officehq-screen--side {
+  top: 33%;
+  left: 75.5%;
+  width: 10.5%;
+  height: 25%;
+}
+
+.officehq-glow {
+  position: absolute;
+  opacity: 0.5;
+  background: radial-gradient(
+    ellipse at 50% 46%,
+    var(--cyan-glow) 0%,
+    color-mix(in srgb, var(--cyan-bright) 18%, transparent) 42%,
+    transparent 72%
+  );
+  mix-blend-mode: screen;
+}
+
+.officehq-glow--left {
+  top: 25%;
+  left: 26.2%;
+  width: 16.5%;
+  height: 46%;
+}
+
+.officehq-glow--centre {
+  top: 24.2%;
+  left: 41.2%;
+  width: 17.6%;
+  height: 48%;
+  animation-delay: -7s;
+}
+
+.officehq-glow--right {
+  top: 25%;
+  left: 57.3%;
+  width: 16.5%;
+  height: 46%;
+  animation-delay: -13s;
+}
+
+.officehq-chart {
+  position: absolute;
+  top: 28.2%;
+  left: 44.5%;
+  width: 11%;
+  height: 8%;
+  overflow: visible;
+}
+
+.officehq-chart-line {
+  fill: none;
+  stroke: var(--cyan-bright);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 0;
+  filter: drop-shadow(0 0 2px var(--cyan-glow));
+  vector-effect: non-scaling-stroke;
+}
+
+.officehq-readout {
+  position: absolute;
+  top: 36.8%;
+  left: 44.5%;
+  display: grid;
+  align-content: start;
+  gap: 0.4cqw;
+  width: 11%;
+  height: 10%;
+  overflow: hidden;
+  color: var(--paper);
+  font-family: var(--font-data);
+  font-size: clamp(6px, 0.62cqw, 10px);
+  letter-spacing: 0.04em;
+}
+
+.officehq-readout-row {
+  display: grid;
+  /* Wide enough for "ATA nn" on one line: the panel is portrait now, so a
+     wrapped label would push the third row out of the readout box. */
+  grid-template-columns: 4em 1fr;
+  gap: 0.4em;
+  border-bottom: 1px solid color-mix(in srgb, var(--cyan-bright) 40%, transparent);
+  padding-bottom: 0.14em;
+}
+
+.officehq-readout-row b {
+  color: var(--cyan-bright);
+  font-weight: 600;
+}
+
+.officehq-readout-row i {
+  overflow: hidden;
+  font-style: normal;
+  opacity: 0.78;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --- 5. Founder, with the chosen portrait dropped into the face inset ----- */
+.officehq-layer--founder {
+  z-index: 7;
+}
+
+.officehq-layer--founder[data-missing="true"]::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 42.3%;
+  width: 15.5%;
+  height: 53%;
+  border-radius: 44% 44% 0 0;
+  background: linear-gradient(180deg, var(--graphite-600) 0%, var(--graphite-800) 100%);
+}
+
+.officehq-portrait {
+  position: absolute;
+  top: 46.8%;
+  left: 46.6%;
+  width: 6.8%;
+  height: 11%;
+  overflow: hidden;
+  border-radius: 46%;
+  background: var(--aluminium);
+}
+
+.officehq-portrait img {
+  object-fit: cover;
+  object-position: 50% 22%;
+}
+
+/* --- 6. Side screen: the team video call --------------------------------- */
+.officehq-layer--side-screen {
+  z-index: 8;
+}
+
+.officehq-call-dot {
+  position: absolute;
+  top: 34.6%;
+  left: 84.4%;
+  width: 0.5%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 4px color-mix(in srgb, var(--green) 70%, transparent);
+}
+
+/* --- 7. Foreground: desk edge, cup, phone -------------------------------- */
+.officehq-layer--foreground {
+  z-index: 9;
+}
+
+.officehq-layer--foreground[data-missing="true"]::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 13%;
+  border-top: 1px solid var(--hairline);
+  background: var(--aluminium);
+}
+
+.officehq-steam {
+  position: absolute;
+  bottom: 13%;
+  left: 68%;
+  width: 2.4%;
+  height: 11%;
+  fill: none;
+  stroke: var(--paper-glow);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  opacity: 0;
+}
+
+.officehq-phone-light {
+  position: absolute;
+  bottom: 7.5%;
+  left: 24%;
+  width: 0.7%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--cyan-bright);
+  opacity: 0.14;
+}
+
+/* --- Nameplate ------------------------------------------------------------ */
+.officehq-nameplate {
+  position: absolute;
+  z-index: 10;
+  bottom: 15%;
+  left: 5.5%;
+  display: grid;
+  gap: 0.15em;
+  border-left: 2px solid var(--cyan);
+  background: color-mix(in srgb, var(--paper) 78%, transparent);
+  padding: 0.5em 0.8em;
+  pointer-events: none;
+}
+
+.officehq-nameplate-company {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(10px, 1.15cqw, 19px);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.officehq-nameplate-founder {
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: clamp(7px, 0.68cqw, 11px);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* --- Hotspots -------------------------------------------------------------
+   Transparent buttons sitting over the art. They brighten what is underneath
+   rather than painting over it, so the scene stays the scene.
+   -------------------------------------------------------------------------- */
+.officehq-stage .officehq-hotspot {
+  position: absolute;
+  z-index: 12;
+  display: block;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  transition: border-color 140ms var(--ease-out), backdrop-filter 140ms var(--ease-out);
+}
+
+.officehq-stage .officehq-hotspot:hover,
+.officehq-stage .officehq-hotspot[data-active="true"] {
+  border-color: color-mix(in srgb, var(--cyan-bright) 70%, transparent);
+  background: transparent;
+  backdrop-filter: brightness(1.16) saturate(1.06);
+  box-shadow: inset 0 0 18px color-mix(in srgb, var(--cyan-bright) 22%, transparent);
+}
+
+.officehq-stage .officehq-hotspot:focus-visible {
+  border-color: var(--cyan-bright);
+  outline: 2px solid var(--cyan-bright);
+  outline-offset: 2px;
+}
+
+.officehq-stage .officehq-hotspot:active {
+  transform: none;
+}
+
+.officehq-hotspot--finance {
+  top: 26.5%;
+  left: 27.5%;
+  width: 13.9%;
+  height: 43%;
+}
+
+/* The centre panel is taller than its neighbours and the founder stands in
+   front of its lower edge, so this rectangle stops at the shoulder line. */
+.officehq-hotspot--fleet {
+  top: 26.5%;
+  left: 42.6%;
+  width: 14.8%;
+  height: 35.5%;
+}
+
+.officehq-hotspot--intel {
+  top: 26.5%;
+  left: 58.6%;
+  width: 13.9%;
+  height: 43%;
+}
+
+.officehq-hotspot--wall {
+  /* The grid moved off the back wall onto the solid pier at the left of frame,
+     so the glazing behind the founder stays open. Rect matches WALL_GRID in
+     scripts/generate-art.mjs: x 172-560, y 130-847 of 2560x1440. */
+  top: 8.6%;
+  left: 6.5%;
+  width: 15.6%;
+  height: 50.7%;
+}
+
+.officehq-hotspot--team {
+  top: 32%;
+  left: 74.8%;
+  width: 12%;
+  height: 27%;
+}
+
+/* Label chip: only shown on hover or keyboard focus. */
+.officehq-chip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  display: grid;
+  gap: 0.25em;
+  width: max-content;
+  max-width: 22cqw;
+  border: 1px solid var(--cyan-deep);
+  background: color-mix(in srgb, var(--graphite-900) 88%, transparent);
+  padding: 0.45em 0.7em;
+  text-align: left;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 140ms var(--ease-out), transform 140ms var(--ease-out);
+  pointer-events: none;
+}
+
+.officehq-hotspot--wall .officehq-chip {
+  top: calc(100% + 6px);
+  bottom: auto;
+}
+
+.officehq-hotspot--team .officehq-chip {
+  left: auto;
+  right: 0;
+  transform: translate(0, 4px);
+}
+
+.officehq-hotspot:hover .officehq-chip,
+.officehq-hotspot:focus-visible .officehq-chip,
+.officehq-hotspot[data-active="true"] .officehq-chip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.officehq-hotspot--team:hover .officehq-chip,
+.officehq-hotspot--team:focus-visible .officehq-chip,
+.officehq-hotspot--team[data-active="true"] .officehq-chip {
+  transform: translate(0, 0);
+}
+
+.officehq-chip-label {
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: clamp(10px, 0.95cqw, 15px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.officehq-chip-stat {
+  color: var(--cyan-bright);
+  font-family: var(--font-data);
+  font-size: clamp(8px, 0.72cqw, 12px);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Strip: the same five surfaces as plain text buttons ------------------ */
+.officehq-strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1px;
+  width: 100%;
+  max-width: max(640px, calc((100vh - 400px) * 16 / 9));
+  border: 1px solid var(--hairline);
+  margin: 0 auto;
+  background: var(--hairline);
+}
+
+.officehq-strip .officehq-strip-button {
+  display: grid;
+  align-content: start;
+  gap: 3px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.78);
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.officehq-strip .officehq-strip-button:hover,
+.officehq-strip .officehq-strip-button[data-active="true"] {
+  border-bottom-color: var(--cyan);
+  background: var(--paper-glow);
+  box-shadow: none;
+}
+
+.officehq-strip .officehq-strip-button:focus-visible {
+  outline: 2px solid var(--cyan-bright);
+  outline-offset: -2px;
+}
+
+.officehq-strip-button--map {
+  background: var(--paper-deep);
+}
+
+.officehq-strip-label {
+  color: var(--ink);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.officehq-strip-stat {
+  overflow: hidden;
+  color: var(--muted);
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   The six-minute cycle. Every duration divides 360s exactly, so the whole
+   scene closes on the same frame it opened. Motion only for those who want it.
+   ========================================================================== */
+
+@keyframes officehq-sweep {
+  0% { opacity: 0; transform: translateX(0); }
+  8% { opacity: 0.5; }
+  92% { opacity: 0.5; }
+  100% { opacity: 0; transform: translateX(350%); }
+}
+
+@keyframes officehq-drift {
+  0% { transform: translate3d(0, 0, 0); }
+  25% { transform: translate3d(3px, -2px, 0); }
+  50% { transform: translate3d(6px, 0, 0); }
+  75% { transform: translate3d(3px, 2px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes officehq-glow {
+  0% { opacity: 0.42; }
+  50% { opacity: 0.72; }
+  100% { opacity: 0.42; }
+}
+
+@keyframes officehq-chart {
+  0% { stroke-dashoffset: 100; }
+  30% { stroke-dashoffset: 0; }
+  96% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 100; }
+}
+
+@keyframes officehq-weight {
+  0% { transform: translate3d(0, 0, 0); }
+  35% { transform: translate3d(-2px, 1px, 0); }
+  65% { transform: translate3d(2px, -1px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes officehq-steam {
+  0% { opacity: 0; transform: translateY(4%) scaleY(0.9); }
+  25% { opacity: 0.34; }
+  70% { opacity: 0.16; }
+  100% { opacity: 0; transform: translateY(-14%) scaleY(1.12); }
+}
+
+@keyframes officehq-phone {
+  0%, 92% { opacity: 0.14; }
+  93% { opacity: 1; }
+  94% { opacity: 0.2; }
+  95% { opacity: 1; }
+  97% { opacity: 0.14; }
+  100% { opacity: 0.14; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes officehq-nightfall {
+    0%, 34% { opacity: 0; }
+    58% { opacity: 0.86; }
+    82%, 100% { opacity: 0; }
+  }
+
+  .officehq-layer--room-night {
+    animation: officehq-nightfall 360s linear infinite;
+  }
+
+  .officehq-sweep {
+    animation: officehq-sweep 360s linear infinite;
+  }
+
+  .officehq-layer--room {
+    animation: officehq-drift 360s ease-in-out infinite;
+  }
+
+  .officehq-glow {
+    animation: officehq-glow 20s ease-in-out infinite;
+  }
+
+  .officehq-chart-line {
+    animation: officehq-chart 90s linear infinite;
+  }
+
+  .officehq-layer--founder {
+    animation: officehq-weight 45s ease-in-out infinite;
+  }
+
+  .officehq-steam {
+    animation: officehq-steam 12s ease-in-out infinite;
+  }
+
+  .officehq-phone-light {
+    animation: officehq-phone 360s linear infinite;
+  }
+}
+
+/* Under reduce, only the monitor glow survives, and it holds still. */
+@media (prefers-reduced-motion: reduce) {
+  .officehq-glow {
+    opacity: 0.55;
+  }
+
+  .officehq-sweep,
+  .officehq-steam {
+    display: none;
+  }
+}
+
+@media (max-width: 1300px) {
+  .officehq-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

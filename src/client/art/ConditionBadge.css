@@ -1,0 +1,7 @@
+.condition-badge {
+  display: block;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}

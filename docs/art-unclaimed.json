@@ -1,0 +1,12 @@
+{
+  "why": "Renders delivered without a declared shot. The generator publishes them so the catalogue is honest, but nothing has confirmed a surface draws them. Wire one and declare the shot, then remove the id here.",
+  "ids": [
+    "card-milestone-first-cert",
+    "card-milestone-first-hire",
+    "card-milestone-first-region",
+    "card-milestone-first-sale",
+    "card-milestone-insolvent",
+    "card-milestone-solvent-year"
+  ],
+  "note": "The milestone cards have no surface to sit on: the sim has no milestone system. They are held here rather than wired to an invented one."
+}

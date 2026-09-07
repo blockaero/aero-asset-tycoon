@@ -15,9 +15,20 @@ export function createCampaign(input: {
   pace: LivePace;
   ticks: number;
   scenario: "prototype" | "full";
+  /** Chosen on the new-game screen. Purely cosmetic apart from seeding the world. */
+  companyName?: string;
+  founderName?: string;
+  portraitId?: string;
 }): Promise<LiveSnapshot> {
   const campaign = manager.create(
-    { seed: input.seed, ticks: input.ticks, scenario: input.scenario },
+    {
+      seed: input.seed,
+      ticks: input.ticks,
+      scenario: input.scenario,
+      companyName: input.companyName,
+      founderName: input.founderName,
+      portraitId: input.portraitId,
+    },
     input.pace,
     false,
   );

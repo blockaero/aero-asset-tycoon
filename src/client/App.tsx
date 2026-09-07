@@ -18,30 +18,28 @@ import {
   setCampaignPace,
   subscribeCampaign,
 } from "./api.ts";
-import { ArtImage } from "./ArtImage.tsx";
-import { hqBackdropShot } from "./art.ts";
-import { RegionLandingChart, WorldAtlas } from "./Atlas.tsx";
 import { musicOn, startMusic, subscribeMusic, toggleMusic } from "./music.ts";
-import {
-  DESK_WINDOWS,
-  HQ_NODE_ID,
-  WORLD_NAV,
-  canGoBack,
-  enterPlace,
-  enterRegion,
-  facilityForNode,
-  navigationCrumbs,
-  nodesInRegion,
-  openWindow,
-  openWindowOnPlace,
-  popNavigation,
-  regionById,
-  regionIdForNode,
-  windowLabel,
-  type DeskWindow,
-  type Navigation,
-} from "./navigation.ts";
+import { NewGame } from "./components/NewGame.tsx";
+import { OfficeHQ } from "./components/OfficeHQ.tsx";
+import { PulseWheel } from "./components/PulseWheel.tsx";
+import { NetworkMapV2 } from "./components/NetworkMapV2.tsx";
+import { FinanceMonitor } from "./components/FinanceMonitor.tsx";
+import { FleetManager } from "./components/FleetManager.tsx";
+import { IntelMonitor } from "./components/IntelMonitor.tsx";
+import { TribalKnowledge } from "./components/TribalKnowledge.tsx";
+import { TeamScreen } from "./components/TeamScreen.tsx";
+import { tickDurationMs } from "../sim/balance.ts";
+import { ConditionBadge } from "./art/ConditionBadge.tsx";
+import { AssetClassMark, CategoryMark, SeriesMark } from "./art/ShotArt.tsx";
+import { ataAssetClass } from "../sim/ata.ts";
 
+/**
+ * The office is the shell. Everything else is a surface opened from it: three
+ * monitors on the desk, the certificate wall behind it, and the team screen beside it.
+ * Buying and selling strategy are no longer places you visit; they are a drawer
+ * inside the fleet manager.
+ */
+type View = "hq" | "map" | "finance" | "fleet" | "intel" | "wall" | "team" | "market" | "pbh";
 type InspectTarget =
   | { kind: "asset"; id: number }
   | { kind: "part"; id: string }
@@ -50,7 +48,7 @@ type InspectTarget =
 
 export function App() {
   const [snapshot, setSnapshot] = useState<LiveSnapshot | null>(null);
-  const [nav, setNav] = useState<Navigation>(WORLD_NAV);
+  const [view, setView] = useState<View>("hq");
   const [inspect, setInspect] = useState<InspectTarget>(null);
   const [marketFocus, setMarketFocus] = useState<number | null>(null);
   const [notice, setNotice] = useState("The desk is live. The market is listening.");
@@ -58,6 +56,10 @@ export function App() {
   const [busy, setBusy] = useState(false);
   const [pulseBeat, setPulseBeat] = useState<GameObservation["pulses"][number] | null>(null);
   const feedbackKey = useRef("");
+
+  useEffect(() => {
+    setPulseBeat(null);
+  }, [view]);
 
   useEffect(() => {
     if (!snapshot?.id) return;
@@ -118,33 +120,31 @@ export function App() {
 
   if (!snapshot) {
     return (
-      <CampaignStart
+      <NewGameScreen
         busy={busy}
         error={error}
         onStart={async (input) => {
-          startMusic();
           setBusy(true);
           try {
-            const created = await createCampaign(input);
-            setSnapshot(created);
-            setNav(WORLD_NAV);
+            setSnapshot(await createCampaign(input));
+            setView("hq");
             setError("");
-            setNotice("The world is open. Enter Kanto to reach Tokyo HQ.");
+            startMusic();
           } catch (cause) {
             setError(messageOf(cause));
           } finally {
             setBusy(false);
           }
         }}
-        onLoad={async (saveId, pace) => {
-          startMusic();
+        onLoad={async (saveId) => {
           setBusy(true);
           try {
-            const loaded = await loadCampaign(saveId, pace);
+            const loaded = await loadCampaign(saveId, "fast");
             setSnapshot(loaded);
-            setNav(WORLD_NAV);
+            setView("hq");
             setError("");
-            setNotice(`Loaded ${saveId} at week ${loaded.observation.tick}. The world map is the entry.`);
+            setNotice(`Loaded ${saveId} at week ${loaded.observation.tick}.`);
+            startMusic();
           } catch (cause) {
             setError(messageOf(cause));
           } finally {
@@ -158,35 +158,6 @@ export function App() {
   const observation = snapshot.observation;
   const lastPulse = observation.pulses.at(-1);
   const finished = snapshot.status === "finished";
-  const placeNode =
-    nav.layer === "place"
-      ? observation.nodes.find((node) => node.id === nav.nodeId)
-      : undefined;
-  const placeLabel = placeNode
-    ? placeNode.role === "hq"
-      ? "Tokyo HQ"
-      : facilityForNode(observation.facilities, placeNode)?.name ?? placeNode.label
-    : "Place";
-
-  function goToWindow(desk: DeskWindow) {
-    if (desk === "market") setMarketFocus(null);
-    setNav((current) => openWindow(current, desk));
-  }
-
-  function openMarketAt(nodeId: string, listingId: number | null) {
-    setMarketFocus(listingId);
-    const node = observation.nodes.find((candidate) => candidate.id === nodeId);
-    const regionId = node ? regionIdForNode(node) : nav.layer === "world" ? "kanto" : nav.regionId;
-    setNav(openWindowOnPlace(regionId, nodeId, "market"));
-  }
-
-  const deskWindow = renderDeskWindow(nav.layer === "place" ? nav.window : undefined, {
-    observation,
-    marketFocus,
-    onCommand: command,
-    onInspectAsset: (id) => setInspect({ kind: "asset", id }),
-    onInspectPart: (id) => setInspect({ kind: "part", id }),
-  });
 
   return (
     <div className="app-shell">
@@ -210,13 +181,26 @@ export function App() {
         }}
       />
 
-      <LocationBar
-        nav={nav}
-        placeLabel={placeLabel}
-        onNavigate={setNav}
-        onBack={() => setNav((current) => popNavigation(current))}
-        onOpenWindow={goToWindow}
-      />
+      <nav className="view-tabs" aria-label="Headquarters">
+        {([
+          ["hq", "Office HQ"],
+          ["map", "Network Map"],
+          ["finance", "Finance"],
+          ["fleet", "Fleet Manager"],
+          ["intel", "Intelligence"],
+          ["wall", "Tribal Knowledge"],
+          ["team", "Team"],
+          ["market", "Marketplace"],
+          ["pbh", "PBH"],
+        ] as [View, string][]).map(([id, label]) => (
+          <button key={id} className={view === id ? "active" : ""} onClick={() => {
+            if (id === "market") setMarketFocus(null);
+            setView(id);
+          }}>
+            {label}
+          </button>
+        ))}
+      </nav>
 
       {(error || notice) && (
         <div className={`notice ${error ? "error" : ""}`} role="status">
@@ -225,57 +209,94 @@ export function App() {
       )}
 
       <main className="workspace">
-        {nav.layer === "world" && (
-          <WorldAtlas
+        {view === "hq" && (
+          <OfficeHQ
             observation={observation}
-            onEnterRegion={(regionId) => setNav(enterRegion(regionId))}
+            onOpenMonitor={(which) =>
+              setView(which === "finance" ? "finance" : which === "fleet" ? "fleet" : "intel")
+            }
+            onOpenWall={() => setView("wall")}
+            onOpenTeam={() => setView("team")}
+            onOpenMap={() => setView("map")}
           />
         )}
-        {nav.layer === "region" && (
-          <RegionSurvey
+        {view === "map" && (
+          <NetworkMapV2
             observation={observation}
-            regionId={nav.regionId}
-            onEnterPlace={(nodeId) => setNav(enterPlace(nav.regionId, nodeId))}
-            onInspect={(id) => setInspect({ kind: "node", id })}
+            onInspectNode={(id) => setInspect({ kind: "node", id })}
+            onOpenOpportunity={(opportunityId) =>
+              command({ type: "open_opportunity", opportunityId }, "Opportunity")
+            }
+            onVisitNode={(nodeId) => command({ type: "visit_node", nodeId }, "Site visit")}
+            onOpenListing={(listingId) => {
+              setMarketFocus(listingId);
+              setView("market");
+            }}
           />
         )}
-        {nav.layer === "place" && (
-          <div className="place-layer">
-            {nav.nodeId === HQ_NODE_ID ? (
-              <Headquarters
-                observation={observation}
-                lastPulse={lastPulse}
-                onOpenWindow={goToWindow}
-                onLeavePlace={() => setNav(enterRegion(nav.regionId))}
-              />
-            ) : (
-              <FacilityPlace
-                observation={observation}
-                nodeId={nav.nodeId}
-                regionId={nav.regionId}
-                onInspect={(id) => setInspect({ kind: "node", id })}
-                onOpenMarket={(listingId) => openMarketAt(nav.nodeId, listingId)}
-                onCommand={command}
-              />
-            )}
-            {nav.window && deskWindow && (
-              <div className="place-window" role="dialog" aria-label={`${windowLabel(nav.window)} window`}>
-                <div className="place-window-chrome">
-                  <p className="eyebrow">WINDOW ON {placeLabel.toUpperCase()}</p>
-                  <button
-                    type="button"
-                    onClick={() => setNav((current) => popNavigation(current))}
-                    aria-label="Close window"
-                  >
-                    Close window
-                  </button>
-                </div>
-                {deskWindow}
-              </div>
-            )}
-          </div>
+        {view === "market" && (
+          <Marketplace
+            observation={observation}
+            focusListingId={marketFocus}
+            onBuy={(listing) =>
+              command(
+                {
+                  type: "purchase_listing",
+                  listingId: listing.id,
+                  destinationFacilityId: observation.firm.warehouseFacilityId,
+                },
+                `${listing.kind === "package" ? "Package" : "Asset"} purchase`,
+              )
+            }
+            onInspectPart={(id) => setInspect({ kind: "part", id })}
+          />
         )}
+        {view === "fleet" && (
+          <FleetManager
+            observation={observation}
+            onCommand={command}
+            onInspectAsset={(id) => setInspect({ kind: "asset", id })}
+          />
+        )}
+        {view === "finance" && (
+          <FinanceMonitor observation={observation} onClose={() => setView("hq")} />
+        )}
+        {view === "intel" && (
+          <IntelMonitor observation={observation} onClose={() => setView("hq")} />
+        )}
+        {view === "wall" && (
+          <TribalKnowledge
+            observation={observation}
+            onInvest={(nodeId) => command({ type: "invest_knowledge", nodeId }, "Tribal Knowledge")}
+            onClose={() => setView("hq")}
+          />
+        )}
+        {view === "team" && (
+          <TeamScreen
+            observation={observation}
+            onHire={(candidateId) => command({ type: "hire_team_member", candidateId }, "Hire")}
+            onRelease={(memberId) => command({ type: "release_team_member", memberId }, "Release")}
+            onClose={() => setView("hq")}
+          />
+        )}
+        {view === "pbh" && <PbhDesk observation={observation} onCommand={command} />}
       </main>
+
+      <PulseWheel
+        calendar={observation.calendar}
+        progress={pulseProgress(snapshot)}
+        paused={snapshot.status !== "running"}
+        busy={busy}
+        pendingCount={observation.pendingCommands.length}
+        pace={snapshot.pace}
+        budget={observation.company.budget}
+        lastDelta={lastPulse?.delta ?? null}
+        onPulse={() => runAction("step")}
+        onPause={() => runAction(snapshot.status === "running" ? "pause" : "resume")}
+        onPace={async (pace) => {
+          setSnapshot(await setCampaignPace(snapshot.id, pace));
+        }}
+      />
 
       {inspect && (
         <InspectSheet
@@ -291,7 +312,8 @@ export function App() {
   );
 }
 
-function CampaignStart({
+/** Thin wrapper: the NewGame component is presentational, so saves are fetched here. */
+function NewGameScreen({
   busy,
   error,
   onStart,
@@ -299,80 +321,32 @@ function CampaignStart({
 }: {
   busy: boolean;
   error: string;
-  onStart: (input: { seed: number; pace: LivePace; ticks: number; scenario: "prototype" | "full" }) => void;
-  onLoad: (saveId: string, pace: LivePace) => void;
+  onStart: (input: {
+    seed: number;
+    pace: LivePace;
+    ticks: number;
+    scenario: "prototype" | "full";
+    companyName: string;
+    founderName: string;
+    portraitId: string;
+  }) => void;
+  onLoad: (saveId: string) => void;
 }) {
-  const [seed, setSeed] = useState(20260906);
-  const [pace, setPace] = useState<LivePace>("fast");
-  const [length, setLength] = useState<24 | 100>(24);
-  const [saves, setSaves] = useState<{ id: string; savedAt: string; tick: number; seed: number }[]>([]);
+  const [saves, setSaves] = useState<
+    { id: string; savedAt: string; tick: number; seed: number }[]
+  >([]);
   useEffect(() => {
     void listSaves().then(setSaves).catch(() => setSaves([]));
   }, []);
   useEffect(() => {
+    // Browsers block audio until a gesture; the first pointer press starts the theme.
     const kick = () => startMusic();
     window.addEventListener("pointerdown", kick, { once: true });
     return () => window.removeEventListener("pointerdown", kick);
   }, []);
-  const seconds = length * ({ fast: 25, medium: 50, slow: 75 }[pace]);
-  return (
-    <main className="start-screen">
-      <section className="title-block">
-        <p className="eyebrow">AAT / CAMPAIGN BRIEF / REV 02</p>
-        <h1>Aero Asset Tycoon</h1>
-        <p className="lead">
-          Build an aviation aftermarket book without letting inventory consume the company.
-        </p>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            onStart({ seed, pace, ticks: length, scenario: length === 24 ? "prototype" : "full" });
-          }}
-        >
-          <label>
-            World seed
-            <input type="number" value={seed} onChange={(event) => setSeed(Number(event.target.value))} />
-          </label>
-          <fieldset>
-            <legend>Campaign</legend>
-            <label><input type="radio" checked={length === 24} onChange={() => setLength(24)} /> Founder’s first 24 weeks</label>
-            <label><input type="radio" checked={length === 100} onChange={() => setLength(100)} /> Open market · 100 weeks</label>
-          </fieldset>
-          <fieldset>
-            <legend>Weekly pulse</legend>
-            {(["fast", "medium", "slow"] as LivePace[]).map((value) => (
-              <label key={value}>
-                <input type="radio" checked={pace === value} onChange={() => setPace(value)} />
-                {capitalize(value)} · {{ fast: 25, medium: 50, slow: 75 }[value]}s
-              </label>
-            ))}
-          </fieldset>
-          <p className="session-estimate">
-            Live duration: approximately {Math.round(seconds / 60)} minutes plus pause time.
-          </p>
-          {error && <p className="form-error">{error}</p>}
-          <button className="primary" type="submit" disabled={busy}>
-            {busy ? "Charting the world…" : "Enter the world"}
-          </button>
-          {saves.length > 0 && (
-            <div className="load-saves">
-              <span>Continue saved campaign</span>
-              {saves.slice(0, 3).map((save) => (
-                <button type="button" key={save.id} disabled={busy} onClick={() => onLoad(save.id, pace)}>
-                  {save.id} · W{save.tick} · seed {save.seed}
-                </button>
-              ))}
-            </div>
-          )}
-        </form>
-        <small>
-          Real aircraft/engine nomenclature; fictional organizations, P/Ns, prices, reliability and outcomes.
-          Not affiliated with any OEM, airline or airport.
-        </small>
-      </section>
-    </main>
-  );
+  return <NewGame busy={busy} error={error} saves={saves} onStart={onStart} onLoad={onLoad} />;
 }
+
 
 function LedgerHeader({
   snapshot,
@@ -389,13 +363,12 @@ function LedgerHeader({
 }) {
   const { observation } = snapshot;
   const pulse = observation.pulses.at(-1);
-  const seconds = useCountdown(snapshot.remainingMs, snapshot.status);
   const pendingCount = observation.pendingCommands.length;
   return (
     <header className="ledger-header">
       <div className="brand">
-        <span className="eyebrow">AERO ASSET PARTNERS</span>
-        <strong>Operations Desk</strong>
+        <span className="eyebrow">{observation.company.identity.companyName.toUpperCase()}</span>
+        <strong>Office HQ</strong>
       </div>
       <div className="acc-balance">
         <span>ACC BALANCE</span>
@@ -405,28 +378,7 @@ function LedgerHeader({
         <span>WEEK {pulse?.tick ?? 0} PULSE</span>
         <strong>{signedAcc(pulse?.delta ?? 0)}</strong>
       </div>
-      <PulseTrail pulses={observation.pulses} />
-      <div className="clock">
-        <span>WEEK {observation.tick}</span>
-        <strong>{snapshot.status === "running" ? `${seconds}s` : snapshot.status.toUpperCase()}</strong>
-      </div>
       <div className="clock-actions">
-        <select value={snapshot.pace} onChange={(event) => onPace(event.target.value as LivePace)} aria-label="Pulse speed">
-          <option value="fast">25s</option>
-          <option value="medium">50s</option>
-          <option value="slow">75s</option>
-        </select>
-        <button disabled={busy || snapshot.status === "finished"} onClick={() => onAction(snapshot.status === "running" ? "pause" : "resume")}>
-          {snapshot.status === "running" ? "Pause" : "Resume"}
-        </button>
-        <button
-          className="hero-pulse"
-          disabled={busy || snapshot.status === "running" || snapshot.status === "finished"}
-          onClick={() => onAction("step")}
-          title={pendingCount > 0 ? `${pendingCount} command(s) queued` : "Resolve weekly pulse"}
-        >
-          Pulse
-        </button>
         <button disabled={busy} onClick={onSave}>Save</button>
         <MusicToggle />
       </div>
@@ -441,314 +393,15 @@ function MusicToggle() {
       type="button"
       onClick={toggleMusic}
       aria-pressed={on}
-      title="Soundtrack shuffle — solarpunk & neoclassical hangar loops"
+      title="Hangar theme — warm industrial loop"
     >
       {on ? "♪ Music" : "♪ Muted"}
     </button>
   );
 }
 
-function PulseTrail({ pulses }: { pulses: GameObservation["pulses"] }) {
-  const recent = pulses.slice(-10);
-  const max = Math.max(1, ...recent.map((pulse) => Math.abs(pulse.delta)));
-  return (
-    <div className="pulse-trail" aria-label="Trailing ACC pulses">
-      {recent.length === 0 && <span className="empty-bars">Awaiting first pulse</span>}
-      {recent.map((pulse) => (
-        <span
-          key={pulse.tick}
-          className={pulse.delta >= 0 ? "gain" : "loss"}
-          style={{ height: `${8 + (Math.abs(pulse.delta) / max) * 26}px` }}
-          title={`Week ${pulse.tick}: ${signedAcc(pulse.delta)}`}
-        />
-      ))}
-    </div>
-  );
-}
 
-function Headquarters({
-  observation,
-  onOpenWindow,
-  onLeavePlace,
-  lastPulse,
-}: {
-  observation: GameObservation;
-  onOpenWindow: (desk: DeskWindow) => void;
-  onLeavePlace: () => void;
-  lastPulse: GameObservation["pulses"][number] | undefined;
-}) {
-  const available = observation.inventory.filter((asset) => asset.facilityId === observation.firm.warehouseFacilityId).length;
-  const inTransit = observation.inventory.filter((asset) => asset.transferId !== null).length;
-  const reachableNodes = observation.nodes.filter((node) => node.state !== "locked").length;
-  return (
-    <section className="hq-scene" aria-label="Tokyo HQ operations desk" data-hq-shot={hqBackdropShot()}>
-      <div className="hq-backdrop" aria-hidden="true">
-        <ArtImage shot={hqBackdropShot()} className="hq-plate" alt="" />
-      </div>
-      <div className="hq-overlay" aria-hidden="true" />
-      <div className="office-copy">
-        <p className="eyebrow">PLACE / TOKYO HQ / KANTO</p>
-        <h2>The book is moving.</h2>
-        <p>
-          {lastPulse
-            ? `Week ${lastPulse.tick} pulse: ${signedAcc(lastPulse.delta)}. ${available} assets ready; ${inTransit} in transit.`
-            : "Opening inventory is positioned. The first demand pulse is approaching."}
-        </p>
-      </div>
-      {lastPulse && (
-        <div className="live-breakdown" aria-label="Latest ACC pulse breakdown">
-          <span>Sales {signedAcc(lastPulse.sales)}</span>
-          <span>Purchases {signedAcc(lastPulse.purchases)}</span>
-          <span>Repair {signedAcc(lastPulse.repair)}</span>
-          <span>Logistics {signedAcc(lastPulse.logistics)}</span>
-          <span>Overhead {signedAcc(lastPulse.overhead)}</span>
-          {lastPulse.contracts !== 0 && <span>Contracts {signedAcc(lastPulse.contracts)}</span>}
-          {lastPulse.penalties !== 0 && <span>Penalties {signedAcc(lastPulse.penalties)}</span>}
-        </div>
-      )}
-      <div className="founder-objectives">
-        <span className={observation.pulses.length > 0 ? "complete" : ""}>1 · Resolve first pulse</span>
-        <span className={observation.firm.manualAcquisitions > 0 ? "complete" : ""}>2 · Acquire an asset</span>
-        <span className={observation.firm.repairsCompleted > 0 ? "complete" : ""}>3 · Complete a repair</span>
-        <span className={observation.nodes.some((node) => node.state === "partner" && node.role !== "hq") ? "complete" : ""}>4 · Establish a partner</span>
-        <span className={observation.pbhContracts.some((contract) => contract.status === "active" || contract.status === "completed") ? "complete" : ""}>5 · Operate PBH</span>
-      </div>
-      <button className="hotspot monitors" onClick={() => onOpenWindow("market")}>
-        <span>Connected monitors</span>
-        <strong>Open Marketplace</strong>
-      </button>
-      <button className="hotspot phone" onClick={() => onOpenWindow("sales")}>
-        <span>Buyer line</span>
-        <strong>Sales Office</strong>
-      </button>
-      <button className="hotspot manifest" onClick={() => onOpenWindow("assets")}>
-        <span>Asset manifest</span>
-        <strong>{available} in warehouse</strong>
-      </button>
-      <button className="hotspot strategy-board" onClick={() => onOpenWindow("strategy")}>
-        <span>Acquisition policy</span>
-        <strong>Buying Strategy</strong>
-      </button>
-      <button className="hotspot map-window" onClick={onLeavePlace}>
-        <span>Leave HQ</span>
-        <strong>Return to Kanto · {reachableNodes} charted</strong>
-      </button>
-    </section>
-  );
-}
 
-function LocationBar({
-  nav,
-  placeLabel,
-  onNavigate,
-  onBack,
-  onOpenWindow,
-}: {
-  nav: Navigation;
-  placeLabel: string;
-  onNavigate: (next: Navigation) => void;
-  onBack: () => void;
-  onOpenWindow: (desk: DeskWindow) => void;
-}) {
-  const crumbs = navigationCrumbs(nav, placeLabel);
-  return (
-    <nav className="nav-stack" aria-label="Location">
-      <ol className="nav-crumbs">
-        {crumbs.map((crumb) => (
-          <li key={`${crumb.label}-${crumb.current ? "here" : "up"}`}>
-            {crumb.current ? (
-              <span aria-current="page">{crumb.label}</span>
-            ) : (
-              <button type="button" onClick={() => onNavigate(crumb.target)}>{crumb.label}</button>
-            )}
-          </li>
-        ))}
-      </ol>
-      <button type="button" className="nav-back" disabled={!canGoBack(nav)} onClick={onBack}>
-        Back
-      </button>
-      <details className="desk-menu">
-        <summary>Desks</summary>
-        <div className="desk-menu-list">
-          {DESK_WINDOWS.map((desk) => (
-            <button
-              key={desk.id}
-              type="button"
-              className={nav.layer === "place" && nav.window === desk.id ? "active" : ""}
-              onClick={() => onOpenWindow(desk.id)}
-            >
-              {desk.label}
-            </button>
-          ))}
-        </div>
-      </details>
-    </nav>
-  );
-}
-
-function RegionSurvey({
-  observation,
-  regionId,
-  onEnterPlace,
-  onInspect,
-}: {
-  observation: GameObservation;
-  regionId: string;
-  onEnterPlace: (nodeId: string) => void;
-  onInspect: (id: string) => void;
-}) {
-  const region = regionById(regionId);
-  const nodes = nodesInRegion(observation.nodes, regionId);
-  return (
-    <section className="region-scene" aria-label={`${region.label} region`}>
-      <div className="region-copy">
-        <p className="eyebrow">{region.numeral} · {region.code}</p>
-        <h2>{region.label}</h2>
-        <p>{region.blurb}</p>
-      </div>
-      <RegionLandingChart observation={observation} regionId={regionId} onEnterPlace={onEnterPlace} />
-      <div className="facility-grid">
-        {nodes.map((node) => {
-          const facility = facilityForNode(observation.facilities, node);
-          const locked = node.state === "locked";
-          const title = locked
-            ? "Uncharted facility"
-            : node.role === "hq"
-              ? "Tokyo HQ"
-              : facility?.name ?? node.label;
-          return (
-            <article key={node.id} className={`facility-card ${node.state}`}>
-              <div className="card-heading">
-                <span className="stamp">{(facility?.kind ?? node.role).replaceAll("_", " ")}</span>
-                <span className={`stamp ${node.state}`}>{node.state.toUpperCase()}</span>
-              </div>
-              <h3>{title}</h3>
-              <p>
-                {locked
-                  ? `Needs reputation ${node.reputationRequired}. Private terms remain hidden.`
-                  : `${node.role} · logistics ${node.logisticsTatTicks} wk`}
-              </p>
-              <div className="facility-actions">
-                <button
-                  type="button"
-                  className="primary small"
-                  disabled={locked}
-                  onClick={() => onEnterPlace(node.id)}
-                >
-                  {node.role === "hq" ? "Enter Tokyo HQ" : locked ? "Not yet discovered" : `Enter ${title}`}
-                </button>
-                {!locked && node.role !== "hq" && (
-                  <button type="button" className="secondary" onClick={() => onInspect(node.id)}>
-                    Inspect organization
-                  </button>
-                )}
-              </div>
-            </article>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-
-function FacilityPlace({
-  observation,
-  nodeId,
-  regionId,
-  onInspect,
-  onOpenMarket,
-  onCommand,
-}: {
-  observation: GameObservation;
-  nodeId: string;
-  regionId: string;
-  onInspect: (id: string) => void;
-  onOpenMarket: (listingId: number | null) => void;
-  onCommand: (command: unknown, message: string) => void;
-}) {
-  const node = observation.nodes.find((candidate) => candidate.id === nodeId);
-  const facility = node ? facilityForNode(observation.facilities, node) : undefined;
-  const region = regionById(regionId);
-  const opportunities = observation.opportunities.filter((opportunity) => opportunity.nodeId === nodeId);
-  const listingsHere = observation.listings.filter((listing) => listing.nodeId === nodeId);
-  if (!node) return <Empty>Place not found.</Empty>;
-  return (
-    <section className="place-frame" aria-label={facility?.name ?? node.label}>
-      <p className="eyebrow">{region.code} / {(facility?.kind ?? node.role).replaceAll("_", " ").toUpperCase()} / {node.state.toUpperCase()}</p>
-      <h2>{facility?.name ?? node.label}</h2>
-      <p>{node.hiddenDetail || `${node.role} place in ${region.label}.`}</p>
-      <div className="metric-grid">
-        <Metric label="Logistics TAT" value={`${node.logisticsTatTicks} wk`} />
-        <Metric
-          label="Relationship"
-          value={String(observation.relationships.find((relationship) => relationship.organizationId === node.organizationId)?.score ?? 0)}
-        />
-        <Metric label="Listings here" value={String(listingsHere.length)} />
-      </div>
-      <div className="facility-actions">
-        <button type="button" className="secondary" onClick={() => onInspect(node.id)}>Inspect organization</button>
-        <button type="button" className="primary" onClick={() => onOpenMarket(listingsHere[0]?.id ?? null)}>
-          Open marketplace window
-        </button>
-      </div>
-      <h3>Opportunities</h3>
-      {opportunities.length === 0 && <Empty>No active opportunity at this place.</Empty>}
-      {opportunities.map((opportunity) => (
-        <OpportunityRow
-          key={opportunity.id}
-          opportunity={opportunity}
-          onCommand={onCommand}
-          onOpenListing={(listingId) => onOpenMarket(listingId)}
-        />
-      ))}
-    </section>
-  );
-}
-
-function renderDeskWindow(
-  desk: DeskWindow | undefined,
-  ctx: {
-    observation: GameObservation;
-    marketFocus: number | null;
-    onCommand: (command: unknown, message: string) => void;
-    onInspectAsset: (id: number) => void;
-    onInspectPart: (id: string) => void;
-  },
-): ReactNode {
-  if (!desk) return null;
-  if (desk === "market") {
-    return (
-      <Marketplace
-        observation={ctx.observation}
-        focusListingId={ctx.marketFocus}
-        onBuy={(listing) =>
-          ctx.onCommand(
-            {
-              type: "purchase_listing",
-              listingId: listing.id,
-              destinationFacilityId: ctx.observation.firm.warehouseFacilityId,
-            },
-            `${listing.kind === "package" ? "Package" : "Asset"} purchase`,
-          )
-        }
-        onInspectPart={ctx.onInspectPart}
-      />
-    );
-  }
-  if (desk === "strategy") return <StrategySheet observation={ctx.observation} onCommand={ctx.onCommand} />;
-  if (desk === "sales") return <SalesOffice observation={ctx.observation} onCommand={ctx.onCommand} />;
-  if (desk === "assets") {
-    return (
-      <AssetControl
-        observation={ctx.observation}
-        onCommand={ctx.onCommand}
-        onInspect={ctx.onInspectAsset}
-      />
-    );
-  }
-  if (desk === "kpis") return <KpiIndex />;
-  return <PbhDesk observation={ctx.observation} onCommand={ctx.onCommand} />;
-}
 
 function OpportunityRow({
   opportunity,
@@ -1318,6 +971,21 @@ function InspectSheet({
       <>
         <p className="eyebrow">PART MASTER / ATA {part.ata}</p>
         <h2>{part.name}</h2>
+        <p className="part-marks">
+          <AssetClassMark assetClass={ataAssetClass(part.ata)} />
+          <CategoryMark category={part.category} />
+          <span className="part-marks-text">
+            {capitalise(part.category)} · {ataAssetClass(part.ata)}
+          </span>
+        </p>
+        <p className="part-series">
+          {part.seriesIds.map((seriesId) => (
+            <span className="part-series-item" key={seriesId}>
+              <SeriesMark seriesId={seriesId} />
+              <span>{seriesId}</span>
+            </span>
+          ))}
+        </p>
         <div className="metric-grid">
           <Metric label="Fictional P/N" value={part.id} />
           <Metric label="Removal model" value={part.removalMode} />
@@ -1433,7 +1101,16 @@ function Metric({ label, value }: { label: string; value: string }) {
 }
 
 function Condition({ value }: { value: string }) {
-  return <span className={`condition condition-${value.toLowerCase()}`}>{value}</span>;
+  return (
+    <span className={`condition condition-${value.toLowerCase()}`}>
+      <ConditionBadge condition={value} />
+      {value}
+    </span>
+  );
+}
+
+function capitalise(value: string): string {
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
 function Empty({ children }: { children: ReactNode }) {
@@ -1537,4 +1214,12 @@ function latestFeedbackEvent(events: GameObservation["events"]) {
       ].includes(event.kind),
     )
   );
+}
+
+
+/** 0..1 through the current live pulse, derived from the runner's remaining time. */
+function pulseProgress(snapshot: LiveSnapshot): number {
+  const total = tickDurationMs(snapshot.pace);
+  if (total <= 0) return 0;
+  return Math.min(1, Math.max(0, 1 - snapshot.remainingMs / total));
 }

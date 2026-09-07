@@ -1,56 +1,66 @@
 import { expect, test } from "@playwright/test";
 
-test("founder zooms world → region → HQ, opens a market window, and walks back", async ({ page }) => {
+test("founder names a company, works the desk, and reaches every surface", async ({ page }) => {
   await page.goto("/");
+
+  // --- New game: name the company and the founder, pick a portrait -----------
   await expect(page.getByRole("heading", { name: "Aero Asset Tycoon" })).toBeVisible();
-  await page.getByRole("button", { name: "Enter the world" }).click();
+  await page.getByRole("button", { name: /Roll a company name/ }).click();
+  await page.getByRole("button", { name: /Roll a founder name and portrait/ }).click();
+  await page.screenshot({ path: "test-results/new-game.png", fullPage: true });
 
-  await expect(page.getByRole("button", { name: "Enter Kanto", exact: true })).toBeVisible();
-  await expect(page.getByRole("navigation", { name: "Location" })).toContainText("World");
-  await expect(page.locator(".airmail-poster")).toBeVisible();
-  await expect(page.getByLabel("World regions")).toBeVisible();
-  await page.screenshot({ path: "test-results/world-map.png", fullPage: true });
+  await page.getByRole("button", { name: /Set up shop/ }).click();
 
-  await page.getByRole("button", { name: "Enter Kanto", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Kanto", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Enter Tokyo HQ" })).toBeVisible();
-  await page.screenshot({ path: "test-results/kanto-region.png", fullPage: true });
+  // --- Office HQ: the three monitors, the wall, and the side screen ----------
+  const strip = page.getByRole("button", { name: "Fleet Manager", exact: false });
+  await expect(strip.first()).toBeVisible();
+  await page.screenshot({ path: "test-results/office-hq.png", fullPage: true });
 
-  await page.getByRole("button", { name: "Enter Tokyo HQ" }).click();
-  await expect(page.locator(".hq-scene .hq-plate")).toHaveAttribute("src", /\/assets\/gen\/hq-founder-asian-man\.webp/);
-  await expect(page.getByRole("button", { name: /Open Marketplace/ })).toBeVisible();
-  await expect(page.getByRole("status")).toContainText("Enter Kanto to reach Tokyo HQ");
-  await expect(page.getByRole("button", { name: "Resume" })).toBeVisible();
-  await page.screenshot({ path: "test-results/founder-hq.png", fullPage: true });
+  // The pulse wheel is the turn control and carries the week and year.
+  const wheel = page.getByRole("button", { name: /Resolve week/ });
+  await expect(wheel).toBeVisible();
 
-  await page.getByRole("button", { name: /Open Marketplace/ }).click();
-  await expect(page.getByRole("dialog", { name: "Marketplace window" })).toBeVisible();
+  // The certificate wall moved to the left pier when the back wall opened up to
+  // glazing. Its click target has to move with it, or it lands on empty glass.
+  await page.locator(".officehq-hotspot--wall").click();
+  await expect(page.getByRole("heading", { name: /Tribal Knowledge/i })).toBeVisible();
+  await page.getByRole("button", { name: "Office HQ", exact: true }).click();
+
+  // --- Marketplace: buy a package, then resolve the pulse --------------------
+  await page.getByRole("button", { name: "Marketplace", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Marketplace" })).toBeVisible();
-  await expect(page.getByText("WINDOW ON TOKYO HQ")).toBeVisible();
   const packageButton = page.getByRole("button", { name: "Buy package" }).first();
   await expect(packageButton).toBeVisible();
   await packageButton.click();
-  await expect(page.getByRole("status")).toContainText("Queued for the next pulse");
+  await expect(page.getByRole("status").first()).toContainText("Queued for the next pulse");
 
-  await page.getByRole("button", { name: "Pulse" }).click();
-  await expect(page.getByText("WEEK 1 PULSE", { exact: true })).toBeVisible();
-  await expect(page.getByRole("status").filter({ hasText: "Purchase accepted" })).toBeVisible();
+  await wheel.click();
+  await expect(page.getByRole("status").filter({ hasText: "Purchase accepted" }).first()).toBeVisible();
 
-  await page.getByRole("button", { name: "Close window" }).click();
-  await expect(page.getByRole("button", { name: /Open Marketplace/ })).toBeVisible();
-  await expect(page.getByRole("dialog", { name: "Marketplace window" })).toHaveCount(0);
+  // The post-pulse beat is a notification about the pulse just resolved; moving to
+  // another surface must clear it rather than covering what you navigated to.
+  await page.getByRole("button", { name: "Finance", exact: true }).click();
+  await expect(page.getByText("The market moved while you slept.")).toHaveCount(0);
 
-  await page.getByRole("button", { name: "Back" }).click();
-  await expect(page.getByRole("heading", { name: "Kanto", exact: true })).toBeVisible();
+  // --- Network map: fog of war and the ATA filter bar ------------------------
+  await page.getByRole("button", { name: "Network Map", exact: true }).click();
+  await expect(page.getByText(/TAM/).first()).toBeVisible();
+  await page.screenshot({ path: "test-results/network-map.png", fullPage: true });
 
-  await page.getByRole("button", { name: "Back" }).click();
-  await expect(page.getByRole("button", { name: "Enter Kanto", exact: true })).toBeVisible();
-  await expect(page.getByRole("navigation", { name: "Location" }).getByText("World", { exact: true })).toBeVisible();
+  // --- The rest of the surfaces open ----------------------------------------
+  for (const surface of ["Finance", "Fleet Manager", "Intelligence", "Tribal Knowledge", "Team"]) {
+    await page.getByRole("button", { name: surface, exact: true }).click();
+    await expect(page.locator(".workspace")).toBeVisible();
+    await page.screenshot({
+      path: `test-results/surface-${surface.toLowerCase().replace(/ /g, "-")}.png`,
+      fullPage: true,
+    });
+  }
 
-  await page.getByRole("button", { name: "Save" }).click();
-  await expect(page.getByRole("status").filter({ hasText: "Saved as founder-slot" })).toBeVisible();
+  // --- Save and reload ------------------------------------------------------
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  await expect(page.getByRole("status").filter({ hasText: "Saved as founder-slot" }).first()).toBeVisible();
   await page.reload();
-  await expect(page.getByText("Continue saved campaign")).toBeVisible();
   await page.getByRole("button", { name: /founder-slot/ }).click();
-  await expect(page.getByRole("button", { name: "Enter Kanto", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Resolve week/ })).toBeVisible();
 });

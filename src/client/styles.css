@@ -1,44 +1,67 @@
 :root {
   color-scheme: light;
   font-family: Inter, "Segoe UI", Arial, sans-serif;
-  color: #2d3a2e;
-  background: #e8f0e4;
+  color: #1c2126;
+  background: #dfe3e7;
   font-synthesis: none;
 
-  /* Solarpunk palette — warm, organic, sustainable */
-  --paper: #f5f9f0;
-  --paper-deep: #e0ead8;
-  --paper-glow: rgba(255, 255, 255, 0.94);
-  --ink: #2d3a2e;
-  --ink-soft: #4a5d4c;
-  --muted: #6b7d6d;
-  --hairline: #a8c0a0;
-  --cyan: #2d7a5f;
-  --cyan-bright: #3da87f;
-  --cyan-deep: #1e5a44;
-  --cyan-glow: rgba(61, 168, 127, 0.35);
-  --green: #2d7a4c;
-  --green-soft: #d8ecd8;
-  --amber: #b8860b;
-  --amber-soft: #f5e8c8;
-  --gold: #d4af37;
-  --red: #a84c3a;
-  --red-soft: #f5ddd8;
-  --white: rgba(255, 255, 255, 0.88);
-  --ink-wash: rgba(45, 58, 46, 0.94);
+  /* Aero corporate palette — graphite, warm white, brushed aluminium, one accent.
+     Names are inherited from the previous skin so existing rules re-colour for free. */
+  --paper: #f4f5f6;
+  --paper-deep: #e3e6e9;
+  --paper-glow: rgba(255, 255, 255, 0.96);
+  --ink: #1c2126;
+  --ink-soft: #39424b;
+  --muted: #6a747e;
+  --hairline: #b9c0c7;
+
+  /* The single accent. Block Aero blue. */
+  --cyan: #1b6fd4;
+  --cyan-bright: #3f8ee8;
+  --cyan-deep: #114a91;
+  --cyan-glow: rgba(63, 142, 232, 0.32);
+
+  /* Status only — navigation-light red and green, never decoration. */
+  --green: #1f7a4d;
+  --green-soft: #dcefe4;
+  --red: #b23a2f;
+  --red-soft: #f7e0dc;
+  --amber: #9a6b12;
+  --amber-soft: #f5e9cf;
+  --gold: #b9922f;
+
+  --white: rgba(255, 255, 255, 0.9);
+  --ink-wash: rgba(28, 33, 38, 0.94);
+
+  /* Materials */
+  --graphite-900: #14181c;
+  --graphite-800: #1c2126;
+  --graphite-700: #262d34;
+  --graphite-600: #333c45;
+  --graphite-500: #4a545e;
+  --aluminium: linear-gradient(148deg, #d4d9de 0%, #eef1f3 26%, #c3cad1 52%, #e7eaed 74%, #cbd2d8 100%);
+  --aluminium-flat: #d2d8dd;
+
+  /* The pulse wheel is fixed to the bottom-right of the viewport. Any surface whose
+     content can reach that corner reserves this much room so nothing hides under it. */
+  --wheel-safe: 190px;
+
+  /* Seasonal hue, driven from the sim calendar by the Pulse wheel. */
+  --season-hue: 210;
+  --daylight: 0.5;
 
   /* Typography */
   --font-body: Inter, "Segoe UI", Arial, sans-serif;
   --font-data: "IBM Plex Mono", "Consolas", monospace;
   --font-display: "Saira Condensed", "Arial Narrow", sans-serif;
 
-  /* Grid — softer, organic */
+  /* Grid — tighter and cooler than the previous organic grid */
   --grid:
-    linear-gradient(rgba(74, 125, 90, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(74, 125, 90, 0.05) 1px, transparent 1px);
+    linear-gradient(rgba(58, 72, 86, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(58, 72, 86, 0.05) 1px, transparent 1px);
   --grid-strong:
-    linear-gradient(rgba(74, 125, 90, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(74, 125, 90, 0.1) 1px, transparent 1px);
+    linear-gradient(rgba(58, 72, 86, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(58, 72, 86, 0.1) 1px, transparent 1px);
 
   /* Motion */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -588,6 +611,8 @@ h4 {
 
 .workspace {
   padding: 20px;
+  /* Clear the pulse wheel, which is fixed to the bottom-right of the viewport. */
+  padding-bottom: var(--wheel-safe);
 }
 
 .paper-sheet {
@@ -1903,4 +1928,48 @@ td button {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
+}
+
+.condition:has(.condition-badge) {
+  gap: 4px;
+}
+
+/* Part inspector: the class and category marks, then the applicability list. */
+.part-marks,
+.part-series {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 0;
+}
+
+.part-marks-text {
+  font-family: var(--font-data);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.part-series-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--hairline);
+  padding: 2px 6px;
+  font-family: var(--font-data);
+  font-size: 11px;
+}
+
+/* The pre-React shell. React replaces #root's children on mount. */
+.boot-plate {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+}
+
+.boot-plate img {
+  width: min(360px, 60vw);
+  height: auto;
 }

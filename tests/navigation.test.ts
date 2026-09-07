@@ -27,6 +27,12 @@ function node(partial: Partial<NetworkNode> & Pick<NetworkNode, "id" | "x">): Ne
     relationshipRequired: 0,
     logisticsTatTicks: 1,
     hiddenDetail: "",
+    // v2 widened NetworkNode; the navigation stack does not read these.
+    regionCode: "NEASIA",
+    reach: "som",
+    ataFocus: [],
+    scale: 1,
+    slots: 1,
     ...partial,
   };
 }

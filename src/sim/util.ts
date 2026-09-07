@@ -1,5 +1,5 @@
 import { CONDITION_MULT } from "./balance.ts";
-import type { Condition, PartMaster, Trace, World } from "./types.ts";
+import type { Condition, NetworkOpportunity, PartMaster, Trace, World } from "./types.ts";
 
 export function nextId(world: World): number {
   const id = world.nextId;
@@ -77,4 +77,29 @@ export function logisticsTat(world: World, fromFacilityId: string, toFacilityId:
   const from = world.facilities.find((facility) => facility.id === fromFacilityId);
   const to = world.facilities.find((facility) => facility.id === toFacilityId);
   return Math.max(1, Math.round(((from?.logisticsTatTicks ?? 1) + (to?.logisticsTatTicks ?? 1)) / 2));
+}
+
+type OpportunityCore = Omit<
+  NetworkOpportunity,
+  "timeCost" | "rcCost" | "accCost" | "ataFocus" | "easterEgg" | "reward"
+> &
+  Partial<
+    Pick<NetworkOpportunity, "timeCost" | "rcCost" | "accCost" | "ataFocus" | "easterEgg" | "reward">
+  >;
+
+/**
+ * Fills the v2 opportunity fields so the hand-authored core world can keep using
+ * short literals. Defaults are free: an opportunity costs nothing until the code
+ * that creates it says otherwise.
+ */
+export function completeOpportunity(partial: OpportunityCore): NetworkOpportunity {
+  return {
+    ...partial,
+    timeCost: partial.timeCost ?? 0,
+    rcCost: partial.rcCost ?? 0,
+    accCost: partial.accCost ?? 0,
+    ataFocus: partial.ataFocus ?? [],
+    easterEgg: partial.easterEgg ?? false,
+    reward: partial.reward ?? "",
+  };
 }

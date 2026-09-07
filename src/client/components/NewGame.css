@@ -1,0 +1,678 @@
+/* ==========================================================================
+   New Game — the opening screen.
+   Every class is prefixed newgame- so nothing collides with the app shell.
+   Full-bleed graphite, brushed-aluminium hairlines, one accent blue.
+   All colour comes from the tokens in styles.css; the only literals live in
+   the dice SVG the component draws, and that one uses currentColor.
+   ========================================================================== */
+
+.newgame {
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+  min-height: 100vh;
+  color: var(--paper);
+  background-color: var(--graphite-900);
+  background-image:
+    radial-gradient(
+      1100px 620px at 20% -12%,
+      color-mix(in srgb, var(--cyan-deep) 30%, transparent) 0%,
+      transparent 68%
+    ),
+    radial-gradient(
+      900px 700px at 96% 108%,
+      color-mix(in srgb, var(--graphite-600) 70%, transparent) 0%,
+      transparent 62%
+    ),
+    linear-gradient(178deg, var(--graphite-800) 0%, var(--graphite-900) 100%);
+}
+
+/* Faint corporate grid, light enough to read on graphite. */
+.newgame::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--paper) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--paper) 5%, transparent) 1px, transparent 1px);
+  background-size: 26px 26px;
+  /* Alpha ramp only — the mask uses a token so no colour literal creeps in. */
+  mask-image: linear-gradient(
+    180deg,
+    var(--ink) 0%,
+    color-mix(in srgb, var(--ink) 16%, transparent) 78%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.newgame-inner {
+  display: grid;
+  gap: 56px;
+  width: min(1400px, 100%);
+  min-height: 100vh;
+  align-content: start;
+  margin: 0 auto;
+  padding: 72px 64px 56px;
+}
+
+/* --- Masthead ------------------------------------------------------------ */
+
+.newgame-masthead {
+  display: grid;
+  gap: 14px;
+  max-width: 640px;
+}
+
+.newgame .newgame-wordmark {
+  margin: 0;
+  color: color-mix(in srgb, var(--paper) 72%, transparent);
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+}
+
+.newgame .newgame-tagline {
+  max-width: 46ch;
+  margin: 0;
+  color: color-mix(in srgb, var(--paper) 56%, transparent);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* --- Body: steps on the left, saves as a quiet second column ------------- */
+
+.newgame-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 288px);
+  gap: 72px;
+  align-items: start;
+}
+
+.newgame-form {
+  display: grid;
+  gap: 60px;
+  min-width: 0;
+}
+
+.newgame-step {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+
+.newgame-step-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.newgame-step-index {
+  color: var(--cyan-bright);
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  font-variant-numeric: tabular-nums;
+}
+
+.newgame-step-title {
+  display: block;
+  color: color-mix(in srgb, var(--paper) 74%, transparent);
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* --- Name rows ----------------------------------------------------------- */
+
+.newgame-namerow {
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+  min-width: 0;
+}
+
+.newgame .newgame-input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--aluminium-flat) 34%, transparent);
+  border-radius: 0;
+  color: var(--paper);
+  background: transparent;
+  padding: 6px 2px 12px;
+  font-family: var(--font-body);
+  font-size: 15px;
+}
+
+.newgame .newgame-input::placeholder {
+  color: color-mix(in srgb, var(--paper) 26%, transparent);
+}
+
+.newgame .newgame-input:hover:not(:read-only) {
+  border-bottom-color: color-mix(in srgb, var(--aluminium-flat) 58%, transparent);
+}
+
+.newgame .newgame-input:focus,
+.newgame .newgame-input:focus-visible {
+  border-bottom-color: var(--cyan-bright);
+  outline: 0;
+  box-shadow: 0 1px 0 0 var(--cyan-bright);
+}
+
+/* The company name is the hero of the whole screen. */
+.newgame .newgame-input--hero {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 3.6vw, 58px);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.08;
+  padding-bottom: 18px;
+}
+
+.newgame .newgame-input--founder {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
+.newgame .newgame-input--mono {
+  font-family: var(--font-data);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.newgame .newgame-input[readonly] {
+  color: color-mix(in srgb, var(--paper) 60%, transparent);
+  border-bottom-style: dashed;
+  cursor: default;
+}
+
+/* --- Dice ---------------------------------------------------------------- */
+
+.newgame .newgame-dice {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  align-self: end;
+  border: 1px solid color-mix(in srgb, var(--aluminium-flat) 30%, transparent);
+  border-radius: 1px;
+  color: color-mix(in srgb, var(--paper) 72%, transparent);
+  background: color-mix(in srgb, var(--graphite-600) 55%, transparent);
+  box-shadow: none;
+}
+
+.newgame .newgame-dice--hero {
+  width: 62px;
+  height: 62px;
+  margin-bottom: 6px;
+}
+
+.newgame .newgame-dice--normal {
+  width: 46px;
+  height: 46px;
+  margin-bottom: 4px;
+}
+
+.newgame .newgame-dice svg {
+  width: 55%;
+  height: 55%;
+}
+
+.newgame .newgame-dice:hover:not(:disabled),
+.newgame .newgame-dice:focus-visible {
+  border-color: var(--cyan-bright);
+  color: var(--paper);
+  background: color-mix(in srgb, var(--cyan-deep) 42%, transparent);
+  box-shadow: 0 0 0 3px var(--cyan-glow);
+}
+
+/* --- Notes and counters --------------------------------------------------- */
+
+.newgame .newgame-note {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: 62ch;
+  margin: 0;
+  color: color-mix(in srgb, var(--paper) 44%, transparent);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.newgame-count {
+  flex: 0 0 auto;
+  color: color-mix(in srgb, var(--paper) 32%, transparent);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+}
+
+/* --- Portrait grid -------------------------------------------------------- */
+
+.newgame-portraits {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.newgame .newgame-portrait {
+  display: grid;
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--aluminium-flat) 22%, transparent);
+  border-radius: 1px;
+  color: color-mix(in srgb, var(--paper) 60%, transparent);
+  background: color-mix(in srgb, var(--graphite-700) 70%, transparent);
+  padding: 0;
+  text-align: left;
+  box-shadow: none;
+}
+
+.newgame .newgame-portrait:hover,
+.newgame .newgame-portrait:focus-visible {
+  border-color: color-mix(in srgb, var(--cyan-bright) 60%, transparent);
+  color: var(--paper);
+  background: color-mix(in srgb, var(--graphite-600) 78%, transparent);
+  box-shadow: 0 0 0 3px var(--cyan-glow);
+}
+
+.newgame .newgame-portrait[aria-pressed="true"] {
+  border-color: var(--cyan-bright);
+  color: var(--paper);
+  background: color-mix(in srgb, var(--cyan-deep) 30%, transparent);
+  box-shadow: inset 0 0 0 1px var(--cyan-bright);
+}
+
+.newgame-portrait-frame {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  /* Token-coloured gradient block: the layout holds with no art on disk. */
+  background:
+    linear-gradient(
+      158deg,
+      var(--graphite-500) 0%,
+      var(--graphite-700) 54%,
+      var(--graphite-600) 100%
+    );
+}
+
+.newgame-portrait-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: color-mix(in srgb, var(--paper) 22%, transparent);
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.newgame-portrait-frame img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.newgame-portrait-label {
+  display: block;
+  border-top: 1px solid color-mix(in srgb, var(--aluminium-flat) 16%, transparent);
+  padding: 7px 8px;
+  font-family: var(--font-data);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- Begin ---------------------------------------------------------------- */
+
+.newgame-step--begin {
+  gap: 16px;
+  justify-items: start;
+}
+
+.newgame .newgame-begin {
+  min-width: 340px;
+  border: 1px solid var(--cyan-bright);
+  border-radius: 1px;
+  color: var(--paper);
+  background: linear-gradient(180deg, var(--cyan) 0%, var(--cyan-deep) 100%);
+  padding: 20px 34px;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 8px 26px color-mix(in srgb, var(--graphite-900) 55%, transparent);
+}
+
+.newgame .newgame-begin:hover:not(:disabled),
+.newgame .newgame-begin:focus-visible {
+  border-color: var(--paper);
+  color: var(--paper);
+  background: linear-gradient(180deg, var(--cyan-bright) 0%, var(--cyan) 100%);
+  box-shadow: 0 0 0 3px var(--cyan-glow), 0 10px 30px color-mix(in srgb, var(--graphite-900) 60%, transparent);
+}
+
+.newgame .newgame-begin:disabled {
+  border-color: color-mix(in srgb, var(--aluminium-flat) 20%, transparent);
+  color: color-mix(in srgb, var(--paper) 40%, transparent);
+  background: color-mix(in srgb, var(--graphite-600) 60%, transparent);
+  box-shadow: none;
+}
+
+.newgame-status {
+  min-height: 16px;
+  font-family: var(--font-data);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+.newgame-status--error {
+  color: var(--red);
+  background: var(--red-soft);
+  padding: 3px 8px;
+  font-weight: 700;
+}
+
+.newgame-status--warn {
+  color: var(--amber);
+  background: var(--amber-soft);
+  padding: 3px 8px;
+  font-weight: 700;
+}
+
+.newgame .newgame-summary {
+  margin: 0;
+  color: color-mix(in srgb, var(--paper) 38%, transparent);
+  font-family: var(--font-data);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+/* --- Advanced disclosure --------------------------------------------------- */
+
+.newgame-advanced {
+  border-top: 1px solid color-mix(in srgb, var(--aluminium-flat) 18%, transparent);
+  padding-top: 20px;
+}
+
+.newgame-advanced-summary {
+  width: fit-content;
+  color: color-mix(in srgb, var(--paper) 46%, transparent);
+  cursor: pointer;
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.newgame-advanced-summary::marker {
+  color: color-mix(in srgb, var(--paper) 30%, transparent);
+}
+
+.newgame-advanced-summary:hover,
+.newgame-advanced-summary:focus-visible {
+  color: var(--cyan-bright);
+  outline: 0;
+}
+
+.newgame-advanced-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px 40px;
+  border-left: 1px solid color-mix(in srgb, var(--aluminium-flat) 16%, transparent);
+  margin-top: 20px;
+  padding: 4px 0 4px 22px;
+}
+
+.newgame-field,
+.newgame .newgame-fieldset {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.newgame .newgame-field-label {
+  display: block;
+  padding: 0;
+  color: color-mix(in srgb, var(--paper) 58%, transparent);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.newgame .newgame-field-help {
+  margin: 0;
+  color: color-mix(in srgb, var(--paper) 36%, transparent);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.newgame .newgame-field-help strong {
+  color: color-mix(in srgb, var(--paper) 72%, transparent);
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+}
+
+.newgame-seedrow {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+}
+
+.newgame .newgame-ghost {
+  flex: 0 0 auto;
+  border: 1px solid color-mix(in srgb, var(--aluminium-flat) 26%, transparent);
+  border-radius: 1px;
+  color: color-mix(in srgb, var(--paper) 66%, transparent);
+  background: transparent;
+  padding: 7px 12px;
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  box-shadow: none;
+}
+
+.newgame .newgame-ghost:hover:not(:disabled),
+.newgame .newgame-ghost:focus-visible {
+  border-color: var(--cyan-bright);
+  color: var(--paper);
+  background: color-mix(in srgb, var(--cyan-deep) 34%, transparent);
+  box-shadow: 0 0 0 3px var(--cyan-glow);
+}
+
+.newgame .newgame-radio {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: color-mix(in srgb, var(--paper) 74%, transparent);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.newgame .newgame-radio input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  background: none;
+  accent-color: var(--cyan-bright);
+}
+
+/* --- Saves column ---------------------------------------------------------- */
+
+.newgame-aside {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  border-left: 1px solid color-mix(in srgb, var(--aluminium-flat) 16%, transparent);
+  padding-left: 28px;
+}
+
+.newgame .newgame-aside-title {
+  margin: 0 0 4px;
+  color: color-mix(in srgb, var(--paper) 58%, transparent);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.newgame-saves {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.newgame .newgame-save {
+  display: grid;
+  width: 100%;
+  gap: 3px;
+  border: 1px solid color-mix(in srgb, var(--aluminium-flat) 16%, transparent);
+  border-radius: 1px;
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
+  background: color-mix(in srgb, var(--graphite-700) 55%, transparent);
+  padding: 11px 12px;
+  text-align: left;
+  box-shadow: none;
+}
+
+.newgame .newgame-save:hover:not(:disabled),
+.newgame .newgame-save:focus-visible {
+  border-color: var(--cyan-bright);
+  color: var(--paper);
+  background: color-mix(in srgb, var(--graphite-600) 72%, transparent);
+  box-shadow: 0 0 0 3px var(--cyan-glow);
+}
+
+.newgame-save-id {
+  font-family: var(--font-data);
+  font-size: 12px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.newgame-save-meta {
+  color: color-mix(in srgb, var(--paper) 42%, transparent);
+  font-family: var(--font-data);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.newgame .newgame-empty {
+  border: 1px dashed color-mix(in srgb, var(--aluminium-flat) 18%, transparent);
+  margin: 0;
+  color: color-mix(in srgb, var(--paper) 34%, transparent);
+  padding: 14px 12px;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.newgame .newgame-legal {
+  border-top: 1px solid color-mix(in srgb, var(--aluminium-flat) 14%, transparent);
+  margin: 16px 0 0;
+  padding-top: 14px;
+  color: color-mix(in srgb, var(--paper) 26%, transparent);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+/* --- Narrow shells ---------------------------------------------------------- */
+
+@media (max-width: 1360px) {
+  .newgame-inner {
+    padding: 56px 40px 44px;
+    gap: 44px;
+  }
+
+  .newgame-body {
+    gap: 44px;
+  }
+
+  .newgame-portraits {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* --- Motion: opt-in only ------------------------------------------------------ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .newgame .newgame-input,
+  .newgame .newgame-dice,
+  .newgame .newgame-portrait,
+  .newgame .newgame-begin,
+  .newgame .newgame-ghost,
+  .newgame .newgame-save {
+    transition:
+      border-color 160ms var(--ease-out),
+      background 160ms var(--ease-out),
+      color 160ms var(--ease-out),
+      box-shadow 160ms var(--ease-out),
+      transform 160ms var(--ease-out);
+  }
+
+  .newgame .newgame-portrait:hover,
+  .newgame .newgame-save:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  .newgame .newgame-begin:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  .newgame-masthead,
+  .newgame-body {
+    animation: newgame-rise 520ms var(--ease-out) both;
+  }
+
+  .newgame-body {
+    animation-delay: 90ms;
+  }
+}
+
+@keyframes newgame-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
