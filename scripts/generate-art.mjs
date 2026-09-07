@@ -3633,6 +3633,33 @@ const SHOTS = [
   })),
 ];
 
+/*
+ * Shots the game requests but which have no procedural stand-in, because a generic
+ * fallback already covers them and a hand-built stand-in would be thrown away when
+ * the render lands. Listing them keeps the catalogue honest about what is wanted.
+ *
+ * The eight founder back views: the desk scene shows one generic silhouette for every
+ * avatar until these arrive. OfficeHQ prefers hq-founder-<who> and falls back to
+ * hq-founder-idle, so a render is picked up with no code change.
+ */
+const AWAITED = [
+  "white-woman",
+  "white-man",
+  "black-woman",
+  "black-man",
+  "asian-woman",
+  "asian-man",
+  "mixed-woman",
+  "mixed-man",
+].map((who) => ({
+  id: `hq-founder-${who}`,
+  role: "hq",
+  ratio: "16:9",
+  w: HQ_W,
+  h: HQ_H,
+  fallback: "hq-founder-idle",
+}));
+
 /* ==========================================================================
    15. Write everything, then the manifest
    ========================================================================== */
@@ -3667,6 +3694,22 @@ function main() {
     });
   }
 
+  for (const shot of AWAITED) {
+    if (seen.has(shot.id)) throw new Error(`awaited shot collides with a rendered one: ${shot.id}`);
+    seen.add(shot.id);
+    const rendered = existsSync(join(GEN_DIR, `${shot.id}.webp`));
+    rows.push({
+      id: shot.id,
+      file: `assets/gen/${shot.id}.webp`,
+      role: shot.role,
+      ratio: shot.ratio,
+      w: shot.w,
+      h: shot.h,
+      generated: rendered ? "gemini" : "awaited",
+      fallback: shot.fallback,
+    });
+  }
+
   rows.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
 
   /*
@@ -3692,6 +3735,7 @@ function main() {
   );
 
   const renderedCount = rows.filter((row) => row.generated === "gemini").length;
+  const awaitedCount = rows.filter((row) => row.generated === "awaited").length;
   const byRole = rows.reduce((acc, row) => {
     acc[row.role] = (acc[row.role] ?? 0) + 1;
     return acc;
@@ -3702,7 +3746,9 @@ function main() {
         .map(([role, count]) => `  ${role}: ${count}`)
         .join("\n")}\n` +
       `manifest: public/assets/manifest.json ` +
-        `(${renderedCount} rendered, ${rows.length - renderedCount} on stand-ins)\n`,
+        `(${renderedCount} rendered, ` +
+        `${rows.length - renderedCount - awaitedCount} on stand-ins, ` +
+        `${awaitedCount} awaited)\n`,
   );
 }
 

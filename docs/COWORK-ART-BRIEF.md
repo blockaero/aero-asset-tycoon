@@ -96,7 +96,9 @@ team-buyer   team-sales   team-records   team-repair   team-regional   team-anal
 **Office HQ layers — 16:9, 2560x1440, role `hq`.** These stack, so they must align pixel for
 pixel. Render the room first and use it as the reference for every other layer. The desk is a
 **standing** desk with **three portrait-oriented** monitors angled toward the viewer, plus a
-portrait monitor on an arm to the side, and a wall of framed certificates behind.
+portrait monitor on an arm to the side. The back wall is **floor-to-ceiling glazing** in five
+bays; the framed certificates hang on the solid pier at the left of frame, not behind the
+founder.
 
 ```
 hq-room             full scene, monitors off, large window right
@@ -153,15 +155,70 @@ ata-general   ata-airframe-systems   ata-structures
 ata-propulsion   ata-avionics   ata-utilities
 ```
 
-That is 49 files.
 
-## Priority if you cannot do all 49
+## Founder back views — 8 shots, 16:9, 2560x1440, role `hq`
 
-1. The eight founder portraits. The new-game screen is the first thing a player sees.
-2. `hq-room`, `hq-monitors-idle`, `hq-monitors-lit`, `hq-founder-idle`. The main scene.
-3. The eleven facility icons. The map is unreadable without them.
-4. The six ATA badges.
-5. Everything else.
+**This is the priority for the next batch.** The scene currently shows one generic dark
+silhouette for every founder, with the chosen portrait floating in a circle at head height.
+On a figure seen from behind that reads as a face on the back of a head. Eight per-avatar back
+views replace it, and the game already prefers them: drop `hq-founder-<who>.webp` in and it is
+used automatically, with the generic silhouette staying as the fallback until then.
+
+```
+hq-founder-white-woman   hq-founder-white-man
+hq-founder-black-woman   hq-founder-black-man
+hq-founder-asian-woman   hq-founder-asian-man
+hq-founder-mixed-woman   hq-founder-mixed-man
+```
+
+Each `hq-founder-<who>` is the same person as the matching `founder-<who>` portrait: same skin
+tone, same hair silhouette and colour, same suit. A player who picks portrait 3 must recognise
+themselves at the desk.
+
+**The shot.** The founder stands at a standing desk, seen from BEHIND, facing away from the
+viewer, out through the floor-to-ceiling glazing. Head, neck, sloping shoulders, upper arms
+reading as separate masses, torso narrowing to a waist. No face, no three-quarter turn, no
+glance back over the shoulder. Standing, not seated: no chair, no chair back, no armrests, no
+wheels. Arms hang naturally or rest lightly on the desk edge.
+
+**Registration.** These stack on `hq-room`, so the figure has to land in the same place every
+time. Everything outside the figure is transparent. Against the 2560x1440 frame, with the
+figure centred on x 1280:
+
+| Landmark | Value |
+| --- | --- |
+| Top of head | about y 700 |
+| Base of neck | y 806, half-width 40 |
+| Collar | y 858 |
+| Shoulder tips | y 922, x 1280 plus or minus 178 |
+| Right shoulder sits lower than left by | 8 px |
+| Armpit | y 972, x 1280 plus or minus 138 |
+| Waist, the narrowest point | y 1156, half-width 96 |
+| Hip | y 1252, half-width 116 |
+| Outer edge of arms | x 1280 plus or minus 196 |
+| Desk back edge, for reference | y 1043 |
+
+Shoulder tips must sit about 120 px above the desk back edge. That gap is what makes the figure
+read as standing at the desk rather than sitting behind it. The widest point must stay inside
+x 1084 to 1476 so the figure never overlaps the flanking monitors.
+
+**Lighting.** The light is behind them, coming through the glazing, so expect a rim light along
+the shoulders and the top of the head and a body that sits in relative shade. That contre-jour
+is what sells the pose.
+
+That takes the shot list from 49 to 57.
+
+That is 57 files.
+
+## Priority if you cannot do them all
+
+1. ~~The eight founder portraits.~~ Seven done in batch 01; `founder-white-man` outstanding.
+2. **The eight founder back views above.** The desk scene shows a generic silhouette for
+   everyone until these land.
+3. `hq-room`, `hq-monitors-idle`, `hq-monitors-lit`. The rest of the main scene.
+4. The eleven facility icons. The map is unreadable without them.
+5. The six ATA badges.
+6. Everything else.
 
 ---
 

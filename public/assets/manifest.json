@@ -272,6 +272,46 @@
       "generated": "procedural"
     },
     {
+      "id": "hq-founder-asian-man",
+      "file": "assets/gen/hq-founder-asian-man.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "awaited",
+      "fallback": "hq-founder-idle"
+    },
+    {
+      "id": "hq-founder-asian-woman",
+      "file": "assets/gen/hq-founder-asian-woman.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "awaited",
+      "fallback": "hq-founder-idle"
+    },
+    {
+      "id": "hq-founder-black-man",
+      "file": "assets/gen/hq-founder-black-man.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "awaited",
+      "fallback": "hq-founder-idle"
+    },
+    {
+      "id": "hq-founder-black-woman",
+      "file": "assets/gen/hq-founder-black-woman.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "awaited",
+      "fallback": "hq-founder-idle"
+    },
+    {
       "id": "hq-founder-idle",
       "file": "assets/gen/hq-founder-idle.svg",
       "role": "hq",
@@ -279,6 +319,46 @@
       "w": 2560,
       "h": 1440,
       "generated": "procedural"
+    },
+    {
+      "id": "hq-founder-mixed-man",
+      "file": "assets/gen/hq-founder-mixed-man.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "awaited",
+      "fallback": "hq-founder-idle"
+    },
+    {
+      "id": "hq-founder-mixed-woman",
+      "file": "assets/gen/hq-founder-mixed-woman.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "awaited",
+      "fallback": "hq-founder-idle"
+    },
+    {
+      "id": "hq-founder-white-man",
+      "file": "assets/gen/hq-founder-white-man.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "awaited",
+      "fallback": "hq-founder-idle"
+    },
+    {
+      "id": "hq-founder-white-woman",
+      "file": "assets/gen/hq-founder-white-woman.webp",
+      "role": "hq",
+      "ratio": "16:9",
+      "w": 2560,
+      "h": 1440,
+      "generated": "awaited",
+      "fallback": "hq-founder-idle"
     },
     {
       "id": "hq-monitors-idle",

@@ -187,16 +187,22 @@ export function OfficeHQ({
           style={{ opacity: monitorsLit ? 1 : 0 }}
         />
 
+        {/* Prefer a back view of the chosen avatar standing at the desk. Until that
+            art exists the generic silhouette stands in, and only then does the face
+            inset appear: on a real back view a floating portrait would read as a
+            face on the back of a head. */}
         <HqLayer
           modifier="founder"
-          name="hq-founder-idle"
+          name={[founderShot(portraitId), "hq-founder-idle"]}
           alt=""
-          behind={
-            <HqArt
-              className="officehq-portrait"
-              name={portraitId}
-              alt={`${founderName}, founder`}
-            />
+          renderBehind={(idIndex) =>
+            idIndex > 0 ? (
+              <HqArt
+                className="officehq-portrait"
+                name={portraitId}
+                alt={`${founderName}, founder`}
+              />
+            ) : null
           }
         />
 
@@ -289,13 +295,17 @@ function HqLayer({
   style,
   behind,
   children,
+  renderBehind,
 }: {
   modifier: string;
-  name: string;
+  /** A shot id, or a preference list tried in order before giving up. */
+  name: string | string[];
   alt: string;
   style?: CSSProperties;
   behind?: ReactNode;
   children?: ReactNode;
+  /** Behind-content that depends on which shot in the list actually loaded. */
+  renderBehind?: (idIndex: number) => ReactNode;
 }): ReactNode {
   const art = useArtSource(name);
   return (
@@ -305,6 +315,7 @@ function HqLayer({
       data-missing={art.exhausted ? "true" : undefined}
     >
       {behind}
+      {renderBehind?.(art.idIndex)}
       {art.exhausted ? null : (
         <img
           className="officehq-art"
@@ -317,6 +328,14 @@ function HqLayer({
       {children}
     </div>
   );
+}
+
+/**
+ * The back-view shot for a chosen avatar. Portrait ids are `founder-<who>`; the
+ * matching scene shot is `hq-founder-<who>`, so the two stay obviously paired.
+ */
+function founderShot(portraitId: string): string {
+  return `hq-founder-${portraitId.replace(/^founder-/, "")}`;
 }
 
 /** A single piece of art that vanishes rather than breaking the layout. */

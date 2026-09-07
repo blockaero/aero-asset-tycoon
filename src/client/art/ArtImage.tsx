@@ -44,21 +44,30 @@ function sourcesFor(id: string): string[] {
  * Components must never hardcode an extension. Doing so pins them to one format and
  * a real render dropped in as .webp is then silently ignored.
  */
-export function useArtSource(id: string): {
+export function useArtSource(id: string | string[]): {
   src: string;
   onError: () => void;
   exhausted: boolean;
+  /** Index into the id list that is currently loading. 0 is the preferred shot. */
+  idIndex: number;
 } {
+  const ids = typeof id === "string" ? [id] : id;
+  const key = ids.join("|");
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     setAttempt(0);
-  }, [id]);
-  const sources = sourcesFor(id);
+  }, [key]);
+
+  // Id-major, so a specific shot is fully exhausted in both formats before falling
+  // back to a more generic one. Callers read idIndex to tell which they landed on.
+  const sources = ids.flatMap((entry) => sourcesFor(entry));
+  const perId = sources.length / Math.max(1, ids.length);
   const exhausted = attempt >= sources.length;
   return {
     src: exhausted ? "" : sources[attempt]!,
     onError: () => setAttempt((current) => current + 1),
     exhausted,
+    idIndex: exhausted ? ids.length : Math.floor(attempt / perId),
   };
 }
 
