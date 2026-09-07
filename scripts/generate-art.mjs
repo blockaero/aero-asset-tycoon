@@ -3643,6 +3643,36 @@ const SHOTS = [
  * hq-founder-idle, so a render is picked up with no code change.
  */
 
+const CONDITION_CODES = ["ne", "ns", "oh", "sv", "rp", "ar", "ber", "scrap"];
+
+/**
+ * Opportunity kinds and easter eggs, mirrored from src/sim/opportunities.ts. The
+ * registry test fails if a delivered card has no row here.
+ */
+const CARD_IDS = [
+  "card-egg-bonded-store-release",
+  "card-egg-broker-favour",
+  "card-egg-chapter-specialist",
+  "card-egg-idle-overhaul-capacity",
+  "card-egg-misfiled-llp-consignment",
+  "card-egg-portfolio-rebalance",
+  "card-egg-records-archive",
+  "card-egg-restructuring-package",
+  "card-egg-spare-capacity-lease",
+  "card-egg-unlisted-qec",
+  "card-opp-agreement",
+  "card-opp-buyer-need",
+  "card-opp-candidate",
+  "card-opp-conference",
+  "card-opp-intel",
+  "card-opp-introduction",
+  "card-opp-listing",
+  "card-opp-teardown",
+  "card-opp-warehouse-as-removed",
+  "card-opp-warehouse-questionable",
+  "card-opp-warehouse-rotables",
+];
+
 /**
  * ATA chapters that carry a glyph. Mirrors the chapter codes in src/sim/ata.ts; the
  * shot-manifest build is generated from the sim enum itself, and tests/art-registry
@@ -3697,6 +3727,26 @@ const AWAITED = [
     w: 512,
     h: 512,
     fallback: "none",
+  })),
+).concat(
+  // Condition badges, ordered new down to scrap.
+  CONDITION_CODES.map((code) => ({
+    id: `condition-${code}`,
+    role: "badge",
+    ratio: "1:1",
+    w: 128,
+    h: 128,
+    fallback: "none",
+  })),
+  // Opportunity and easter-egg cards. NetworkMapV2 draws these through
+  // opportunityCardShotId, so the id here has to match that function exactly.
+  CARD_IDS.map((id) => ({
+    id,
+    role: "card",
+    ratio: "3:2",
+    w: 1200,
+    h: 800,
+    fallback: "netmapv2-card-plate",
   })),
 );
 

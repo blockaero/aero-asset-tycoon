@@ -944,3 +944,15 @@
   height: 26px;
   opacity: 0.8;
 }
+
+/* With a badge present the dot is redundant; the code stays either way. */
+.fleetmgr-cond:has(.condition-badge) .fleetmgr-cond-dot {
+  display: none;
+}
+
+.fleetmgr-group-head:has(.ata-group-plate) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}

@@ -29,6 +29,7 @@ import { IntelMonitor } from "./components/IntelMonitor.tsx";
 import { TribalKnowledge } from "./components/TribalKnowledge.tsx";
 import { TeamScreen } from "./components/TeamScreen.tsx";
 import { tickDurationMs } from "../sim/balance.ts";
+import { ConditionBadge } from "./art/ConditionBadge.tsx";
 
 /**
  * The office is the shell. Everything else is a surface opened from it: three
@@ -1083,7 +1084,12 @@ function Metric({ label, value }: { label: string; value: string }) {
 }
 
 function Condition({ value }: { value: string }) {
-  return <span className={`condition condition-${value.toLowerCase()}`}>{value}</span>;
+  return (
+    <span className={`condition condition-${value.toLowerCase()}`}>
+      <ConditionBadge condition={value} />
+      {value}
+    </span>
+  );
 }
 
 function Empty({ children }: { children: ReactNode }) {

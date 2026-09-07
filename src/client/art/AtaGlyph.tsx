@@ -7,6 +7,7 @@
  * chip row reads as broken, an unillustrated one just reads as text.
  */
 
+import type { AtaGroup } from "../../sim/types.ts";
 import { useArtSource } from "./ArtImage.tsx";
 import "./AtaGlyph.css";
 
@@ -27,6 +28,28 @@ export function AtaGlyph({ code, size = "chip", className = "" }: AtaGlyphProps)
   return (
     <img
       className={`ata-glyph ata-glyph--${size} ${className}`.trim()}
+      src={art.src}
+      alt=""
+      aria-hidden
+      draggable={false}
+      loading="lazy"
+      decoding="async"
+      onError={art.onError}
+    />
+  );
+}
+
+export function ataGroupPlateId(group: AtaGroup): string {
+  return `ata-${group.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
+}
+
+/** The tier above the chapter glyph: one plate per ATA group, on section headings. */
+export function AtaGroupPlate({ group, className = "" }: { group: AtaGroup; className?: string }) {
+  const art = useArtSource(ataGroupPlateId(group));
+  if (art.exhausted) return null;
+  return (
+    <img
+      className={`ata-group-plate ${className}`.trim()}
       src={art.src}
       alt=""
       aria-hidden

@@ -3,21 +3,21 @@
   "assets": [
     {
       "id": "ata-airframe-systems",
-      "file": "assets/gen/ata-airframe-systems.svg",
+      "file": "assets/gen/ata-airframe-systems.webp",
       "role": "ata",
       "ratio": "1:1",
       "w": 512,
       "h": 512,
-      "generated": "procedural"
+      "generated": "gemini"
     },
     {
       "id": "ata-avionics",
-      "file": "assets/gen/ata-avionics.svg",
+      "file": "assets/gen/ata-avionics.webp",
       "role": "ata",
       "ratio": "1:1",
       "w": 512,
       "h": 512,
-      "generated": "procedural"
+      "generated": "gemini"
     },
     {
       "id": "ata-ch-05",
@@ -491,39 +491,39 @@
     },
     {
       "id": "ata-general",
-      "file": "assets/gen/ata-general.svg",
+      "file": "assets/gen/ata-general.webp",
       "role": "ata",
       "ratio": "1:1",
       "w": 512,
       "h": 512,
-      "generated": "procedural"
+      "generated": "gemini"
     },
     {
       "id": "ata-propulsion",
-      "file": "assets/gen/ata-propulsion.svg",
+      "file": "assets/gen/ata-propulsion.webp",
       "role": "ata",
       "ratio": "1:1",
       "w": 512,
       "h": 512,
-      "generated": "procedural"
+      "generated": "gemini"
     },
     {
       "id": "ata-structures",
-      "file": "assets/gen/ata-structures.svg",
+      "file": "assets/gen/ata-structures.webp",
       "role": "ata",
       "ratio": "1:1",
       "w": 512,
       "h": 512,
-      "generated": "procedural"
+      "generated": "gemini"
     },
     {
       "id": "ata-utilities",
-      "file": "assets/gen/ata-utilities.svg",
+      "file": "assets/gen/ata-utilities.webp",
       "role": "ata",
       "ratio": "1:1",
       "w": 512,
       "h": 512,
-      "generated": "procedural"
+      "generated": "gemini"
     },
     {
       "id": "card-consignment",
@@ -533,6 +533,106 @@
       "w": 1500,
       "h": 1000,
       "generated": "procedural"
+    },
+    {
+      "id": "card-egg-bonded-store-release",
+      "file": "assets/gen/card-egg-bonded-store-release.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-egg-broker-favour",
+      "file": "assets/gen/card-egg-broker-favour.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-egg-chapter-specialist",
+      "file": "assets/gen/card-egg-chapter-specialist.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-egg-idle-overhaul-capacity",
+      "file": "assets/gen/card-egg-idle-overhaul-capacity.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-egg-misfiled-llp-consignment",
+      "file": "assets/gen/card-egg-misfiled-llp-consignment.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-egg-portfolio-rebalance",
+      "file": "assets/gen/card-egg-portfolio-rebalance.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-egg-records-archive",
+      "file": "assets/gen/card-egg-records-archive.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-egg-restructuring-package",
+      "file": "assets/gen/card-egg-restructuring-package.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-egg-spare-capacity-lease",
+      "file": "assets/gen/card-egg-spare-capacity-lease.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-egg-unlisted-qec",
+      "file": "assets/gen/card-egg-unlisted-qec.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
     },
     {
       "id": "card-favor",
@@ -553,6 +653,116 @@
       "generated": "procedural"
     },
     {
+      "id": "card-opp-agreement",
+      "file": "assets/gen/card-opp-agreement.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-buyer-need",
+      "file": "assets/gen/card-opp-buyer-need.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-candidate",
+      "file": "assets/gen/card-opp-candidate.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-conference",
+      "file": "assets/gen/card-opp-conference.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-intel",
+      "file": "assets/gen/card-opp-intel.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-introduction",
+      "file": "assets/gen/card-opp-introduction.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-listing",
+      "file": "assets/gen/card-opp-listing.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-teardown",
+      "file": "assets/gen/card-opp-teardown.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-warehouse-as-removed",
+      "file": "assets/gen/card-opp-warehouse-as-removed.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-warehouse-questionable",
+      "file": "assets/gen/card-opp-warehouse-questionable.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
+      "id": "card-opp-warehouse-rotables",
+      "file": "assets/gen/card-opp-warehouse-rotables.webp",
+      "role": "card",
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "netmapv2-card-plate"
+    },
+    {
       "id": "card-restructuring",
       "file": "assets/gen/card-restructuring.svg",
       "role": "card",
@@ -560,6 +770,86 @@
       "w": 1500,
       "h": 1000,
       "generated": "procedural"
+    },
+    {
+      "id": "condition-ar",
+      "file": "assets/gen/condition-ar.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 128,
+      "h": 128,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "condition-ber",
+      "file": "assets/gen/condition-ber.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 128,
+      "h": 128,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "condition-ne",
+      "file": "assets/gen/condition-ne.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 128,
+      "h": 128,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "condition-ns",
+      "file": "assets/gen/condition-ns.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 128,
+      "h": 128,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "condition-oh",
+      "file": "assets/gen/condition-oh.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 128,
+      "h": 128,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "condition-rp",
+      "file": "assets/gen/condition-rp.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 128,
+      "h": 128,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "condition-scrap",
+      "file": "assets/gen/condition-scrap.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 128,
+      "h": 128,
+      "generated": "gemini",
+      "fallback": "none"
+    },
+    {
+      "id": "condition-sv",
+      "file": "assets/gen/condition-sv.webp",
+      "role": "badge",
+      "ratio": "1:1",
+      "w": 128,
+      "h": 128,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "facility-broker",

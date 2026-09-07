@@ -932,3 +932,14 @@
   height: 18px;
   margin-left: -2px;
 }
+
+.netmapv2-ata-heading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.netmapv2-ata-heading .ata-group-plate {
+  width: 20px;
+  height: 20px;
+}

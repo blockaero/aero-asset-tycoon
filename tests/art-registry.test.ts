@@ -59,4 +59,13 @@ describe("every art role has something that draws it", () => {
   it("draws the region relief tiles", () => {
     expect(code).toContain("assets/gen/region-");
   });
+
+  it("draws the condition badges, the group plates and the opportunity cards", () => {
+    expect(code).toContain("`condition-${condition.toLowerCase()}`");
+    expect(code).toContain("`ata-${group.toLowerCase()");
+    expect(code).toContain("opportunityCardShotId");
+    for (const id of ["condition-sv", "ata-propulsion", "card-opp-listing"]) {
+      expect(ids.has(id)).toBe(true);
+    }
+  });
 });

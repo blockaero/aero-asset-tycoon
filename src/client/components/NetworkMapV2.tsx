@@ -38,7 +38,7 @@ import type {
   RegionCode,
 } from "../../sim/types.ts";
 import "./NetworkMapV2.css";
-import { AtaGlyph } from "../art/AtaGlyph.tsx";
+import { AtaGlyph, AtaGroupPlate } from "../art/AtaGlyph.tsx";
 
 /* ---------------------------------------------------------------- *
  * Constants
@@ -725,7 +725,10 @@ export function NetworkMapV2({
           <div className="netmapv2-ata-groups">
             {ataGroups.map((entry) => (
               <div key={entry.group} className="netmapv2-ata-group">
-                <h4 className="netmapv2-ata-heading">{ATA_GROUP_LABELS[entry.group]}</h4>
+                <h4 className="netmapv2-ata-heading">
+                  <AtaGroupPlate group={entry.group} />
+                  {ATA_GROUP_LABELS[entry.group]}
+                </h4>
                 <div className="netmapv2-ata-chips">
                   {entry.rows.map((row) => {
                     const active = ataFilter === row.code;

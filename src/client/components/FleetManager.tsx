@@ -52,7 +52,8 @@ import type {
 import { formatAcc, meetsCondition, serviceable } from "../../sim/util.ts";
 import "./FleetManager.css";
 import { useArtSource } from "../art/ArtImage.tsx";
-import { AtaGlyph } from "../art/AtaGlyph.tsx";
+import { AtaGlyph, AtaGroupPlate } from "../art/AtaGlyph.tsx";
+import { ConditionBadge } from "../art/ConditionBadge.tsx";
 
 /* ---------------------------------------------------------------- *
  * Constants
@@ -388,6 +389,7 @@ export function FleetManager({
           {sections.map((section) => (
             <section key={section.group} className="fleetmgr-group" aria-label={ATA_GROUP_LABELS[section.group]}>
               <h3 className="fleetmgr-group-head">
+                <AtaGroupPlate group={section.group} />
                 <span className="fleetmgr-group-name">{ATA_GROUP_LABELS[section.group]}</span>
                 <span className="fleetmgr-group-sub">
                   {NUMBER.format(section.chips.length)} chip{section.chips.length === 1 ? "" : "s"} ·{" "}
@@ -1064,6 +1066,7 @@ function ConditionTag({ condition }: { condition: Condition }): ReactNode {
       data-status={conditionStatus(condition)}
       title={CONDITION_TITLE[condition]}
     >
+      <ConditionBadge condition={condition} />
       <span className="fleetmgr-cond-dot" aria-hidden="true" />
       {condition}
     </span>

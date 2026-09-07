@@ -1415,3 +1415,7 @@ td button {
     transition-duration: 0.001ms !important;
   }
 }
+
+.condition:has(.condition-badge) {
+  gap: 4px;
+}

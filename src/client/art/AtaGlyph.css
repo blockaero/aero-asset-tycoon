@@ -17,3 +17,11 @@
   width: 34px;
   height: 34px;
 }
+
+.ata-group-plate {
+  display: block;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
