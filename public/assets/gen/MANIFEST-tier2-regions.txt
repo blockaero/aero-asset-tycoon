@@ -1,0 +1,23 @@
+Aero Asset Tycoon — Tier-2 REGION art
+Target: 1600x1200 WebP quality 82
+
+COMPLETED:
+  region-na.webp  1600x1200  325 KB
+  region-carib.webp  1600x1200  167 KB
+  region-latam.webp  1600x1200  157 KB
+  region-euw.webp  1600x1200  230 KB
+  region-eue.webp  1600x1200  291 KB
+  region-cis.webp  1600x1200  333 KB
+  region-mea.webp  1600x1200  218 KB
+  region-afr.webp  1600x1200  211 KB
+  region-sasia.webp  1600x1200  256 KB
+  region-sea.webp  1600x1200  291 KB
+  region-gchina.webp  1600x1200  217 KB
+  region-neasia.webp  1600x1200  308 KB
+  region-oce.webp  1600x1200  246 KB
+  region-casia.webp  1600x1200  372 KB
+
+FAILED:
+  (none)
+
+Summary: 14/14 completed, 0 failed
