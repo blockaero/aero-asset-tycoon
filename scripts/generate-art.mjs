@@ -3643,6 +3643,21 @@ const SHOTS = [
  * hq-founder-idle, so a render is picked up with no code change.
  */
 
+const SHOCK_KINDS = [
+  "fuel-spike", "type-grounding", "lessor-default", "variant-launch",
+  "supply-squeeze", "traffic-boom", "credit-crunch",
+];
+
+const KNOWLEDGE_PLATES = [
+  "knowledge-root-airframe-systems", "knowledge-root-avionics", "knowledge-root-propulsion",
+  "knowledge-root-structures", "knowledge-root-utilities",
+  "knowledge-ops-sales", "knowledge-ops-operations", "knowledge-ops-ai",
+];
+
+const TEAM_VARIANTS = ["buyer", "sales"].flatMap((role) =>
+  ["a", "b", "c"].map((variant) => `team-${role}-${variant}`),
+);
+
 const CONDITION_CODES = ["ne", "ns", "oh", "sv", "rp", "ar", "ber", "scrap"];
 
 /**
@@ -3747,6 +3762,42 @@ const AWAITED = [
     w: 1200,
     h: 800,
     fallback: "netmapv2-card-plate",
+  })),
+  // Market shock cards, one per MarketShockKind, on the Intelligence shock cards.
+  SHOCK_KINDS.map((kind) => ({
+    id: `card-shock-${kind}`,
+    role: "card",
+    ratio: "3:2",
+    w: 1200,
+    h: 800,
+    fallback: "none",
+  })),
+  // Empty-state plates, one per surface that can be empty.
+  ["inventory", "knowledge", "opportunities", "saves", "shocks", "team"].map((which) => ({
+    id: `empty-${which}`,
+    role: "empty",
+    ratio: "1:1",
+    w: 512,
+    h: 512,
+    fallback: "none",
+  })),
+  // Tribal Knowledge: an ATA-group root plate and an operations-area plate.
+  KNOWLEDGE_PLATES.map((id) => ({
+    id,
+    role: "knowledge",
+    ratio: "1:1",
+    w: 512,
+    h: 512,
+    fallback: "none",
+  })),
+  // Team portrait variants, so two people in one role are not the same face.
+  TEAM_VARIANTS.map((id) => ({
+    id,
+    role: "team",
+    ratio: "3:4",
+    w: 768,
+    h: 1024,
+    fallback: "team-role-portrait",
   })),
 );
 

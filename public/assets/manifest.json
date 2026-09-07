@@ -847,64 +847,71 @@
       "id": "card-shock-credit-crunch",
       "file": "assets/gen/card-shock-credit-crunch.webp",
       "role": "card",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "card-shock-fuel-spike",
       "file": "assets/gen/card-shock-fuel-spike.webp",
       "role": "card",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "card-shock-lessor-default",
       "file": "assets/gen/card-shock-lessor-default.webp",
       "role": "card",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "card-shock-supply-squeeze",
       "file": "assets/gen/card-shock-supply-squeeze.webp",
       "role": "card",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "card-shock-traffic-boom",
       "file": "assets/gen/card-shock-traffic-boom.webp",
       "role": "card",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "card-shock-type-grounding",
       "file": "assets/gen/card-shock-type-grounding.webp",
       "role": "card",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "card-shock-variant-launch",
       "file": "assets/gen/card-shock-variant-launch.webp",
       "role": "card",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:2",
+      "w": 1200,
+      "h": 800,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "category-consumable",
@@ -1080,55 +1087,61 @@
       "id": "empty-inventory",
       "file": "assets/gen/empty-inventory.webp",
       "role": "empty",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "empty-knowledge",
       "file": "assets/gen/empty-knowledge.webp",
       "role": "empty",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "empty-opportunities",
       "file": "assets/gen/empty-opportunities.webp",
       "role": "empty",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "empty-saves",
       "file": "assets/gen/empty-saves.webp",
       "role": "empty",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "empty-shocks",
       "file": "assets/gen/empty-shocks.webp",
       "role": "empty",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "empty-team",
       "file": "assets/gen/empty-team.webp",
       "role": "empty",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "facility-broker",
@@ -1502,73 +1515,81 @@
       "id": "knowledge-ops-ai",
       "file": "assets/gen/knowledge-ops-ai.webp",
       "role": "knowledge",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "knowledge-ops-operations",
       "file": "assets/gen/knowledge-ops-operations.webp",
       "role": "knowledge",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "knowledge-ops-sales",
       "file": "assets/gen/knowledge-ops-sales.webp",
       "role": "knowledge",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "knowledge-root-airframe-systems",
       "file": "assets/gen/knowledge-root-airframe-systems.webp",
       "role": "knowledge",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "knowledge-root-avionics",
       "file": "assets/gen/knowledge-root-avionics.webp",
       "role": "knowledge",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "knowledge-root-propulsion",
       "file": "assets/gen/knowledge-root-propulsion.webp",
       "role": "knowledge",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "knowledge-root-structures",
       "file": "assets/gen/knowledge-root-structures.webp",
       "role": "knowledge",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "knowledge-root-utilities",
       "file": "assets/gen/knowledge-root-utilities.webp",
       "role": "knowledge",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "1:1",
+      "w": 512,
+      "h": 512,
+      "generated": "gemini",
+      "fallback": "none"
     },
     {
       "id": "loading-plate",
@@ -1840,28 +1861,31 @@
       "id": "team-buyer-a",
       "file": "assets/gen/team-buyer-a.webp",
       "role": "team",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:4",
+      "w": 768,
+      "h": 1024,
+      "generated": "gemini",
+      "fallback": "team-role-portrait"
     },
     {
       "id": "team-buyer-b",
       "file": "assets/gen/team-buyer-b.webp",
       "role": "team",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:4",
+      "w": 768,
+      "h": 1024,
+      "generated": "gemini",
+      "fallback": "team-role-portrait"
     },
     {
       "id": "team-buyer-c",
       "file": "assets/gen/team-buyer-c.webp",
       "role": "team",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:4",
+      "w": 768,
+      "h": 1024,
+      "generated": "gemini",
+      "fallback": "team-role-portrait"
     },
     {
       "id": "team-records",
@@ -1903,28 +1927,31 @@
       "id": "team-sales-a",
       "file": "assets/gen/team-sales-a.webp",
       "role": "team",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:4",
+      "w": 768,
+      "h": 1024,
+      "generated": "gemini",
+      "fallback": "team-role-portrait"
     },
     {
       "id": "team-sales-b",
       "file": "assets/gen/team-sales-b.webp",
       "role": "team",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:4",
+      "w": 768,
+      "h": 1024,
+      "generated": "gemini",
+      "fallback": "team-role-portrait"
     },
     {
       "id": "team-sales-c",
       "file": "assets/gen/team-sales-c.webp",
       "role": "team",
-      "ratio": "unknown",
-      "w": 0,
-      "h": 0,
-      "generated": "gemini"
+      "ratio": "3:4",
+      "w": 768,
+      "h": 1024,
+      "generated": "gemini",
+      "fallback": "team-role-portrait"
     },
     {
       "id": "wheel-bezel",

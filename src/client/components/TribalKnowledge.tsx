@@ -47,6 +47,7 @@ import type {
 } from "../../sim/types.ts";
 import "./TribalKnowledge.css";
 import { useArtSource } from "../art/ArtImage.tsx";
+import { EmptyArt, KnowledgeArt } from "../art/ShotArt.tsx";
 
 /* ---------------------------------------------------------------- *
  * Contract
@@ -484,6 +485,7 @@ export function TribalKnowledge({ observation, onInvest, onClose }: TribalKnowle
             />
           ) : (
             <div className="tk-detail tk-detail--empty">
+              <EmptyArt which="knowledge" />
               <p className="tk-detail-kicker">Nothing selected</p>
               <p className="tk-detail-empty-text">
                 Pick a frame on the wall, or any card below, to read what it costs, what has to
@@ -580,6 +582,7 @@ function AssetPanel({
       {ASSET_TREE.groups.map((view) => (
         <section className="tk-tree-group" key={view.root.id}>
           <header className="tk-tree-head">
+            <KnowledgeArt root={view.group} />
             <p className="tk-tree-kicker">{ATA_GROUP_LABELS[view.group]}</p>
             <h4 className="tk-tree-title">
               <button
@@ -720,6 +723,7 @@ function OperationsPanel({
       {OPERATIONS_CHAINS.map((chain) => (
         <section className="tk-chain" key={chain.key}>
           <header className="tk-chain-head">
+            <KnowledgeArt ops={chain.key === "ops" ? "operations" : chain.key} />
             <h4 className="tk-chain-title">{chain.label}</h4>
             <p className="tk-chain-blurb">{chain.blurb}</p>
           </header>

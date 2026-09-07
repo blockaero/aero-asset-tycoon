@@ -54,6 +54,7 @@ import "./FleetManager.css";
 import { useArtSource } from "../art/ArtImage.tsx";
 import { AtaGlyph, AtaGroupPlate } from "../art/AtaGlyph.tsx";
 import { ConditionBadge } from "../art/ConditionBadge.tsx";
+import { EmptyArt } from "../art/ShotArt.tsx";
 
 /* ---------------------------------------------------------------- *
  * Constants
@@ -382,6 +383,7 @@ export function FleetManager({
         </p>
       ) : sections.length === 0 ? (
         <p className="fleetmgr-empty">
+          <EmptyArt which="inventory" />
           Nothing matches this filter. Widen the ATA group, the condition, or the search text.
         </p>
       ) : (

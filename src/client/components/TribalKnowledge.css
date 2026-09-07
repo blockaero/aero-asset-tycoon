@@ -1445,3 +1445,18 @@
     opacity: 1;
   }
 }
+
+/* The plate leads the heading row when its render exists; without it the header
+   reads exactly as it did before. */
+.tk-tree-head:has(.shot-art--knowledge),
+.tk-chain-head:has(.shot-art--knowledge) {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 9px;
+  align-items: center;
+}
+
+.tk-tree-head:has(.shot-art--knowledge) .shot-art--knowledge,
+.tk-chain-head:has(.shot-art--knowledge) .shot-art--knowledge {
+  grid-row: 1 / span 2;
+}

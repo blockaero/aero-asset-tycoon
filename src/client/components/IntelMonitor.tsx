@@ -47,6 +47,7 @@ import type { GameObservation } from "../../sim/observation.ts";
 import type { MarketShock, Season } from "../../sim/types.ts";
 import "./IntelMonitor.css";
 import { AtaGlyph } from "../art/AtaGlyph.tsx";
+import { EmptyArt, ShockArt } from "../art/ShotArt.tsx";
 
 /* ---------------------------------------------------------------- *
  * Contract
@@ -772,7 +773,10 @@ function ShockSection({ observation, headingId }: { observation: GameObservation
       </div>
 
       {views.length === 0 ? (
-        <FogNotice />
+        <div className="intel-shocks-empty">
+          <EmptyArt which="shocks" />
+          <FogNotice />
+        </div>
       ) : (
         <>
           <div className="intel-shocks">
@@ -803,6 +807,7 @@ function ShockCard({ view, tick }: { view: ShockView; tick: number }) {
   const weeks = Math.max(1, shock.endTick - shock.startTick);
   return (
     <article className={`intel-shock is-${view.phase}`}>
+      <ShockArt kind={shock.kind} />
       <header className="intel-shock-head">
         <p className="intel-shock-kind">{shockKindLabel(shock.kind)}</p>
         <h4 className="intel-shock-title">{shock.label}</h4>

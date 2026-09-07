@@ -12,6 +12,7 @@ import { Rng } from "../../sim/rng.ts";
 import type { LivePace } from "../../sim/types.ts";
 import "./NewGame.css";
 import { useArtSource } from "../art/ArtImage.tsx";
+import { EmptyArt } from "../art/ShotArt.tsx";
 
 /** One row of the save list the shell hands down. */
 export type NewGameSave = {
@@ -370,7 +371,10 @@ export function NewGame({ busy, error, saves, onStart, onLoad }: NewGameProps): 
               Continue
             </h2>
             {saves.length === 0 ? (
-              <p className="newgame-empty">No saved campaigns on this machine yet.</p>
+              <div className="newgame-empty">
+                <EmptyArt which="saves" />
+                <p>No saved campaigns on this machine yet.</p>
+              </div>
             ) : (
               <ul className="newgame-saves">
                 {saves.map((save) => (

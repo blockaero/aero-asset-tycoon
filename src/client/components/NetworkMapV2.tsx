@@ -39,6 +39,7 @@ import type {
 } from "../../sim/types.ts";
 import "./NetworkMapV2.css";
 import { AtaGlyph, AtaGroupPlate } from "../art/AtaGlyph.tsx";
+import { EmptyArt } from "../art/ShotArt.tsx";
 
 /* ---------------------------------------------------------------- *
  * Constants
@@ -880,7 +881,10 @@ export function NetworkMapV2({
 
         <div className="netmapv2-cards">
           {panelOpportunities.length === 0 ? (
-            <p className="netmapv2-empty">Nothing open here this pulse.</p>
+            <div className="netmapv2-empty">
+              <EmptyArt which="opportunities" />
+              <p>Nothing open here this pulse.</p>
+            </div>
           ) : (
             panelOpportunities.slice(0, PANEL_CAP).map((opportunity) => (
               <OpportunityCard

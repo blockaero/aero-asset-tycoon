@@ -27,6 +27,7 @@ import type { GameObservation } from "../../sim/observation.ts";
 import type { KnowledgeEffect, RegionCode, TeamCandidate, TeamMember } from "../../sim/types.ts";
 import "./TeamScreen.css";
 import { useArtSource } from "../art/ArtImage.tsx";
+import { EmptyArt } from "../art/ShotArt.tsx";
 
 /* ---------------------------------------------------------------- *
  * Contract
@@ -278,6 +279,7 @@ export function TeamScreen({ observation, onHire, onRelease, onClose }: TeamScre
 
           {team.length === 0 ? (
             <p className="teamscreen-empty">
+              <EmptyArt which="team" />
               Nobody is on the payroll. Every desk in the building is the founder&rsquo;s, and every
               hour spent sourcing is an hour not spent selling.
             </p>
@@ -435,6 +437,19 @@ export function TeamScreen({ observation, onHire, onRelease, onClose }: TeamScre
  * A portrait plate. The CSS holds a token-coloured gradient block underneath, so
  * a missing art file leaves the layout exactly as it was, with initials on it.
  */
+/**
+ * Two people in the same role should not be the same face. Where variant renders
+ * exist (team-<role>-a/b/c) one is picked from the person's name, and the ladder
+ * falls back to the plain role portrait for a role that has no variants yet.
+ */
+const PORTRAIT_VARIANTS = ["a", "b", "c"];
+
+function variantFor(name: string): string {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+  return PORTRAIT_VARIANTS[hash % PORTRAIT_VARIANTS.length]!;
+}
+
 function Portrait({
   portraitId,
   name,
@@ -445,7 +460,7 @@ function Portrait({
   className?: string;
 }): ReactNode {
   // The hook resets itself when the id changes, so a new portrait gets a fresh try.
-  const art = useArtSource(portraitId);
+  const art = useArtSource([`${portraitId}-${variantFor(name)}`, portraitId]);
 
   return (
     <span className={className ? `teamscreen-portrait ${className}` : "teamscreen-portrait"}>
