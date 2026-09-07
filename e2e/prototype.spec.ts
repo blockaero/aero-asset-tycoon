@@ -10,7 +10,7 @@ test("founder zooms world → region → HQ, opens a market window, and walks ba
   await page.screenshot({ path: "test-results/world-map.png", fullPage: true });
 
   await page.getByRole("button", { name: "Enter Kanto", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Kanto" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Kanto", exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Enter Tokyo HQ" })).toBeVisible();
   await page.screenshot({ path: "test-results/kanto-region.png", fullPage: true });
 
@@ -30,7 +30,7 @@ test("founder zooms world → region → HQ, opens a market window, and walks ba
   await expect(page.getByRole("status")).toContainText("Queued for the next pulse");
 
   await page.getByRole("button", { name: "Pulse" }).click();
-  await expect(page.getByText("WEEK 1 PULSE")).toBeVisible();
+  await expect(page.getByText("WEEK 1 PULSE", { exact: true })).toBeVisible();
   await expect(page.getByRole("status").filter({ hasText: "Purchase accepted" })).toBeVisible();
 
   await page.getByRole("button", { name: "Close window" }).click();
@@ -38,7 +38,7 @@ test("founder zooms world → region → HQ, opens a market window, and walks ba
   await expect(page.getByRole("dialog", { name: "Marketplace window" })).toHaveCount(0);
 
   await page.getByRole("button", { name: "Back" }).click();
-  await expect(page.getByRole("heading", { name: "Kanto" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Kanto", exact: true })).toBeVisible();
 
   await page.getByRole("button", { name: "Back" }).click();
   await expect(page.getByRole("button", { name: "Enter Kanto", exact: true })).toBeVisible();
