@@ -3,6 +3,12 @@ Target: public/assets/gen/<id>.webp  256x256  WebP quality 82
 Style: industrial aerospace graphic art; graphite / brushed aluminium / warm white / accent blue
 No text/numbers/logos/lettering. Square centered motif on dark graphite field.
 
+REVISIONS
+  ata-ch-30  Ice and Rain Protection  pitot tube (was ice-crystal shield)
+  ata-ch-36  Pneumatic                horizontal pneumatic piston (was bleed-air swirl)
+  ata-ch-49  Airborne Auxiliary Power turboshaft APU + generator (was turbofan-like capsule)
+  ata-ch-71  Power Plant              mounts / fireseal / fittings / harness (was engine stand)
+
 COMPLETED (34/34)
   ata-ch-21.webp  256x256  q82  8118B
   ata-ch-22.webp  256x256  q82  4638B
@@ -13,21 +19,21 @@ COMPLETED (34/34)
   ata-ch-27.webp  256x256  q82  6638B
   ata-ch-28.webp  256x256  q82  3382B
   ata-ch-29.webp  256x256  q82  4988B
-  ata-ch-30.webp  256x256  q82  8112B
+  ata-ch-30.webp  256x256  q82  1916B
   ata-ch-31.webp  256x256  q82  6210B
   ata-ch-32.webp  256x256  q82  4656B
   ata-ch-33.webp  256x256  q82  5512B
   ata-ch-34.webp  256x256  q82  4822B
   ata-ch-35.webp  256x256  q82  4972B
-  ata-ch-36.webp  256x256  q82  7580B
+  ata-ch-36.webp  256x256  q82  4722B
   ata-ch-38.webp  256x256  q82  3542B
   ata-ch-45.webp  256x256  q82  4462B
-  ata-ch-49.webp  256x256  q82  4952B
+  ata-ch-49.webp  256x256  q82  6906B
   ata-ch-52.webp  256x256  q82  4164B
   ata-ch-54.webp  256x256  q82  3942B
   ata-ch-56.webp  256x256  q82  4882B
   ata-ch-57.webp  256x256  q82  3088B
-  ata-ch-71.webp  256x256  q82  6432B
+  ata-ch-71.webp  256x256  q82  8338B
   ata-ch-72.webp  256x256  q82  8742B
   ata-ch-73.webp  256x256  q82  6918B
   ata-ch-74.webp  256x256  q82  4676B
