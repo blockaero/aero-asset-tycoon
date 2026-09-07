@@ -1,0 +1,41 @@
+Aero Asset Tycoon — Tier-2 ATA group badges, condition badges, opportunity cards, easter egg cards
+completed: 32
+failed: 0
+
+COMPLETED
+  ata-general  1024x1024 -> 512x512  40 KB
+  ata-airframe-systems  1024x1024 -> 512x512  40 KB
+  ata-propulsion  1024x1024 -> 512x512  41 KB
+  ata-structures  1024x1024 -> 512x512  35 KB
+  ata-avionics  1024x1024 -> 512x512  39 KB
+  ata-utilities  1024x1024 -> 512x512  30 KB
+  condition-ne  1024x1024 -> 128x128  1 KB
+  condition-ns  1024x1024 -> 128x128  1 KB
+  condition-oh  1024x1024 -> 128x128  3 KB
+  condition-sv  1024x1024 -> 128x128  1 KB
+  condition-rp  1024x1024 -> 128x128  2 KB
+  condition-ar  1024x1024 -> 128x128  1 KB
+  condition-ber  1024x1024 -> 128x128  2 KB
+  condition-scrap  1024x1024 -> 128x128  2 KB
+  card-opp-listing  1536x1024 -> 1500x1000  56 KB
+  card-opp-buyer-need  1536x1024 -> 1500x1000  64 KB
+  card-opp-introduction  1536x1024 -> 1500x1000  55 KB
+  card-opp-agreement  1536x1024 -> 1500x1000  46 KB
+  card-opp-teardown  1536x1024 -> 1500x1000  133 KB
+  card-opp-conference  1536x1024 -> 1500x1000  62 KB
+  card-opp-candidate  1536x1024 -> 1500x1000  84 KB
+  card-opp-intel  1536x1024 -> 1500x1000  62 KB
+  card-egg-misfiled-llp-consignment  1536x1024 -> 1500x1000  114 KB
+  card-egg-idle-overhaul-capacity  1536x1024 -> 1500x1000  139 KB
+  card-egg-broker-favour  1536x1024 -> 1500x1000  63 KB
+  card-egg-restructuring-package  1536x1024 -> 1500x1000  148 KB
+  card-egg-records-archive  1536x1024 -> 1500x1000  145 KB
+  card-egg-unlisted-qec  1536x1024 -> 1500x1000  146 KB
+  card-egg-portfolio-rebalance  1536x1024 -> 1500x1000  89 KB
+  card-egg-chapter-specialist  1536x1024 -> 1500x1000  114 KB
+  card-egg-bonded-store-release  1536x1024 -> 1500x1000  162 KB
+  card-egg-spare-capacity-lease  1536x1024 -> 1500x1000  150 KB
+
+FAILED
+  (none)
+
