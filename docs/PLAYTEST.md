@@ -10,13 +10,15 @@ npm run dev
 
 Use a different seed for each player. Record only anonymous notes.
 
+Campaign entry is now the **world map**. Tokyo HQ is a place inside Kanto; desks (Marketplace, etc.) open as windows on a place. The location bar is World › region › place › window.
+
 ## Tasks to observe
 
-1. Enter Tokyo HQ and identify the next weekly pulse.
-2. Find the Marketplace from the office scene.
+1. From the world map, enter Kanto, then Tokyo HQ, and identify the next weekly pulse.
+2. Find the Marketplace from the office scene (a window on HQ, not a peer tab).
 3. Explain what happened to the opening inventory after the first pulse.
 4. Buy one single asset or indivisible package.
-5. Find the Network Map, visit a customer or supplier, and return through the HQ node.
+5. Leave HQ back to Kanto, enter a customer or supplier place, and walk back up the stack.
 6. Send an AR asset to an MRO if one is available.
 7. Make or configure one buyer deal.
 8. Inspect an asset and explain two of TSN, CSN, TSR, CSR, MTBR, MTBO, repair TAT, or logistics TAT.
@@ -28,7 +30,7 @@ Use a different seed for each player. Record only anonymous notes.
 - First sourcing choice made within 60 seconds.
 - Player connects a red acquisition pulse with reduced spendable ACC, without assuming the asset disappeared.
 - Player understands why available stock can ship automatically.
-- Office → map → external node → HQ loop works without instruction.
+- World → Kanto → HQ → window → back-up-the-stack loop works without instruction.
 - At least one player reaches a new node or signs a network agreement.
 - The difference between repair TAT and logistics TAT is understood.
 - No player describes the failure as arbitrary opening randomness.

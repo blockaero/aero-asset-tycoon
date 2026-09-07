@@ -1,16 +1,29 @@
 import { expect, test } from "@playwright/test";
 
-test("founder buys a package, resolves a pulse, and explores the network", async ({ page }) => {
+test("founder zooms world → region → HQ, opens a market window, and walks back", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Aero Asset Tycoon" })).toBeVisible();
-  await page.getByRole("button", { name: "Enter Operations Desk" }).click();
+  await page.getByRole("button", { name: "Enter the world" }).click();
 
+  await expect(page.getByRole("button", { name: "Enter Kanto", exact: true })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Location" })).toContainText("World");
+  await page.screenshot({ path: "test-results/world-map.png", fullPage: true });
+
+  await page.getByRole("button", { name: "Enter Kanto", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Kanto" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Enter Tokyo HQ" })).toBeVisible();
+  await page.screenshot({ path: "test-results/kanto-region.png", fullPage: true });
+
+  await page.getByRole("button", { name: "Enter Tokyo HQ" }).click();
   await expect(page.getByRole("button", { name: /Open Marketplace/ })).toBeVisible();
-  await page.screenshot({ path: "test-results/founder-hq.png", fullPage: true });
+  await expect(page.getByRole("status")).toContainText("Enter Kanto to reach Tokyo HQ");
   await expect(page.getByRole("button", { name: "Resume" })).toBeVisible();
+  await page.screenshot({ path: "test-results/founder-hq.png", fullPage: true });
 
   await page.getByRole("button", { name: /Open Marketplace/ }).click();
+  await expect(page.getByRole("dialog", { name: "Marketplace window" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Marketplace" })).toBeVisible();
+  await expect(page.getByText("WINDOW ON TOKYO HQ")).toBeVisible();
   const packageButton = page.getByRole("button", { name: "Buy package" }).first();
   await expect(packageButton).toBeVisible();
   await packageButton.click();
@@ -20,18 +33,21 @@ test("founder buys a package, resolves a pulse, and explores the network", async
   await expect(page.getByText("WEEK 1 PULSE")).toBeVisible();
   await expect(page.getByRole("status").filter({ hasText: "Purchase accepted" })).toBeVisible();
 
-  await page.getByRole("button", { name: "Network Map" }).click();
-  await expect(page.getByRole("heading", { name: "Network Map" })).toBeVisible();
-  await expect(page.getByRole("img", { name: /Global aviation aftermarket network/ })).toBeVisible();
-  await page.screenshot({ path: "test-results/network-map.png", fullPage: true });
-
-  await page.getByRole("button", { name: /HQ; partner/ }).press("Enter");
+  await page.getByRole("button", { name: "Close window" }).click();
   await expect(page.getByRole("button", { name: /Open Marketplace/ })).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "Marketplace window" })).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Back" }).click();
+  await expect(page.getByRole("heading", { name: "Kanto" })).toBeVisible();
+
+  await page.getByRole("button", { name: "Back" }).click();
+  await expect(page.getByRole("button", { name: "Enter Kanto", exact: true })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Location" }).getByText("World", { exact: true })).toBeVisible();
 
   await page.getByRole("button", { name: "Save" }).click();
   await expect(page.getByRole("status").filter({ hasText: "Saved as founder-slot" })).toBeVisible();
   await page.reload();
   await expect(page.getByText("Continue saved campaign")).toBeVisible();
   await page.getByRole("button", { name: /founder-slot/ }).click();
-  await expect(page.getByRole("button", { name: /Open Marketplace/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Enter Kanto", exact: true })).toBeVisible();
 });
