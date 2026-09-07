@@ -442,5 +442,13 @@
       "h": 1024,
       "generated": "procedural"
     }
-  ]
+  ],
+  "regions": {
+    "wall": {
+      "top": 9.01,
+      "left": 6.73,
+      "width": 15.15,
+      "height": 49.8
+    }
+  }
 }

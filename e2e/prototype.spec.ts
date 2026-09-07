@@ -20,6 +20,12 @@ test("founder names a company, works the desk, and reaches every surface", async
   const wheel = page.getByRole("button", { name: /Resolve week/ });
   await expect(wheel).toBeVisible();
 
+  // The certificate wall moved to the left pier when the back wall opened up to
+  // glazing. Its click target has to move with it, or it lands on empty glass.
+  await page.locator(".officehq-hotspot--wall").click();
+  await expect(page.getByRole("heading", { name: /Tribal Knowledge/i })).toBeVisible();
+  await page.getByRole("button", { name: "Office HQ", exact: true }).click();
+
   // --- Marketplace: buy a package, then resolve the pulse --------------------
   await page.getByRole("button", { name: "Marketplace", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Marketplace" })).toBeVisible();

@@ -80,22 +80,28 @@
 
 .officehq-layer--room[data-missing="true"] {
   background:
-    linear-gradient(180deg, var(--graphite-700) 0%, var(--graphite-600) 44%, var(--graphite-500) 46%, var(--paper-deep) 100%);
+    linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 44%, var(--aluminium) 46%, var(--aluminium-flat) 100%);
 }
 
 .officehq-layer--room[data-missing="true"]::after {
   content: "";
   position: absolute;
-  top: 12%;
-  right: 3%;
-  width: 22%;
-  height: 52%;
+  top: 8.2%;
+  right: 0;
+  width: 76.6%;
+  height: 66%;
   border: 1px solid var(--aluminium-flat);
-  background: linear-gradient(
-    180deg,
-    hsl(var(--officehq-season-hue) 44% 78%) 0%,
-    hsl(var(--officehq-season-hue) 26% 90%) 100%
-  );
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 19.4%,
+      var(--aluminium-flat) 19.4% 20%
+    ),
+    linear-gradient(
+      180deg,
+      hsl(var(--officehq-season-hue) 44% 78%) 0%,
+      hsl(var(--officehq-season-hue) 26% 90%) 100%
+    );
 }
 
 /* --- 3. Certificate wall, cross-faded by Tribal Knowledge ----------------- */
@@ -112,29 +118,26 @@
 .officehq-layer--wall-filled[data-missing="true"]::after {
   content: "";
   position: absolute;
-  top: 5%;
-  left: 20%;
-  width: 58%;
-  height: 21%;
-  border: 1px solid color-mix(in srgb, var(--graphite-900) 60%, transparent);
-  background-color: var(--graphite-700);
+  top: 8.6%;
+  left: 6.5%;
+  width: 15.6%;
+  height: 50.7%;
+  background-color: transparent;
   background-image:
     repeating-linear-gradient(
       90deg,
-      transparent 0 2.2%,
-      var(--aluminium-flat) 2.2% 2.6%,
-      transparent 2.6% 22%,
-      var(--aluminium-flat) 22% 22.4%,
-      transparent 22.4% 25%
+      transparent 0 2%,
+      var(--graphite-500) 2% 47%,
+      transparent 47% 53%,
+      var(--graphite-500) 53% 98%,
+      transparent 98% 100%
     ),
     repeating-linear-gradient(
       180deg,
-      transparent 0 10%,
-      var(--aluminium-flat) 10% 11%,
-      transparent 11% 42%,
-      var(--aluminium-flat) 42% 43%,
-      transparent 43% 50%
+      var(--graphite-500) 0 15.5%,
+      transparent 15.5% 16.667%
     );
+  background-blend-mode: multiply;
 }
 
 .officehq-layer--wall-filled[data-missing="true"]::after {
@@ -458,10 +461,13 @@
 }
 
 .officehq-hotspot--wall {
-  top: 4%;
-  left: 19%;
-  width: 60%;
-  height: 23%;
+  /* The grid moved off the back wall onto the solid pier at the left of frame,
+     so the glazing behind the founder stays open. Rect matches WALL_GRID in
+     scripts/generate-art.mjs: x 172-560, y 130-847 of 2560x1440. */
+  top: 8.6%;
+  left: 6.5%;
+  width: 15.6%;
+  height: 50.7%;
 }
 
 .officehq-hotspot--team {

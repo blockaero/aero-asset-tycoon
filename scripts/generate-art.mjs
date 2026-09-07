@@ -1346,8 +1346,24 @@ const HQ = {
   screenRight: cssBox(59.3, 27.8, 12.5, 40.4),
   screenSide: cssBox(75.5, 33, 10.5, 25),
   head: cssBox(46.6, 46.8, 6.8, 11),
-  wall: cssBox(20, 5, 58, 21),
-  window: { x: 1920, y: py(12), w: px(22), h: py(52), x2: 1920 + px(22), y2: py(12) + py(52) },
+  // The solid pier on the left of frame. It is the only opaque stretch of the
+  // back wall left once the glazing runs, and it is what the certificate grid
+  // hangs on. Its right edge is the first curtain-wall jamb.
+  pier: { x: 132, y: 0, w: 468, x2: 600 },
+  // Full-height curtain wall: from the ceiling head trim down to the floor
+  // line, from the pier across to the right edge of frame. `window` stays the
+  // name every downstream helper already uses; only its box changed.
+  window: (() => {
+    const x = 600;
+    const y = 118;
+    const x2 = HQ_W;
+    const y2 = 1068;
+    return { x, y, w: x2 - x, h: y2 - y, x2, y2 };
+  })(),
+  // Frame thickness of the curtain wall, and the mullion/transom grid inside
+  // it. hq-room paints the aluminium; hq-window paints the view, clipped to
+  // exactly the same glass rectangle, so the two can never drift.
+  glazing: { frame: 18, bays: 5, mullion: 14, transomY: 470, transomH: 12 },
   foregroundTop: py(87),
   cup: { cx: px(68) + px(2.4) / 2, rimY: py(87) + 4, r: px(2.4) * 0.78 },
   phoneLight: { cx: px(24) + px(0.7) / 2, cy: HQ_H - py(7.5) - px(0.7) / 2 },
@@ -1441,17 +1457,23 @@ function quadBounds(q) {
  */
 const WALL_FRAMES = (() => {
   const rng = makeRng(hashSeed("hq-wall-frames"));
-  const fw = 170;
-  const fh = 124;
-  const x0 = HQ.wall.x;
-  const pitch = 220;
-  const rows = [76, 236];
+  const fw = 176;
+  const fh = 112;
+  const cols = 2;
+  const rowCount = 6;
+  const gapX = 32;
+  const pitchX = fw + gapX;
+  const pitchY = 120;
+  // Centred on the pier, hung as a tall two-wide column: reads as a lobby
+  // credential wall on a solid return, and clears the founder entirely.
+  const x0 = HQ.pier.x + (HQ.pier.w - (cols * fw + (cols - 1) * gapX)) / 2;
+  const y0 = 132;
   const frames = [];
-  for (let r = 0; r < rows.length; r += 1) {
-    for (let c = 0; c < 6; c += 1) {
+  for (let r = 0; r < rowCount; r += 1) {
+    for (let c = 0; c < cols; c += 1) {
       frames.push({
-        x: x0 + c * pitch + rng.range(-5, 5),
-        y: rows[r] + rng.range(-4, 4),
+        x: x0 + c * pitchX + rng.range(-4, 4),
+        y: y0 + r * pitchY + rng.range(-3, 3),
         w: fw,
         h: fh,
       });
@@ -1460,8 +1482,19 @@ const WALL_FRAMES = (() => {
   return frames;
 })();
 
-/** The little award on its shelf, to the right of the grid. In the filled state only. */
-const WALL_AWARD = { x: 1822, y: 226, w: 48, h: 74, shelfX: 1794, shelfY: 300, shelfW: 104 };
+/** Tight bounds of the grid. The .officehq-hotspot--wall rect is this box. */
+const WALL_GRID = (() => {
+  const xs = WALL_FRAMES.map((fr) => fr.x);
+  const ys = WALL_FRAMES.map((fr) => fr.y);
+  const x = Math.min(...xs);
+  const y = Math.min(...ys);
+  const x2 = Math.max(...WALL_FRAMES.map((fr) => fr.x + fr.w));
+  const y2 = Math.max(...WALL_FRAMES.map((fr) => fr.y + fr.h));
+  return { x, y, x2, y2, w: x2 - x, h: y2 - y };
+})();
+
+/** The little award, standing on the credenza below the grid. Filled state only. */
+const WALL_AWARD = { x: 492, y: 850, w: 48, h: 74, standY: 924 };
 
 function hqDoc(id, defs, body) {
   return svgDoc(id, HQ_W, HQ_H, defs, body);
@@ -1472,99 +1505,105 @@ function hqDoc(id, defs, body) {
 function renderHqRoom() {
   const rng = makeRng(hashSeed("hq-room"));
   const win = HQ.window;
-  const glass = { x: win.x + 18, y: win.y + 18, x2: win.x2 - 18, y2: win.y2 - 18 };
+  const gz = HQ.glazing;
+  const pier = HQ.pier;
+  // The glass aperture: the curtain wall minus its perimeter frame. hq-window
+  // clips to this exact rectangle, so the cut-out and the view always agree.
+  const glass = {
+    x: win.x + gz.frame,
+    y: win.y + gz.frame,
+    x2: win.x2 - gz.frame,
+    y2: win.y2 - gz.frame,
+  };
+  const bayW = (glass.x2 - glass.x) / gz.bays;
   const defs = [
+    // Warm white plaster, daylit from the glazing on the right.
     linGrad("wallG", 0, 0, 0, HQ.floorY, [
-      [0, "#20262c"],
-      [0.42, "#2a323a"],
-      [1, "#222930"],
+      [0, "#e9edf0"],
+      [0.42, "#e2e7eb"],
+      [1, "#d5dbe0"],
     ], true),
     linGrad("wallLight", 0, 0, HQ_W, 0, [
-      [0, "#000000", 0.34],
-      [0.44, "#000000", 0.10],
-      [0.82, "#ffffff", 0.07],
-      [1, "#ffffff", 0.13],
+      [0, "#5a646e", 0.16],
+      [0.44, "#5a646e", 0.05],
+      [0.82, "#ffffff", 0.20],
+      [1, "#ffffff", 0.30],
     ], true),
     linGrad("floorG", 0, HQ.floorY, 0, HQ_H, [
-      [0, "#1b2126"],
-      [0.5, "#171c21"],
-      [1, "#12161a"],
+      [0, "#c6ced5"],
+      [0.5, "#bcc5cc"],
+      [1, "#b2bbc3"],
     ], true),
     linGrad("floorLight", 900, 0, 2560, 0, [
       [0, "#ffffff", 0],
-      [1, "#ffffff", 0.10],
+      [1, "#ffffff", 0.34],
     ], true),
     linGrad("pool", 1200, 1440, 2400, HQ.floorY, [
-      [0, "#cfe0f0", 0],
-      [1, "#dcebf8", 0.13],
+      [0, "#eef4fa", 0],
+      [1, "#ffffff", 0.42],
     ], true),
     linGrad("deskTop", 0, HQ.deskBackY, 0, HQ.deskFrontY, [
-      [0, "#aeb7bf"],
-      [0.35, "#d2d8dd"],
-      [1, "#b7c0c7"],
+      [0, "#b6bfc7"],
+      [0.35, "#dde2e7"],
+      [1, "#c0c9d0"],
     ], true),
     linGrad("deskFace", 0, HQ.deskFrontY, 0, HQ.deskLipY, [
-      [0, "#8e979f"],
-      [1, "#4a545e"],
+      [0, "#a3acb4"],
+      [1, "#68727c"],
     ], true),
     linGrad("ceilGlow", 0, 70, 0, 420, [
-      [0, "#ffffff", 0.10],
+      [0, "#ffffff", 0.34],
       [1, "#ffffff", 0],
     ], true),
-    linGrad("panelG", 0, 40, 0, 440, [
-      [0, "#2e363e"],
-      [1, "#262d34"],
+    // Daylight spilling off the glazing across the pier and the near floor.
+    linGrad("dayWash", win.x, 0, pier.x, 0, [
+      [0, "#ffffff", 0.34],
+      [1, "#ffffff", 0],
     ], true),
     radGrad("roomVig", HQ_W * 0.5, HQ_H * 0.46, HQ_W * 0.62, [
-      [0, "#000000", 0],
-      [0.66, "#000000", 0.08],
-      [1, "#05070a", 0.42],
+      [0, "#ffffff", 0],
+      [0.7, "#ffffff", 0],
+      [1, "#7d8792", 0.22],
     ], true),
   ];
 
   const body = [];
 
-  // Wall, with the glass cut out (even-odd).
-  body.push(
-    `<path fill-rule="evenodd" d="${d(
-      `M 0 0 H ${HQ_W} V ${f(HQ.floorY)} H 0 Z
-       M ${f(glass.x)} ${f(glass.y)} H ${f(glass.x2)} V ${f(glass.y2)} H ${f(glass.x)} Z`,
-    )}" fill="url(#wallG)"/>`,
-  );
-  body.push(
-    `<path fill-rule="evenodd" d="${d(
-      `M 0 0 H ${HQ_W} V ${f(HQ.floorY)} H 0 Z
-       M ${f(glass.x)} ${f(glass.y)} H ${f(glass.x2)} V ${f(glass.y2)} H ${f(glass.x)} Z`,
-    )}" fill="url(#wallLight)"/>`,
-  );
+  // Back wall, with the full glazed aperture cut out (even-odd).
+  const wallPath = `M 0 0 H ${HQ_W} V ${f(HQ.floorY)} H 0 Z
+       M ${f(glass.x)} ${f(glass.y)} H ${f(glass.x2)} V ${f(glass.y2)} H ${f(glass.x)} Z`;
+  body.push(`<path fill-rule="evenodd" d="${d(wallPath)}" fill="url(#wallG)"/>`);
+  body.push(`<path fill-rule="evenodd" d="${d(wallPath)}" fill="url(#wallLight)"/>`);
 
   // Ceiling and its light strip.
-  body.push(rect(0, 0, HQ_W, 108, "#1a1f24"));
-  body.push(rect(0, 106, HQ_W, 3, "#39424b", 'opacity="0.7"'));
-  body.push(rrect(420, 42, 1560, 26, 6, "#e8ecef"));
-  body.push(rrect(420, 42, 1560, 8, 4, "#ffffff", 'opacity="0.75"'));
+  body.push(rect(0, 0, HQ_W, 108, "#eff2f5"));
+  body.push(rect(0, 106, HQ_W, 3, "#b9c1c8", 'opacity="0.7"'));
+  body.push(rrect(420, 42, 1560, 26, 6, "#ffffff"));
+  body.push(rrect(420, 42, 1560, 8, 4, "#ffffff", 'opacity="0.9"'));
   body.push(rect(300, 70, 1960, 350, "url(#ceilGlow)"));
 
-  // Recessed panel that the certificate wall hangs on.
-  body.push(rrect(452, 40, 1438, 400, 4, "url(#panelG)"));
-  body.push(rect(452, 40, 1438, 2, "#4a545e", 'opacity="0.65"'));
-  body.push(rect(452, 438, 1438, 2, "#0f1316", 'opacity="0.6"'));
+  // The solid pier on the left. Certificate frames hang on this face.
+  body.push(rect(pier.x, 0, pier.w, HQ.floorY, "#dfe4e9"));
+  body.push(rect(pier.x, 0, pier.w, HQ.floorY, "url(#dayWash)"));
+  body.push(rect(pier.x2 - 3, 0, 3, HQ.floorY, "#aeb7bf", 'opacity="0.8"'));
+  body.push(rect(pier.x, 0, 2, HQ.floorY, "#c3cad1", 'opacity="0.7"'));
 
   // Left return wall, for depth.
-  body.push(rect(0, 0, 132, HQ.floorY, "#191e23", 'opacity="0.85"'));
-  body.push(rect(130, 0, 2, HQ.floorY, "#0f1316", 'opacity="0.7"'));
+  body.push(rect(0, 0, 132, HQ.floorY, "#cbd2d8"));
+  body.push(rect(130, 0, 2, HQ.floorY, "#a9b2ba", 'opacity="0.8"'));
 
-  // A low credenza against the back wall, standing on the floor line.
-  body.push(rect(170, HQ.floorY - 138, 430, 138, "#232a31"));
-  body.push(rect(170, HQ.floorY - 144, 430, 10, P.aluDark, 'opacity="0.75"'));
-  body.push(rect(316, HQ.floorY - 138, 4, 138, "#161b20", 'opacity="0.8"'));
-  body.push(circle(300, HQ.floorY - 70, 6, P.blueBright, 'opacity="0.55"'));
+  // A low credenza against the pier, standing on the floor line.
+  body.push(rect(170, HQ.floorY - 138, 430, 138, "#c9d0d7"));
+  body.push(rect(170, HQ.floorY - 144, 430, 10, P.alu));
+  body.push(rect(170, HQ.floorY - 144, 430, 3, "#ffffff", 'opacity="0.8"'));
+  body.push(rect(316, HQ.floorY - 138, 4, 138, "#a9b2ba", 'opacity="0.8"'));
+  body.push(circle(300, HQ.floorY - 70, 6, P.blueBright, 'opacity="0.7"'));
 
-  // Skirting and the wall/floor junction.
-  body.push(rect(0, HQ.floorY - 14, HQ_W, 14, "#2c343c"));
-  body.push(rect(0, HQ.floorY, HQ_W, 3, "#0d1114", 'opacity="0.8"'));
+  // Skirting, only where there is wall to skirt: the glazing runs to the floor.
+  body.push(rect(0, HQ.floorY - 14, win.x, 14, "#c0c8cf"));
+  body.push(rect(0, HQ.floorY, HQ_W, 3, "#98a2ab", 'opacity="0.7"'));
 
-  // Floor, the window light pool, and the long shadow the desk throws left.
+  // Floor, the daylight pool off the glazing, and the desk's soft shadow.
   body.push(rect(0, HQ.floorY, HQ_W, HQ_H - HQ.floorY, "url(#floorG)"));
   body.push(rect(0, HQ.floorY, HQ_W, HQ_H - HQ.floorY, "url(#floorLight)"));
   body.push(
@@ -1586,38 +1625,44 @@ function renderHqRoom() {
         [1880, HQ_H],
         [60, HQ_H],
       ],
-      "#05070a",
-      'opacity="0.34"',
+      "#5c666f",
+      'opacity="0.20"',
     ),
   );
 
-  // Window frame and mullions, painted over the cut-out so the glass reads as glass.
+  // Curtain wall: perimeter frame, then slim aluminium mullions and one
+  // transom, all painted over the cut-out so the glass reads as glass.
   body.push(
     `<path fill-rule="evenodd" d="${d(
       `M ${f(win.x)} ${f(win.y)} H ${f(win.x2)} V ${f(win.y2)} H ${f(win.x)} Z
        M ${f(glass.x)} ${f(glass.y)} H ${f(glass.x2)} V ${f(glass.y2)} H ${f(glass.x)} Z`,
-    )}" fill="${P.aluDark}"/>`,
+    )}" fill="${P.aluMid}"/>`,
   );
-  body.push(
-    `<path fill-rule="evenodd" d="${d(
-      `M ${f(win.x)} ${f(win.y)} H ${f(win.x2)} V ${f(win.y + 8)} H ${f(win.x)} Z
-       M ${f(win.x)} ${f(win.y)} H ${f(win.x + 8)} V ${f(win.y2)} H ${f(win.x)} Z`,
-    )}" fill="${P.aluLight}" opacity="0.7"/>`,
-  );
-  body.push(rect(2196, glass.y, 14, glass.y2 - glass.y, P.aluDark, 'opacity="0.92"'));
-  body.push(rect(glass.x, 556, glass.x2 - glass.x, 12, P.aluDark, 'opacity="0.92"'));
-  body.push(
-    poly(
-      [
-        [glass.x, glass.y2],
-        [glass.x + 190, glass.y],
-        [glass.x + 330, glass.y],
-        [glass.x + 140, glass.y2],
-      ],
-      "#ffffff",
-      'opacity="0.05"',
-    ),
-  );
+  body.push(rect(win.x, win.y, win.w, 6, P.aluLight, 'opacity="0.9"'));
+  body.push(rect(win.x, win.y, 6, win.h, P.aluLight, 'opacity="0.9"'));
+  body.push(rect(win.x, win.y2 - 6, win.w, 6, "#8f99a2", 'opacity="0.8"'));
+  for (let i = 1; i < gz.bays; i += 1) {
+    const mx = glass.x + bayW * i - gz.mullion / 2;
+    body.push(rect(mx, glass.y, gz.mullion, glass.y2 - glass.y, P.aluMid));
+    body.push(rect(mx, glass.y, 4, glass.y2 - glass.y, P.aluLight, 'opacity="0.85"'));
+  }
+  body.push(rect(glass.x, gz.transomY, glass.x2 - glass.x, gz.transomH, P.aluMid));
+  body.push(rect(glass.x, gz.transomY, glass.x2 - glass.x, 4, P.aluLight, 'opacity="0.85"'));
+  // Two raking reflections across the glass, kept very faint.
+  for (const sx of [glass.x + 240, glass.x + 1180]) {
+    body.push(
+      poly(
+        [
+          [sx, glass.y2],
+          [sx + 300, glass.y],
+          [sx + 430, glass.y],
+          [sx + 130, glass.y2],
+        ],
+        "#ffffff",
+        'opacity="0.07"',
+      ),
+    );
+  }
 
   // Standing desk.
   body.push(
@@ -1632,19 +1677,19 @@ function renderHqRoom() {
     ),
   );
   body.push(rect(HQ.deskFrontX0, HQ.deskFrontY, HQ.deskFrontX1 - HQ.deskFrontX0, 30, "url(#deskFace)"));
-  body.push(rect(HQ.deskFrontX0, HQ.deskFrontY, HQ.deskFrontX1 - HQ.deskFrontX0, 3, "#ffffff", 'opacity="0.5"'));
-  body.push(rect(880, HQ.deskLipY + 8, 1160, 20, "#171c21", 'opacity="0.75"'));
+  body.push(rect(HQ.deskFrontX0, HQ.deskFrontY, HQ.deskFrontX1 - HQ.deskFrontX0, 3, "#ffffff", 'opacity="0.6"'));
+  body.push(rect(880, HQ.deskLipY + 8, 1160, 20, "#5c666f", 'opacity="0.45"'));
   for (const lx of [790, 2090]) {
-    body.push(poly([[lx, HQ.deskLipY], [lx + 62, HQ.deskLipY], [lx + 70, 1292], [lx - 8, 1292]], "#39424b"));
-    body.push(rect(lx - 8, HQ.deskLipY, 12, 210, "#5a636c", 'opacity="0.55"'));
-    body.push(rrect(lx - 40, 1288, 148, 16, 4, "#2b333a"));
+    body.push(poly([[lx, HQ.deskLipY], [lx + 62, HQ.deskLipY], [lx + 70, 1292], [lx - 8, 1292]], "#8b949c"));
+    body.push(rect(lx - 8, HQ.deskLipY, 12, 210, "#d6dce1", 'opacity="0.7"'));
+    body.push(rrect(lx - 40, 1288, 148, 16, 4, "#7f888f"));
   }
 
-  // Dust and haze in the window light, kept faint.
+  // Dust and haze in the daylight, kept faint.
   for (let i = 0; i < 26; i += 1) {
     const x = rng.range(1500, 2500);
     const y = rng.range(400, 1200);
-    body.push(circle(x, y, rng.range(1.5, 4), "#ffffff", `opacity="${f(rng.range(0.05, 0.16))}"`));
+    body.push(circle(x, y, rng.range(1.5, 4), "#ffffff", `opacity="${f(rng.range(0.10, 0.28))}"`));
   }
 
   body.push(rect(0, 0, HQ_W, HQ_H, "url(#roomVig)"));
@@ -1679,7 +1724,7 @@ function renderHqWindow() {
   body.push(rect(w.x, w.y, w.w, w.h, "url(#sun)"));
 
   // Cloud strata: flat, wide, low contrast.
-  for (let i = 0; i < 7; i += 1) {
+  for (let i = 0; i < 16; i += 1) {
     const cy = w.y + rng.range(60, w.h * 0.55);
     const cx = w.x + rng.range(40, w.w - 40);
     const rx = rng.range(90, 260);
@@ -1695,16 +1740,23 @@ function renderHqWindow() {
   // Distant apron: flat structures only, no liveries, no foliage.
   body.push(rect(w.x, horizon, w.w, w.y2 - horizon, "#aab5be"));
   body.push(rect(w.x, horizon, w.w, 4, "#8e99a3", 'opacity="0.7"'));
-  body.push(rect(w.x + 40, horizon - 46, 210, 46, "#7d8a95", 'opacity="0.85"'));
-  body.push(rect(w.x + 60, horizon - 62, 22, 16, "#7d8a95", 'opacity="0.85"'));
-  body.push(rect(w.x + 300, horizon - 30, 150, 30, "#8a959f", 'opacity="0.8"'));
-  body.push(rect(w.x + 470, horizon - 120, 26, 120, "#7d8a95", 'opacity="0.9"'));
-  body.push(rect(w.x + 458, horizon - 140, 50, 24, "#8e99a3", 'opacity="0.9"'));
+  // Distant apron structures, spread across the full run of the curtain wall.
+  for (let i = 0; i < 6; i += 1) {
+    const bx = w.x + 40 + i * (w.w / 6);
+    const bw = rng.range(130, 240);
+    const bh = rng.range(26, 54);
+    body.push(rect(bx, horizon - bh, bw, bh, "#7d8a95", 'opacity="0.85"'));
+    body.push(rect(bx + 20, horizon - bh - 16, 22, 16, "#7d8a95", 'opacity="0.85"'));
+  }
+  for (const tx of [w.x + 470, w.x + 1340]) {
+    body.push(rect(tx, horizon - 120, 26, 120, "#7d8a95", 'opacity="0.9"'));
+    body.push(rect(tx - 12, horizon - 140, 50, 24, "#8e99a3", 'opacity="0.9"'));
+  }
   body.push(rect(w.x, horizon + 60, w.w, 3, "#98a3ac", 'opacity="0.6"'));
   body.push(rect(w.x, w.y2 - 90, w.w, 90, "#9aa5ae", 'opacity="0.55"'));
   body.push("</g>");
   defs.push(
-    `<clipPath id="winClip"><rect x="${f(w.x + 18)}" y="${f(w.y + 18)}" width="${f(w.w - 36)}" height="${f(w.h - 36)}"/></clipPath>`,
+    `<clipPath id="winClip"><rect x="${f(w.x + HQ.glazing.frame)}" y="${f(w.y + HQ.glazing.frame)}" width="${f(w.w - HQ.glazing.frame * 2)}" height="${f(w.h - HQ.glazing.frame * 2)}"/></clipPath>`,
   );
   return hqDoc("hq-window", defs, body.join("\n"));
 }
@@ -2188,24 +2240,30 @@ function renderHqForeground() {
   return hqDoc("hq-foreground", defs, body.join("\n"));
 }
 
-/* --- The certificate wall. Two states, one frame table. ------------------- */
+/* --- The certificate wall. Two states, one frame table. -------------------
+   The grid hangs on HQ.pier, the solid return on the left of frame, so the
+   glazing behind the founder stays unbroken. Two ceiling washers graze the
+   pier face instead of a picture light per frame: at this pitch a light over
+   every frame would sit on the frame above it. ----------------------------- */
 function wallLights() {
   const out = [];
-  for (const fr of WALL_FRAMES) {
-    const cx = fr.x + fr.w / 2;
-    out.push(rrect(cx - 34, fr.y - 26, 68, 11, 4, P.aluDark));
-    out.push(rrect(cx - 34, fr.y - 26, 68, 4, 2, P.aluLight, 'opacity="0.8"'));
-    out.push(rect(cx - 3, fr.y - 16, 6, 8, "#5c656e"));
+  const cols = [...new Set(WALL_FRAMES.map((fr) => Math.round(fr.x / 10) * 10))].sort((a, b) => a - b);
+  for (const c of cols) {
+    const col = WALL_FRAMES.filter((fr) => Math.round(fr.x / 10) * 10 === c);
+    const cx = col[0].x + col[0].w / 2;
+    out.push(rrect(cx - 40, WALL_GRID.y - 44, 80, 12, 4, P.g500));
+    out.push(rrect(cx - 40, WALL_GRID.y - 44, 80, 4, 2, P.aluLight, 'opacity="0.85"'));
+    out.push(rect(cx - 3, WALL_GRID.y - 32, 6, 8, P.aluDark));
   }
   return out.join("");
 }
 
 function frameShell(fr, withGlass) {
   const out = [];
-  out.push(rrect(fr.x + 6, fr.y + 8, fr.w, fr.h, 3, "#05070a", 'opacity="0.34"'));
-  out.push(rrect(fr.x, fr.y, fr.w, fr.h, 3, P.aluDark));
-  out.push(rrect(fr.x, fr.y, fr.w, 4, 2, P.aluLight, 'opacity="0.85"'));
-  out.push(rrect(fr.x + 9, fr.y + 9, fr.w - 18, fr.h - 18, 1, "#1a1f24"));
+  out.push(rrect(fr.x + 5, fr.y + 7, fr.w, fr.h, 3, "#5c666f", 'opacity="0.22"'));
+  out.push(rrect(fr.x, fr.y, fr.w, fr.h, 3, P.g500));
+  out.push(rrect(fr.x, fr.y, fr.w, 4, 2, P.aluMid, 'opacity="0.8"'));
+  out.push(rrect(fr.x + 9, fr.y + 9, fr.w - 18, fr.h - 18, 1, "#c8cfd5"));
   if (withGlass) {
     out.push(
       poly(
@@ -2216,7 +2274,7 @@ function frameShell(fr, withGlass) {
           [fr.x + 9 + fr.w * 0.17, fr.y + fr.h - 9],
         ],
         "#ffffff",
-        'opacity="0.07"',
+        'opacity="0.20"',
       ),
     );
   }
@@ -2226,20 +2284,23 @@ function frameShell(fr, withGlass) {
 function renderHqWallEmpty() {
   const defs = [
     linGrad("coneG", 0, 0, 0, 1, [
-      [0, "#ffffff", 0.16],
+      [0, "#ffffff", 0.30],
       [1, "#ffffff", 0],
     ]),
   ];
   const body = [];
-  for (const fr of WALL_FRAMES) {
-    const cx = fr.x + fr.w / 2;
+  // One wash cone per column, falling the whole height of the grid.
+  const cols = [...new Set(WALL_FRAMES.map((fr) => Math.round(fr.x / 10) * 10))].sort((a, b) => a - b);
+  for (const c of cols) {
+    const col = WALL_FRAMES.filter((fr) => Math.round(fr.x / 10) * 10 === c);
+    const cx = col[0].x + col[0].w / 2;
     body.push(
       poly(
         [
-          [cx - 30, fr.y - 14],
-          [cx + 30, fr.y - 14],
-          [cx + 96, fr.y + fr.h + 40],
-          [cx - 96, fr.y + fr.h + 40],
+          [cx - 34, WALL_GRID.y - 30],
+          [cx + 34, WALL_GRID.y - 30],
+          [cx + 122, WALL_GRID.y2 + 30],
+          [cx - 122, WALL_GRID.y2 + 30],
         ],
         "url(#coneG)",
       ),
@@ -2295,11 +2356,9 @@ function renderHqWallFilled() {
       ),
     );
   }
-  // The small award, on its own shelf beside the grid.
+  // The small award, standing on the credenza top below the grid.
   const a = WALL_AWARD;
-  body.push(rrect(a.shelfX, a.shelfY, a.shelfW, 12, 3, P.aluDark));
-  body.push(rrect(a.shelfX, a.shelfY, a.shelfW, 4, 2, P.aluLight, 'opacity="0.8"'));
-  body.push(ellipse(a.x + a.w / 2, a.shelfY - 2, a.w * 0.7, 6, "#05070a", 'opacity="0.35"'));
+  body.push(ellipse(a.x + a.w / 2, a.standY, a.w * 0.8, 6, "#5c666f", 'opacity="0.28"'));
   body.push(
     poly(
       [
@@ -3609,7 +3668,28 @@ function main() {
   }
 
   rows.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
-  writeFileSync(MANIFEST_PATH, `${JSON.stringify({ version: 1, assets: rows }, null, 2)}\n`, "utf8");
+
+  /*
+   * Clickable regions the UI has to line up with, published as percentages of the
+   * 16:9 stage. The art is the source of truth: when a subject moves, its hotspot
+   * has to move with it or the click target lands on empty scenery. A test compares
+   * these against the rules in OfficeHQ.css so that drift fails the build rather
+   * than shipping a dead button.
+   */
+  const pct = (value, total) => Number(((value / total) * 100).toFixed(2));
+  const regions = {
+    wall: {
+      top: pct(WALL_GRID.y, HQ_H),
+      left: pct(WALL_GRID.x, HQ_W),
+      width: pct(WALL_GRID.w, HQ_W),
+      height: pct(WALL_GRID.h, HQ_H),
+    },
+  };
+  writeFileSync(
+    MANIFEST_PATH,
+    `${JSON.stringify({ version: 1, assets: rows, regions }, null, 2)}\n`,
+    "utf8",
+  );
 
   const renderedCount = rows.filter((row) => row.generated === "gemini").length;
   const byRole = rows.reduce((acc, row) => {
