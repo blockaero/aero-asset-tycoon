@@ -15,7 +15,11 @@ import { ATA_CHAPTERS } from "../src/sim/ata.ts";
 const GEN = new URL("../public/assets/gen/", import.meta.url);
 const manifest = JSON.parse(
   readFileSync(new URL("../public/assets/manifest.json", import.meta.url), "utf8"),
-) as { assets: { id: string; role: string; generated: string }[] };
+) as { assets: { id: string; role: string; ratio: string; generated: string }[] };
+
+const unclaimed = JSON.parse(
+  readFileSync(new URL("../docs/art-unclaimed.json", import.meta.url), "utf8"),
+) as { ids: string[] };
 
 const ids = new Set(manifest.assets.map((shot) => shot.id));
 
@@ -25,8 +29,19 @@ describe("delivered art is registered", () => {
       .filter((file) => file.endsWith(".webp"))
       .map((file) => file.replace(/\.webp$/, ""))
       .filter((id) => !ids.has(id));
-    // Register the id in scripts/generate-art.mjs, then wire a surface to draw it.
     expect(orphans).toEqual([]);
+  });
+
+  it("does not quietly grow the pile of art nobody has claimed", () => {
+    // The generator publishes an undeclared render so the catalogue stays honest, but
+    // undeclared means nothing has confirmed a surface draws it. A new one has to be
+    // looked at: declare the shot and wire it, or list it in docs/art-unclaimed.json.
+    const allowed = new Set(unclaimed.ids);
+    const found = manifest.assets
+      .filter((shot) => shot.ratio === "unknown")
+      .map((shot) => shot.id)
+      .filter((id) => !allowed.has(id));
+    expect(found).toEqual([]);
   });
 
   it("marks those files as rendered rather than still awaited", () => {

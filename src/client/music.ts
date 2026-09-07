@@ -13,6 +13,7 @@ import type { Season } from "../sim/types.ts";
 
 export type TrackId =
   | "hangar-theme"
+  | "hangar-neoclassical"
   | "dawn-shift"
   | "quarter-close"
   | "night-ops"
@@ -24,6 +25,8 @@ export type TrackDef = {
   label: string;
   blurb: string;
   kind: "file" | "synth";
+  /** For recorded tracks, the file under public/audio. Synth tracks leave it unset. */
+  file?: string;
   /** Beats per minute. The recorded theme sits at 84; variants orbit it. */
   bpm: number;
   /** Season this track is chosen for when seasonal auto-select is on. */
@@ -36,6 +39,16 @@ export const TRACKS: TrackDef[] = [
     label: "Hangar Theme",
     blurb: "The recorded main theme. Warm, unhurried, 84 BPM.",
     kind: "file",
+    file: "hangar-theme.m4a",
+    bpm: 84,
+    season: null,
+  },
+  {
+    id: "hangar-neoclassical",
+    label: "Hangar Theme · Neoclassical",
+    blurb: "The S2 recording. Strings over the same changes.",
+    kind: "file",
+    file: "hangar-s2-neoclassical.m4a",
     bpm: 84,
     season: null,
   },
@@ -87,6 +100,7 @@ const STORAGE_KEY = "aat.music.track";
 /** Semitone offsets from the root for each chord in the shared progression. */
 const PROGRESSIONS: Record<TrackId, number[][]> = {
   "hangar-theme": [[0, 3, 7, 14]],
+  "hangar-neoclassical": [[0, 3, 7, 14]],
   "dawn-shift": [
     [0, 7, 14, 19],
     [-3, 4, 12, 19],
@@ -175,20 +189,35 @@ function storeTrack(id: TrackId): void {
  * Recorded track
  * ------------------------------------------------------------------ */
 
+function isRecorded(id: TrackId): boolean {
+  return trackDef(id).kind === "file";
+}
+
+/** The single <audio> element, pointed at whichever recorded track is current. */
 function ensureAudio(): HTMLAudioElement {
-  if (!audio) {
-    audio = new Audio(`${import.meta.env.BASE_URL}audio/hangar-theme.m4a`);
+  const def = trackDef(current);
+  const src = `${import.meta.env.BASE_URL}audio/${def.file ?? "hangar-theme.m4a"}`;
+  if (audio) {
+    if (audio.dataset.track !== current) {
+      audio.pause();
+      audio.src = src;
+      audio.dataset.track = current;
+    }
+    return audio;
+  }
+  {
+    audio = new Audio(src);
     audio.loop = true;
     audio.volume = DEFAULT_VOLUME;
     audio.preload = "auto";
-    audio.dataset.track = "hangar-theme";
+    audio.dataset.track = current;
     document.body.appendChild(audio);
     audio.addEventListener("playing", () => {
       playing = true;
       emit();
     });
     audio.addEventListener("pause", () => {
-      if (current === "hangar-theme") {
+      if (isRecorded(current)) {
         playing = false;
         emit();
       }
@@ -433,7 +462,7 @@ function stopEverything(): void {
 /** Start the current track. Safe to call from any user gesture; idempotent. */
 export function startMusic(): void {
   if (playing) return;
-  if (current === "hangar-theme") {
+  if (isRecorded(current)) {
     const element = ensureAudio();
     void element.play().catch(() => {
       // Browser blocked autoplay; the next gesture will start it.

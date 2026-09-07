@@ -526,6 +526,24 @@
       "generated": "gemini"
     },
     {
+      "id": "brand-mark",
+      "file": "assets/gen/brand-mark.webp",
+      "role": "brand",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "brand-wordmark",
+      "file": "assets/gen/brand-wordmark.webp",
+      "role": "brand",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
       "id": "card-consignment",
       "file": "assets/gen/card-consignment.svg",
       "role": "card",
@@ -653,6 +671,60 @@
       "generated": "procedural"
     },
     {
+      "id": "card-milestone-first-cert",
+      "file": "assets/gen/card-milestone-first-cert.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "card-milestone-first-hire",
+      "file": "assets/gen/card-milestone-first-hire.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "card-milestone-first-region",
+      "file": "assets/gen/card-milestone-first-region.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "card-milestone-first-sale",
+      "file": "assets/gen/card-milestone-first-sale.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "card-milestone-insolvent",
+      "file": "assets/gen/card-milestone-insolvent.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "card-milestone-solvent-year",
+      "file": "assets/gen/card-milestone-solvent-year.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
       "id": "card-opp-agreement",
       "file": "assets/gen/card-opp-agreement.webp",
       "role": "card",
@@ -772,6 +844,159 @@
       "generated": "procedural"
     },
     {
+      "id": "card-shock-credit-crunch",
+      "file": "assets/gen/card-shock-credit-crunch.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "card-shock-fuel-spike",
+      "file": "assets/gen/card-shock-fuel-spike.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "card-shock-lessor-default",
+      "file": "assets/gen/card-shock-lessor-default.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "card-shock-supply-squeeze",
+      "file": "assets/gen/card-shock-supply-squeeze.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "card-shock-traffic-boom",
+      "file": "assets/gen/card-shock-traffic-boom.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "card-shock-type-grounding",
+      "file": "assets/gen/card-shock-type-grounding.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "card-shock-variant-launch",
+      "file": "assets/gen/card-shock-variant-launch.webp",
+      "role": "card",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "category-consumable",
+      "file": "assets/gen/category-consumable.webp",
+      "role": "badge",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "category-expendable",
+      "file": "assets/gen/category-expendable.webp",
+      "role": "badge",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "category-llp",
+      "file": "assets/gen/category-llp.webp",
+      "role": "badge",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "category-repairable",
+      "file": "assets/gen/category-repairable.webp",
+      "role": "badge",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "category-rotable",
+      "file": "assets/gen/category-rotable.webp",
+      "role": "badge",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "category-standard",
+      "file": "assets/gen/category-standard.webp",
+      "role": "badge",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "class-airframe",
+      "file": "assets/gen/class-airframe.webp",
+      "role": "badge",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "class-component",
+      "file": "assets/gen/class-component.webp",
+      "role": "badge",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "class-engine",
+      "file": "assets/gen/class-engine.webp",
+      "role": "badge",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "class-llp",
+      "file": "assets/gen/class-llp.webp",
+      "role": "badge",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
       "id": "condition-ar",
       "file": "assets/gen/condition-ar.webp",
       "role": "badge",
@@ -852,6 +1077,60 @@
       "fallback": "none"
     },
     {
+      "id": "empty-inventory",
+      "file": "assets/gen/empty-inventory.webp",
+      "role": "empty",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "empty-knowledge",
+      "file": "assets/gen/empty-knowledge.webp",
+      "role": "empty",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "empty-opportunities",
+      "file": "assets/gen/empty-opportunities.webp",
+      "role": "empty",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "empty-saves",
+      "file": "assets/gen/empty-saves.webp",
+      "role": "empty",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "empty-shocks",
+      "file": "assets/gen/empty-shocks.webp",
+      "role": "empty",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "empty-team",
+      "file": "assets/gen/empty-team.webp",
+      "role": "empty",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
       "id": "facility-broker",
       "file": "assets/gen/facility-broker.svg",
       "role": "facility",
@@ -868,6 +1147,15 @@
       "w": 512,
       "h": 512,
       "generated": "procedural"
+    },
+    {
+      "id": "facility-component-shop-s5",
+      "file": "assets/gen/facility-component-shop-s5.webp",
+      "role": "facility",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
     },
     {
       "id": "facility-conference",
@@ -897,6 +1185,15 @@
       "generated": "procedural"
     },
     {
+      "id": "facility-engine-shop-s5",
+      "file": "assets/gen/facility-engine-shop-s5.webp",
+      "role": "facility",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
       "id": "facility-factory",
       "file": "assets/gen/facility-factory.svg",
       "role": "facility",
@@ -913,6 +1210,15 @@
       "w": 512,
       "h": 512,
       "generated": "procedural"
+    },
+    {
+      "id": "facility-hangar-s5",
+      "file": "assets/gen/facility-hangar-s5.webp",
+      "role": "facility",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
     },
     {
       "id": "facility-lessor",
@@ -1038,7 +1344,7 @@
       "ratio": "16:9",
       "w": 2560,
       "h": 1440,
-      "generated": "awaited",
+      "generated": "gemini",
       "fallback": "hq-founder-idle"
     },
     {
@@ -1048,7 +1354,7 @@
       "ratio": "16:9",
       "w": 2560,
       "h": 1440,
-      "generated": "awaited",
+      "generated": "gemini",
       "fallback": "hq-founder-idle"
     },
     {
@@ -1058,7 +1364,7 @@
       "ratio": "16:9",
       "w": 2560,
       "h": 1440,
-      "generated": "awaited",
+      "generated": "gemini",
       "fallback": "hq-founder-idle"
     },
     {
@@ -1068,7 +1374,7 @@
       "ratio": "16:9",
       "w": 2560,
       "h": 1440,
-      "generated": "awaited",
+      "generated": "gemini",
       "fallback": "hq-founder-idle"
     },
     {
@@ -1097,7 +1403,7 @@
       "ratio": "16:9",
       "w": 2560,
       "h": 1440,
-      "generated": "awaited",
+      "generated": "gemini",
       "fallback": "hq-founder-idle"
     },
     {
@@ -1107,7 +1413,7 @@
       "ratio": "16:9",
       "w": 2560,
       "h": 1440,
-      "generated": "awaited",
+      "generated": "gemini",
       "fallback": "hq-founder-idle"
     },
     {
@@ -1117,35 +1423,44 @@
       "ratio": "16:9",
       "w": 2560,
       "h": 1440,
-      "generated": "awaited",
+      "generated": "gemini",
       "fallback": "hq-founder-idle"
     },
     {
       "id": "hq-monitors-idle",
-      "file": "assets/gen/hq-monitors-idle.svg",
+      "file": "assets/gen/hq-monitors-idle.webp",
       "role": "hq",
       "ratio": "16:9",
       "w": 2560,
       "h": 1440,
-      "generated": "procedural"
+      "generated": "gemini"
     },
     {
       "id": "hq-monitors-lit",
-      "file": "assets/gen/hq-monitors-lit.svg",
+      "file": "assets/gen/hq-monitors-lit.webp",
       "role": "hq",
       "ratio": "16:9",
       "w": 2560,
       "h": 1440,
-      "generated": "procedural"
+      "generated": "gemini"
     },
     {
       "id": "hq-room",
-      "file": "assets/gen/hq-room.svg",
+      "file": "assets/gen/hq-room.webp",
       "role": "hq",
       "ratio": "16:9",
       "w": 2560,
       "h": 1440,
-      "generated": "procedural"
+      "generated": "gemini"
+    },
+    {
+      "id": "hq-room-night",
+      "file": "assets/gen/hq-room-night.webp",
+      "role": "hq",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
     },
     {
       "id": "hq-side-screen",
@@ -1158,21 +1473,21 @@
     },
     {
       "id": "hq-wall-empty",
-      "file": "assets/gen/hq-wall-empty.svg",
+      "file": "assets/gen/hq-wall-empty.webp",
       "role": "hq",
       "ratio": "16:9",
       "w": 2560,
       "h": 1440,
-      "generated": "procedural"
+      "generated": "gemini"
     },
     {
       "id": "hq-wall-filled",
-      "file": "assets/gen/hq-wall-filled.svg",
+      "file": "assets/gen/hq-wall-filled.webp",
       "role": "hq",
       "ratio": "16:9",
       "w": 2560,
       "h": 1440,
-      "generated": "procedural"
+      "generated": "gemini"
     },
     {
       "id": "hq-window",
@@ -1182,6 +1497,96 @@
       "w": 2560,
       "h": 1440,
       "generated": "procedural"
+    },
+    {
+      "id": "knowledge-ops-ai",
+      "file": "assets/gen/knowledge-ops-ai.webp",
+      "role": "knowledge",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "knowledge-ops-operations",
+      "file": "assets/gen/knowledge-ops-operations.webp",
+      "role": "knowledge",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "knowledge-ops-sales",
+      "file": "assets/gen/knowledge-ops-sales.webp",
+      "role": "knowledge",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "knowledge-root-airframe-systems",
+      "file": "assets/gen/knowledge-root-airframe-systems.webp",
+      "role": "knowledge",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "knowledge-root-avionics",
+      "file": "assets/gen/knowledge-root-avionics.webp",
+      "role": "knowledge",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "knowledge-root-propulsion",
+      "file": "assets/gen/knowledge-root-propulsion.webp",
+      "role": "knowledge",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "knowledge-root-structures",
+      "file": "assets/gen/knowledge-root-structures.webp",
+      "role": "knowledge",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "knowledge-root-utilities",
+      "file": "assets/gen/knowledge-root-utilities.webp",
+      "role": "knowledge",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "loading-plate",
+      "file": "assets/gen/loading-plate.webp",
+      "role": "chrome",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "og-share",
+      "file": "assets/gen/og-share.webp",
+      "role": "chrome",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
     },
     {
       "id": "region-afr",
@@ -1324,6 +1729,60 @@
       "fallback": "netmapv2-region-plate"
     },
     {
+      "id": "series-737-800",
+      "file": "assets/gen/series-737-800.webp",
+      "role": "series",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "series-a320-200",
+      "file": "assets/gen/series-a320-200.webp",
+      "role": "series",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "series-cf34-8e",
+      "file": "assets/gen/series-cf34-8e.webp",
+      "role": "series",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "series-cfm56-5b",
+      "file": "assets/gen/series-cfm56-5b.webp",
+      "role": "series",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "series-cfm56-7b",
+      "file": "assets/gen/series-cfm56-7b.webp",
+      "role": "series",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "series-e175",
+      "file": "assets/gen/series-e175.webp",
+      "role": "series",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
       "id": "sky-autumn",
       "file": "assets/gen/sky-autumn.svg",
       "role": "sky",
@@ -1378,6 +1837,33 @@
       "generated": "procedural"
     },
     {
+      "id": "team-buyer-a",
+      "file": "assets/gen/team-buyer-a.webp",
+      "role": "team",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "team-buyer-b",
+      "file": "assets/gen/team-buyer-b.webp",
+      "role": "team",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "team-buyer-c",
+      "file": "assets/gen/team-buyer-c.webp",
+      "role": "team",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
       "id": "team-records",
       "file": "assets/gen/team-records.svg",
       "role": "team",
@@ -1412,6 +1898,42 @@
       "w": 900,
       "h": 1200,
       "generated": "procedural"
+    },
+    {
+      "id": "team-sales-a",
+      "file": "assets/gen/team-sales-a.webp",
+      "role": "team",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "team-sales-b",
+      "file": "assets/gen/team-sales-b.webp",
+      "role": "team",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "team-sales-c",
+      "file": "assets/gen/team-sales-c.webp",
+      "role": "team",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
+    },
+    {
+      "id": "wheel-bezel",
+      "file": "assets/gen/wheel-bezel.webp",
+      "role": "wheel",
+      "ratio": "unknown",
+      "w": 0,
+      "h": 0,
+      "generated": "gemini"
     },
     {
       "id": "wheel-face",

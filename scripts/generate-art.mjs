@@ -20,7 +20,7 @@
  * Usage: node scripts/generate-art.mjs   (or: npm run art)
  */
 
-import { mkdirSync, writeFileSync, existsSync } from "node:fs";
+import { mkdirSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -3754,6 +3754,20 @@ const AWAITED = [
    15. Write everything, then the manifest
    ========================================================================== */
 
+/** Role for a delivered render nobody declared, read off the id prefix. */
+function roleFromId(id) {
+  const prefixes = [
+    ["ata-ch-", "ata"], ["ata-", "ata"], ["brand-", "brand"], ["card-", "card"],
+    ["category-", "badge"], ["class-", "badge"], ["condition-", "badge"],
+    ["empty-", "empty"], ["facility-", "facility"], ["founder-", "founder"],
+    ["hq-", "hq"], ["knowledge-", "knowledge"], ["region-", "region"],
+    ["series-", "series"], ["sky-", "sky"], ["team-", "team"], ["wheel-", "wheel"],
+    ["cert-", "cert"],
+  ];
+  for (const [prefix, role] of prefixes) if (id.startsWith(prefix)) return role;
+  return "chrome";
+}
+
 function main() {
   mkdirSync(GEN_DIR, { recursive: true });
 
@@ -3797,6 +3811,26 @@ function main() {
       h: shot.h,
       generated: rendered ? "gemini" : "awaited",
       fallback: shot.fallback,
+    });
+  }
+
+  // Renders delivered from other sessions land straight in public/assets/gen. Rather
+  // than making every batch edit this file first, anything on disk that no shot claims
+  // is published here with its role read off the id prefix. The catalogue then always
+  // describes what actually ships; tests/art-registry is what checks it is drawn.
+  for (const file of readdirSync(GEN_DIR).sort()) {
+    if (!file.endsWith(".webp")) continue;
+    const id = file.slice(0, -".webp".length);
+    if (seen.has(id)) continue;
+    seen.add(id);
+    rows.push({
+      id,
+      file: `assets/gen/${id}.webp`,
+      role: roleFromId(id),
+      ratio: "unknown",
+      w: 0,
+      h: 0,
+      generated: "gemini",
     });
   }
 
