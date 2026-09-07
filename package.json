@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "sim": "tsx src/cli.ts",
     "art": "node scripts/generate-art.mjs",
+    "shots": "tsx scripts/build-shot-manifest.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test"
