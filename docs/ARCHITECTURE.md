@@ -43,7 +43,7 @@ The last two UI commits improved *surface* (photo office, map texture, type, pul
 | HTTP adapter | `src/server/http.ts` | Optional Node API / experiments; not used by the Pages SPA |
 | UI | `src/client/App.tsx` (~1,387 lines) + `styles.css` | Entire player-facing app |
 
-There is no router, no URL state, no scene graph, and no `ArtImage` / asset-manifest module.
+There is no router and no URL state. Shot ids resolve through `src/client/art.ts` + `ArtImage` (`public/assets/gen/<id>.webp` first, then legacy `public/assets/`). No `MANIFEST.txt` yet; `region-*` gen tiles do not exist.
 
 ### 2.2 Client shell and “routing”
 
@@ -133,18 +133,15 @@ Player actions are `GameCommand` values (`purchase_listing`, `send_to_shop`, …
 
 ### 2.5 Art / asset loading (only as it constrains architecture)
 
-There is no loader, manifest, or `ArtImage`. `main.tsx` sets three CSS variables:
+`ArtImage` / `shotCandidates` in `src/client/art.ts` resolve `BASE_URL + assets/gen/<id>.webp` first, then legacy `public/assets/`. CSS vars in `main.tsx` use the same helper:
 
-- `--asset-hq-office` → `hq-office-solarpunk.webp`
-- `--asset-world-map` → `world-map-solarpunk.webp`
-- `--asset-tarmac` → `tarmac-solarpunk.webp` (start screen wash)
+- `--asset-hq-office` → gen `hq-founder-asian-man` (HQ full-plate swap)
+- `--asset-world-map` → legacy `world-map.webp` (no gen world/region tiles)
+- `--asset-tarmac` → legacy `tarmac-solarpunk.webp` (start screen wash)
 
-Generated but **unbound** (no component reads them):
+Tokyo HQ binds the gen HQ plates that exist (`hq-room`, wall, monitors, seven founders). Missing: `hq-founder-mixed-man`, `hq-founder-idle`, and all `region-*` tiles. Chrome gen plates (cards, categories, team portraits, facility s5 icons) remain unbound.
 
-- Solarpunk: `aircraft-`, `engine-`, `hangar-`
-- Ops-desk pass: `aircraft-gate`, `control-tower`, `data-plate`, `engine-stand`, `hangar`, plus the pre-solarpunk office/map/tarmac
-
-Art is therefore a **skin on two surfaces** (office, map), not a scene graph. That is why a mood overhaul can ship without a regional view, and why facility interiors cannot be swapped in without a new binding.
+World/region still draw client hulls over the legacy map underlay. Facility interiors are still not a scene graph.
 
 ---
 
@@ -312,6 +309,7 @@ If that slice feels like a real zoom, then do P1 in the world schema. If it stil
 | --- | --- |
 | View enum, tabs, HQ, map, windows | `src/client/App.tsx` |
 | Office / map skins, hotspots, tabs | `src/client/styles.css`, `src/client/main.tsx` |
+| Shot-id loader / HQ plates | `src/client/art.ts`, `src/client/ArtImage.tsx` |
 | World seed, node positions, `region: "GLOBAL"` | `src/sim/world.ts` |
 | Types: `RegionId`, `Facility`, `NetworkNode`, `NodeState` | `src/sim/types.ts` |
 | Discovery + locked projection | `src/sim/network.ts` |

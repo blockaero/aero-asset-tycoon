@@ -18,6 +18,8 @@ import {
   setCampaignPace,
   subscribeCampaign,
 } from "./api.ts";
+import { ArtImage } from "./ArtImage.tsx";
+import { hqBackdropShot } from "./art.ts";
 import { musicOn, startMusic, subscribeMusic, toggleMusic } from "./music.ts";
 import {
   DESK_WINDOWS,
@@ -479,8 +481,10 @@ function Headquarters({
   const inTransit = observation.inventory.filter((asset) => asset.transferId !== null).length;
   const reachableNodes = observation.nodes.filter((node) => node.state !== "locked").length;
   return (
-    <section className="hq-scene" aria-label="Tokyo HQ operations desk">
-      <div className="hq-backdrop" aria-hidden="true" />
+    <section className="hq-scene" aria-label="Tokyo HQ operations desk" data-hq-shot={hqBackdropShot()}>
+      <div className="hq-backdrop" aria-hidden="true">
+        <ArtImage shot={hqBackdropShot()} className="hq-plate" alt="" />
+      </div>
       <div className="hq-overlay" aria-hidden="true" />
       <div className="office-copy">
         <p className="eyebrow">PLACE / TOKYO HQ / KANTO</p>
@@ -593,6 +597,7 @@ function WorldAtlas({
     <section className="atlas-scene" aria-label="World map">
       <div className="map-layout">
         <div className="network-map" role="img" aria-label="World regions">
+          <ArtImage shot="world-map" className="world-underlay" alt="" />
           <svg viewBox="0 0 100 100" preserveAspectRatio="none">
             <defs>
               <pattern id="smallGrid" width="5" height="5" patternUnits="userSpaceOnUse">

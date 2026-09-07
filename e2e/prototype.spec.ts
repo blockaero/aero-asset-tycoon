@@ -7,6 +7,7 @@ test("founder zooms world → region → HQ, opens a market window, and walks ba
 
   await expect(page.getByRole("button", { name: "Enter Kanto", exact: true })).toBeVisible();
   await expect(page.getByRole("navigation", { name: "Location" })).toContainText("World");
+  await expect(page.locator(".world-underlay")).toHaveAttribute("src", /\/assets\/world-map\.webp/);
   await page.screenshot({ path: "test-results/world-map.png", fullPage: true });
 
   await page.getByRole("button", { name: "Enter Kanto", exact: true }).click();
@@ -15,6 +16,7 @@ test("founder zooms world → region → HQ, opens a market window, and walks ba
   await page.screenshot({ path: "test-results/kanto-region.png", fullPage: true });
 
   await page.getByRole("button", { name: "Enter Tokyo HQ" }).click();
+  await expect(page.locator(".hq-scene .hq-plate")).toHaveAttribute("src", /\/assets\/gen\/hq-founder-asian-man\.webp/);
   await expect(page.getByRole("button", { name: /Open Marketplace/ })).toBeVisible();
   await expect(page.getByRole("status")).toContainText("Enter Kanto to reach Tokyo HQ");
   await expect(page.getByRole("button", { name: "Resume" })).toBeVisible();

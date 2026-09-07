@@ -12,6 +12,14 @@ Use a different seed for each player. Record only anonymous notes.
 
 Campaign entry is now the **world map**. Tokyo HQ is a place inside Kanto; desks (Marketplace, etc.) open as windows on a place. The location bar is World › region › place › window.
 
+Tokyo HQ binds generated plates from `public/assets/gen/<shot-id>.webp` (no `MANIFEST.txt` in that folder). The office is a **full-plate swap** — default `hq-founder-asian-man` — because the HQ webps are opaque 2560×1440 RGB scenes, not transparent layers. The same loader also resolves `hq-room`, `hq-room-night`, `hq-wall-empty`, `hq-wall-filled`, `hq-monitors-idle`, `hq-monitors-lit`, and the seven founder portraits that exist on disk.
+
+Missing gen ids (loader fallbacks, not regenerated):
+
+- `hq-founder-mixed-man` → `hq-founder-mixed-woman`
+- `hq-founder-idle` → `hq-room`
+- `region-*` tiles — **none yet**. World/region keep the existing hull chart. World uses a legacy underlay (`public/assets/world-map.webp`, then solarpunk).
+
 ## Tasks to observe
 
 1. From the world map, enter Kanto, then Tokyo HQ, and identify the next weekly pulse.
