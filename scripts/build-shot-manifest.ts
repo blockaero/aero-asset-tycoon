@@ -33,6 +33,27 @@ const slug = (value: string): string =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 
+const OPPORTUNITY_SHOT_NOTES: Record<string, string> = {
+  listing:
+    "Market listing. Daylight staging of rotables, not only a dark trading desk. Tropical or spring sky is welcome.",
+  buyer_need: "Urgent airline buyer need. Interior tension is allowed; not every card is night.",
+  introduction:
+    "Warm broker introduction. Daylight hangar door, spring or tropical blue sky, closer to portfolio-rebalance than a night silhouette.",
+  agreement: "Asset package agreement. A bright room with windows is valid; not only a dark pendant lamp.",
+  teardown:
+    "Teardown yard harvest. Tropical boneyard under blue or spring sky is valid; not only dusk.",
+  conference:
+    "Industry conference networking. Tropical and bright — glass, blue sky, spring light — not only a dark hall.",
+  candidate: "Hiring candidate video-call. No identifiable face.",
+  intel: "Market intelligence briefing. Quieter interior is fine.",
+  warehouse_rotables:
+    "Impressive professional warehouse at real inventory scale: rows of landing gears on stands, APU modules, engine and airframe assemblies. Realistic spacing you could walk, not sparse, not overlapping. Daylight, skylights or open dock to blue sky.",
+  warehouse_questionable:
+    "Warehouse lot whose quality is mixed and somewhat questionable: dusty, uneven rows, tired tape and oil, as-removed units among the honest ones. Still a real warehouse, not a junk pile.",
+  warehouse_as_removed:
+    "Open-sided or tired tropical store of as-removed landing gears and assemblies under harsh sun. Condition is visibly uneven.",
+};
+
 /** ATA chapters that actually appear on a part in the catalog. */
 const CATALOG_ATA = [
   21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 38, 45, 49, 52, 54,
@@ -342,12 +363,16 @@ const groups: Group[] = [
       "card per kind lets the board be read by shape before it is read by word.",
     spec:
       "3:2, 1500x1000. A scene rather than an icon, and different enough between kinds " +
-      "that the board can be scanned by picture. Mood and staging are yours.",
+      "that the board can be scanned by picture. Mood is mixed: some cards are tropical " +
+      "daylight and blue sky, closer to portfolio-rebalance than a night interior; some " +
+      "stay quieter and more interior. Warehouse lots must read as real inventory at " +
+      "scale — landing gears, APUs, engine and airframe assemblies — realistically " +
+      "spaced, not sparse and not overlapping.",
     shots: [...new Set(OPPORTUNITY_TEMPLATES.map((template) => template.kind))].map((kind) => ({
       id: `card-opp-${slug(kind)}`,
       ratio: "3:2",
       px: "1500x1000",
-      note: `Opportunity kind: ${kind.replace(/_/g, " ")}.`,
+      note: OPPORTUNITY_SHOT_NOTES[kind] ?? `Opportunity kind: ${kind.replace(/_/g, " ")}.`,
     })),
   },
   {
