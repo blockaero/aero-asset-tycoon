@@ -26,7 +26,9 @@ import {
   type ReactNode,
 } from "react";
 import { ATA_GROUP_LABELS, ataGroupOf, ataLabel, ataTitle } from "../../sim/ata.ts";
+import { opportunityCardShotId } from "../../sim/opportunities.ts";
 import type { GameObservation } from "../../sim/observation.ts";
+import { ArtImage } from "../art/ArtImage.tsx";
 import type {
   AtaGroup,
   FacilityKind,
@@ -1003,6 +1005,13 @@ function OpportunityCard({
         reason ? " is-blocked" : ""
       }`}
     >
+      <ArtImage
+        id={opportunityCardShotId(opportunity)}
+        alt=""
+        ratio="3:2"
+        className="netmapv2-card-art"
+        decorative
+      />
       <p className="netmapv2-card-kind">
         {opportunity.easterEgg ? <span className="netmapv2-card-rare">Rare find</span> : null}
         <span>{opportunity.kind.replace(/_/g, " ")}</span>

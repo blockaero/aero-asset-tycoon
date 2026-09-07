@@ -760,6 +760,14 @@
   padding: 10px 11px 11px;
 }
 
+.netmapv2-card-art {
+  display: block;
+  width: 100%;
+  margin: 0 0 8px;
+  border: 1px solid var(--hairline);
+  object-fit: cover;
+}
+
 .netmapv2-card.is-blocked {
   border-left-color: var(--hairline);
   background: var(--paper-deep);

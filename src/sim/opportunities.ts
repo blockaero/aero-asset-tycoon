@@ -88,7 +88,40 @@ export const OPPORTUNITY_TEMPLATES: OpportunityTemplate[] = [
     timeCost: 1, rcCost: 0, accCost: 60_000, weight: 7,
     facilityKinds: ["broker", "lessor", "distribution", "conference"],
   },
+  {
+    kind: "warehouse_rotables",
+    title: ({ ata }) => `Warehouse walk: ${ataTitle(ata)}`,
+    description: ({ node }) =>
+      `${node.label} has a floor of landing gear, APUs and engine assemblies ready to inspect.`,
+    timeCost: 4, rcCost: 1, accCost: 0, weight: 12,
+    facilityKinds: ["warehouse", "distribution"],
+  },
+  {
+    kind: "warehouse_questionable",
+    title: ({ ata }) => `As-is warehouse: ${ataTitle(ata)}`,
+    description: ({ node }) =>
+      `${node.label} is offering a mixed-condition lot. Some units look honest; some do not.`,
+    timeCost: 5, rcCost: 1, accCost: 0, weight: 10,
+    facilityKinds: ["warehouse", "teardown", "broker"],
+  },
+  {
+    kind: "warehouse_as_removed",
+    title: ({ ata }) => `As-removed floor: ${ataTitle(ata)}`,
+    description: ({ node }) =>
+      `${node.label} has an open-sided store of as-removed gears and assemblies under tropical light. Condition is uneven.`,
+    timeCost: 5, rcCost: 0, accCost: 0, weight: 8,
+    facilityKinds: ["warehouse", "teardown", "hangar"],
+  },
 ];
+
+/** Shot-list id for the card art that belongs to this opportunity. */
+export function opportunityCardShotId(opportunity: NetworkOpportunity): string {
+  if (opportunity.easterEgg) {
+    const egg = EASTER_EGGS.find((entry) => entry.title === opportunity.title);
+    return egg ? `card-egg-${egg.id}` : "card-egg-broker-favour";
+  }
+  return `card-opp-${opportunity.kind.replace(/_/g, "-")}`;
+}
 
 export type EasterEggEffect =
   | { kind: "acc_grant"; value: number }

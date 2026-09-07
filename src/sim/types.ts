@@ -303,7 +303,10 @@ export type NetworkOpportunity = {
     | "conference"
     | "candidate"
     | "teardown"
-    | "intel";
+    | "intel"
+    | "warehouse_rotables"
+    | "warehouse_questionable"
+    | "warehouse_as_removed";
   title: string;
   description: string;
   referenceId: number | null;
