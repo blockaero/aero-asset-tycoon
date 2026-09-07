@@ -6,7 +6,7 @@ No text/numbers/logos/lettering. Square centered motif on dark graphite field.
 REVISIONS
   ata-ch-30  Ice and Rain Protection  pitot tube (was ice-crystal shield)
   ata-ch-36  Pneumatic                horizontal pneumatic piston (was bleed-air swirl)
-  ata-ch-49  Airborne Auxiliary Power turboshaft APU + generator (was turbofan-like capsule)
+  ata-ch-49  Airborne Auxiliary Power APU (was turbofan-like capsule)
   ata-ch-71  Power Plant              mounts / fireseal / fittings / harness (was engine stand)
 
 COMPLETED (34/34)
