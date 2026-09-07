@@ -192,57 +192,57 @@
     },
     {
       "id": "founder-asian-man",
-      "file": "assets/gen/founder-asian-man.svg",
+      "file": "assets/gen/founder-asian-man.webp",
       "role": "founder",
       "ratio": "3:4",
       "w": 900,
       "h": 1200,
-      "generated": "procedural"
+      "generated": "gemini"
     },
     {
       "id": "founder-asian-woman",
-      "file": "assets/gen/founder-asian-woman.svg",
+      "file": "assets/gen/founder-asian-woman.webp",
       "role": "founder",
       "ratio": "3:4",
       "w": 900,
       "h": 1200,
-      "generated": "procedural"
+      "generated": "gemini"
     },
     {
       "id": "founder-black-man",
-      "file": "assets/gen/founder-black-man.svg",
+      "file": "assets/gen/founder-black-man.webp",
       "role": "founder",
       "ratio": "3:4",
       "w": 900,
       "h": 1200,
-      "generated": "procedural"
+      "generated": "gemini"
     },
     {
       "id": "founder-black-woman",
-      "file": "assets/gen/founder-black-woman.svg",
+      "file": "assets/gen/founder-black-woman.webp",
       "role": "founder",
       "ratio": "3:4",
       "w": 900,
       "h": 1200,
-      "generated": "procedural"
+      "generated": "gemini"
     },
     {
       "id": "founder-mixed-man",
-      "file": "assets/gen/founder-mixed-man.svg",
+      "file": "assets/gen/founder-mixed-man.webp",
       "role": "founder",
       "ratio": "3:4",
       "w": 900,
       "h": 1200,
-      "generated": "procedural"
+      "generated": "gemini"
     },
     {
       "id": "founder-mixed-woman",
-      "file": "assets/gen/founder-mixed-woman.svg",
+      "file": "assets/gen/founder-mixed-woman.webp",
       "role": "founder",
       "ratio": "3:4",
       "w": 900,
       "h": 1200,
-      "generated": "procedural"
+      "generated": "gemini"
     },
     {
       "id": "founder-white-man",
@@ -255,12 +255,12 @@
     },
     {
       "id": "founder-white-woman",
-      "file": "assets/gen/founder-white-woman.svg",
+      "file": "assets/gen/founder-white-woman.webp",
       "role": "founder",
       "ratio": "3:4",
       "w": 900,
       "h": 1200,
-      "generated": "procedural"
+      "generated": "gemini"
     },
     {
       "id": "hq-foreground",

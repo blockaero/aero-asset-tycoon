@@ -29,14 +29,25 @@ is simply never loaded, silently.
 
 Repository `blockaero/aero-asset-tycoon`, directory `public/assets/gen/`.
 
-Work on a **new branch off `main`**, named `claude/aero-art-gemini-01`. Do not push to
-`claude/aero-game-design-oogwv6`; that branch is carrying the v2 build and a large binary drop
-would collide with it. Open a draft pull request when the batch is done.
+Work on a **new branch off `main`**, named `claude/aero-art-gemini-NN` for the batch number.
+Open a draft pull request when the batch is done.
+
+**Commit the `.webp` files and nothing else.** Not the manifest, not this brief, not the skill,
+not the scripts. Those all live on the game branch and are maintained there, so a batch that
+also carries them turns a clean drop-in into a merge conflict over files the art pass never
+needed to touch. `npm run art` on the game branch rebuilds the manifest by looking at which
+`.webp` files are actually present, and flips those rows to `generated: "gemini"` on its own.
+
+Batch 01 learned this the hard way: it shipped a manifest whose 42 unrendered rows pointed at
+`.webp` files that do not exist, because it was cut from `main` where the procedural `.svg`
+stand-ins are not present.
 
 ## The manifest
 
-`public/assets/manifest.json` is the catalogue. Update it in the same commit as the images.
-One entry per file, sorted by `id`:
+`public/assets/manifest.json` is the catalogue, and it is generated, not hand-written. Run
+`npm run art` on the game branch after dropping renders in and it rebuilds every row, marking
+each shot `gemini` or `procedural` by looking at what is on disk. Do not edit it by hand and do
+not commit it from an art batch. For reference, a row looks like this:
 
 ```json
 {
@@ -57,8 +68,7 @@ One entry per file, sorted by `id`:
 ```
 
 `role` is one of `founder`, `team`, `hq`, `facility`, `region`, `sky`, `wheel`, `card`, `ata`.
-`generated` is `"gemini"` for a real render and `"procedural"` for a stand-in. Leave the
-existing `procedural` rows in place for any shot you did not render; do not delete them.
+`generated` is `"gemini"` for a real render and `"procedural"` for a stand-in.
 
 ## The shot list
 
@@ -183,16 +193,17 @@ That is 49 files.
 > Work through the shot list in the priority order the brief gives. For each image: build the
 > flattened prompt, generate, check it against the shot's description, remove the Gemini
 > watermark, export webp at quality 82 at the ratio and pixel size the brief specifies, and save
-> it to `public/assets/gen/<id>.webp` using the exact ID from the brief as the filename. Then add
-> or update its row in `public/assets/manifest.json` with `generated` set to `gemini`.
+> it to `public/assets/gen/<id>.webp` using the exact ID from the brief as the filename. Do not
+> touch `public/assets/manifest.json`; it is generated on the game branch from what is on disk.
 >
 > Consistency matters more than any single image. Render `hq-room` first and treat it as the
 > reference for every other Office HQ layer, since they stack and must align. Render one founder
 > portrait first, get the framing and lighting right, then match the other seven to it.
 >
-> Commit to a new branch `claude/aero-art-gemini-01` off `main`, in batches by category rather
-> than one commit per file, and open a draft pull request when you are done. Do not push to
-> `claude/aero-game-design-oogwv6`.
+> Commit ONLY the `.webp` files, to a new branch `claude/aero-art-gemini-NN` off `main`, in
+> batches by category rather than one commit per file, and open a draft pull request when you are
+> done. Do not commit the manifest, this brief, the skill or the scripts: those are maintained on
+> the game branch and shipping them from an art batch causes merge conflicts for no benefit.
 >
 > When finished, report which of the 49 shots you rendered, which you skipped and why, and any
 > shot where the guardrails and the description pulled against each other.
@@ -209,3 +220,27 @@ npm run dev
 
 The loader prefers `.webp` over `.svg` automatically. Any shot still on its stand-in will look
 flat and geometric next to a real render, which is the quickest way to spot what is missing.
+
+
+---
+
+## Batch log
+
+**Batch 01 — 2026-09-07 — 7 of 49.** Founder portraits, 900x1200 webp q82, sourced 1792x2400
+from Gemini, mat border trimmed by corner sampling, no watermark present on any of the seven.
+`founder-white-man` was generated but missing from the upload, so it is still on its stand-in
+and is visibly the odd one out in the picker.
+
+Two notes worth carrying into batch 02:
+
+- **The blue accent drifts across the set.** Lapel pin, blazer lining, lapel piping, pocket
+  square, tie bar, lanyard, full necktie. Each is fine alone, but the eight are meant to swap in
+  a picker without jumping, and a pin becoming a necktie reads as a different art direction.
+  Specify identical accent placement for the whole set.
+- **Backgrounds drift too.** One portrait has a city skyline, another a glass-partitioned
+  office, the rest soft neutral walls. Less jarring than the accent, but the same instruction to
+  keep framing identical is strained.
+
+`scripts/process-render.py` came from this batch and is kept: it samples the actual corner
+colour to find Gemini's mat border rather than assuming white, which matters because the border
+came back white, cream and absent across seven renders of the same prompt.

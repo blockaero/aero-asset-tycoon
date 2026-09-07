@@ -15,7 +15,7 @@
   position: relative;
   overflow: hidden;
   width: 100%;
-  max-width: max(640px, calc((100vh - 260px) * 16 / 9));
+  max-width: max(640px, calc((100vh - 400px) * 16 / 9));
   aspect-ratio: 16 / 9;
   container-type: inline-size;
   border: 1px solid var(--ink);
@@ -536,7 +536,7 @@
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 1px;
   width: 100%;
-  max-width: max(640px, calc((100vh - 260px) * 16 / 9));
+  max-width: max(640px, calc((100vh - 400px) * 16 / 9));
   border: 1px solid var(--hairline);
   margin: 0 auto;
   background: var(--hairline);

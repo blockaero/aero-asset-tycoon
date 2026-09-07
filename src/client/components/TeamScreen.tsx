@@ -26,6 +26,7 @@ import { BASE_TEAM_CAP, TEAM_ROLE_DEFS, canHire, weeklySalaryCost } from "../../
 import type { GameObservation } from "../../sim/observation.ts";
 import type { KnowledgeEffect, RegionCode, TeamCandidate, TeamMember } from "../../sim/types.ts";
 import "./TeamScreen.css";
+import { useArtSource } from "../art/ArtImage.tsx";
 
 /* ---------------------------------------------------------------- *
  * Contract
@@ -43,9 +44,6 @@ export type TeamScreenProps = {
 /* ---------------------------------------------------------------- *
  * Constants
  * ---------------------------------------------------------------- */
-
-/** Portraits live beside every other generated plate. Absent until the art pass runs. */
-const PORTRAIT_DIR = "assets/gen";
 
 /** Plain words for the machine reasons canHire returns. */
 const HIRE_BLOCK_TEXT: Record<string, string> = {
@@ -446,26 +444,22 @@ function Portrait({
   name: string;
   className?: string;
 }): ReactNode {
-  const [broken, setBroken] = useState(false);
-
-  /* A new portrait deserves a fresh attempt at loading its file. */
-  useEffect(() => {
-    setBroken(false);
-  }, [portraitId]);
+  // The hook resets itself when the id changes, so a new portrait gets a fresh try.
+  const art = useArtSource(portraitId);
 
   return (
     <span className={className ? `teamscreen-portrait ${className}` : "teamscreen-portrait"}>
       <span className="teamscreen-portrait-fallback" aria-hidden="true">
         {initials(name)}
       </span>
-      {broken ? null : (
+      {art.exhausted ? null : (
         <img
-          src={`${import.meta.env.BASE_URL}${PORTRAIT_DIR}/${portraitId}.svg`}
+          src={art.src}
           alt=""
           loading="lazy"
           decoding="async"
           draggable={false}
-          onError={() => setBroken(true)}
+          onError={art.onError}
         />
       )}
     </span>

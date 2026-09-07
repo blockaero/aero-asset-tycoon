@@ -3,6 +3,7 @@ import { ATA_GROUP_LABELS, ataGroupOf, ataLabel, ataTitle } from "../../sim/ata.
 import type { GameObservation } from "../../sim/observation.ts";
 import type { Season } from "../../sim/types.ts";
 import "./OfficeHQ.css";
+import { useArtSource } from "../art/ArtImage.tsx";
 
 /** Which surface a hotspot opens. Monitors map straight onto onOpenMonitor. */
 export type OfficeHQMonitor = "finance" | "fleet" | "intel";
@@ -296,21 +297,21 @@ function HqLayer({
   behind?: ReactNode;
   children?: ReactNode;
 }): ReactNode {
-  const [missing, setMissing] = useState(false);
+  const art = useArtSource(name);
   return (
     <div
       className={`officehq-layer officehq-layer--${modifier}`}
       style={style}
-      data-missing={missing ? "true" : undefined}
+      data-missing={art.exhausted ? "true" : undefined}
     >
       {behind}
-      {missing ? null : (
+      {art.exhausted ? null : (
         <img
           className="officehq-art"
-          src={artUrl(name)}
+          src={art.src}
           alt={alt}
           draggable={false}
-          onError={() => setMissing(true)}
+          onError={art.onError}
         />
       )}
       {children}
@@ -328,18 +329,16 @@ function HqArt({
   name: string;
   alt: string;
 }): ReactNode {
-  const [missing, setMissing] = useState(false);
+  // Prefers a real .webp render, falls back to the procedural .svg, then to the
+  // CSS plate keyed off data-missing.
+  const art = useArtSource(name);
   return (
-    <span className={className} data-missing={missing ? "true" : undefined}>
-      {missing ? null : (
-        <img src={artUrl(name)} alt={alt} draggable={false} onError={() => setMissing(true)} />
+    <span className={className} data-missing={art.exhausted ? "true" : undefined}>
+      {art.exhausted ? null : (
+        <img src={art.src} alt={alt} draggable={false} onError={art.onError} />
       )}
     </span>
   );
-}
-
-function artUrl(name: string): string {
-  return `${import.meta.env.BASE_URL}assets/gen/${name}.svg`;
 }
 
 /** Demand history as a normalised polyline for the centre monitor. */

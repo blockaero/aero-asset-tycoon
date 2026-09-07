@@ -511,6 +511,8 @@ h4 {
 
 .workspace {
   padding: 20px;
+  /* Clear the pulse wheel, which is fixed to the bottom-right of the viewport. */
+  padding-bottom: 200px;
 }
 
 .paper-sheet {

@@ -46,6 +46,7 @@ import type {
   RegionCode,
 } from "../../sim/types.ts";
 import "./TribalKnowledge.css";
+import { useArtSource } from "../art/ArtImage.tsx";
 
 /* ---------------------------------------------------------------- *
  * Contract
@@ -63,7 +64,8 @@ export type TribalKnowledgeProps = {
  * ---------------------------------------------------------------- */
 
 /** Wall backdrop. Absent until the art pass runs; the CSS fallback carries it. */
-const WALL_ART = "assets/gen/hq-wall-filled.svg";
+/** Shot id only. The loader picks the format. */
+const WALL_ART = "hq-wall-filled";
 
 /** Picture lights hung over the frames. Decorative only. */
 const PICTURE_LIGHTS = 4;
@@ -214,7 +216,7 @@ export function TribalKnowledge({ observation, onInvest, onClose }: TribalKnowle
   const headingId = useId();
   const [panel, setPanel] = useState<KnowledgeBranch>("certification");
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [artBroken, setArtBroken] = useState(false);
+  const wallArt = useArtSource(WALL_ART);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   /* Escape closes the wall. Registered once, removed on unmount. */
@@ -331,15 +333,15 @@ export function TribalKnowledge({ observation, onInvest, onClose }: TribalKnowle
 
       {/* ---- 1. The wall --------------------------------------------- */}
       <div className="tk-wall">
-        {artBroken ? null : (
+        {wallArt.exhausted ? null : (
           <img
             className="tk-wall-art"
-            src={`${import.meta.env.BASE_URL}${WALL_ART}`}
+            src={wallArt.src}
             alt=""
             loading="lazy"
             decoding="async"
             draggable={false}
-            onError={() => setArtBroken(true)}
+            onError={wallArt.onError}
           />
         )}
         <div className="tk-lights" aria-hidden="true">

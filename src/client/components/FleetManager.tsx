@@ -51,6 +51,7 @@ import type {
 } from "../../sim/types.ts";
 import { formatAcc, meetsCondition, serviceable } from "../../sim/util.ts";
 import "./FleetManager.css";
+import { useArtSource } from "../art/ArtImage.tsx";
 
 /* ---------------------------------------------------------------- *
  * Constants
@@ -1106,16 +1107,15 @@ function NumberField({
 
 /** A piece of art that never breaks the layout: the plate keeps its brushed fallback. */
 function ArtPlate({ name, alt }: { name: string; alt: string }): ReactNode {
-  const [missing, setMissing] = useState(false);
+  const art = useArtSource(name);
   return (
-    <span className="fleetmgr-plate" data-missing={missing ? "true" : undefined} aria-hidden={alt === "" ? true : undefined}>
-      {missing ? null : (
-        <img
-          src={`${import.meta.env.BASE_URL}assets/gen/${name}.svg`}
-          alt={alt}
-          draggable={false}
-          onError={() => setMissing(true)}
-        />
+    <span
+      className="fleetmgr-plate"
+      data-missing={art.exhausted ? "true" : undefined}
+      aria-hidden={alt === "" ? true : undefined}
+    >
+      {art.exhausted ? null : (
+        <img src={art.src} alt={alt} draggable={false} onError={art.onError} />
       )}
     </span>
   );

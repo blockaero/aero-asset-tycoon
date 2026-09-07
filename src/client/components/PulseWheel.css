@@ -6,7 +6,14 @@
    out of position on :active. */
 
 .pulsewheel {
-  position: relative;
+  /* The turn control belongs to the whole app, not to the header it used to sit in,
+     so it is pinned to the bottom-right of the viewport and travels with the player
+     across every surface. .workspace carries matching bottom padding so nothing can
+     hide underneath it. */
+  position: fixed;
+  right: 26px;
+  bottom: 26px;
+  z-index: 60;
   flex: 0 0 auto;
   width: 148px;
   height: 148px;
@@ -183,6 +190,7 @@
 }
 
 .pulsewheel-face,
+.pulsewheel-globe,
 .pulsewheel-season,
 .pulsewheel-night,
 .pulsewheel-sun,
@@ -217,7 +225,7 @@
    and the light centre travels with the pulse. */
 .pulsewheel-night {
   background: radial-gradient(circle at 50% 64%, var(--graphite-700) 0%, var(--graphite-900) 100%);
-  opacity: calc(0.5 - var(--daylight) * 0.44);
+  opacity: calc(0.28 - var(--daylight) * 0.24);
 }
 
 .pulsewheel-sun {
@@ -226,22 +234,148 @@
     var(--paper-glow) 0%,
     transparent 52%
   );
-  opacity: calc(0.16 + var(--daylight) * 0.7);
+  opacity: calc(0.08 + var(--daylight) * 0.3);
+}
+
+
+/* ---------------------------------------------------------------- *
+ * 3b — the globe
+ *
+ * A turning world under the readout. The sphere is faked: two identical
+ * bands of surface sit side by side inside a circular clip and slide left
+ * by exactly one band width, which loops with no seam. Parallels hold
+ * still because spinning a globe about its polar axis does not move them.
+ * A limb shade and a terminator do the rounding, and the terminator is
+ * placed from --daylight so the sun's shadow follows the same dawn-to-night
+ * curve as the rest of the disc.
+ * ---------------------------------------------------------------- */
+
+.pulsewheel-globe {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.pulsewheel-globe-ocean {
+  fill: var(--graphite-800);
+  opacity: 0.82;
+}
+
+.pulsewheel-globe-parallel,
+.pulsewheel-globe-meridian {
+  fill: none;
+  stroke: var(--cyan-bright);
+  stroke-width: 0.7;
+  opacity: 0.42;
+}
+
+.pulsewheel-globe-route {
+  fill: none;
+  stroke: var(--cyan-bright);
+  stroke-width: 0.9;
+  stroke-linecap: round;
+  opacity: 0.65;
+}
+
+.pulsewheel-globe-spec {
+  fill: url(#pulsewheel-globe-spec);
+}
+
+.pulsewheel-globe-node {
+  fill: var(--cyan-bright);
+  opacity: 0.95;
+  filter: drop-shadow(0 0 1.2px var(--cyan-glow));
+}
+
+/* The shadow of the sun, sweeping west across the face as the pulse runs.
+   --daylight 0 is midnight, so the night edge has crossed the whole disc; at 1 it
+   has slid off to the left and the globe is fully lit. */
+.pulsewheel-globe-terminator {
+  fill: url(#pulsewheel-globe-night);
+  transform: translateX(calc(var(--daylight) * 100px));
+}
+
+/* Limb darkening: the edge of a sphere always turns away from the light. */
+.pulsewheel-globe-limb {
+  fill: url(#pulsewheel-globe-limb-grad);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The world only turns while the pulse is running. Paused, it holds still,
+     which is the same signal the timer arc gives. */
+  .pulsewheel-globe.is-spinning .pulsewheel-globe-spin {
+    animation: pulsewheel-globe-spin 48s linear infinite;
+  }
+
+  /* A resolved pulse spins the world on a turn before settling back to its
+     background rate. The component remounts the globe on each new flash nonce,
+     so the burst restarts cleanly instead of queueing. */
+  .pulsewheel-globe.is-burst .pulsewheel-globe-spin {
+    animation:
+      pulsewheel-globe-burst 1100ms var(--ease-out) 1,
+      pulsewheel-globe-spin 48s linear 1100ms infinite;
+  }
+
+  .pulsewheel-globe.is-spinning .pulsewheel-globe-node,
+  .pulsewheel-globe.is-spinning .pulsewheel-globe-route {
+    animation: pulsewheel-globe-shimmer 6s ease-in-out infinite;
+  }
+
+  .pulsewheel-globe-terminator {
+    transition:
+      opacity 850ms linear,
+      transform 850ms linear;
+  }
+}
+
+@keyframes pulsewheel-globe-spin {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* Exactly one band width, so the second copy lands where the first began. */
+    transform: translateX(-100px);
+  }
+}
+
+@keyframes pulsewheel-globe-burst {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100px);
+  }
+}
+
+@keyframes pulsewheel-globe-shimmer {
+  0%,
+  100% {
+    opacity: 0.28;
+  }
+  50% {
+    opacity: 0.92;
+  }
 }
 
 .pulsewheel-art {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.28;
-  mix-blend-mode: luminosity;
+  opacity: 0.1;
+  mix-blend-mode: overlay;
 }
 
 /* Keeps the readout legible at midnight and at noon alike. */
+/* Just enough lift under the readout to keep it legible over the turning globe.
+   Any heavier and the world underneath goes flat. */
 .pulsewheel-plate {
-  inset: 11px;
-  background: radial-gradient(circle at 50% 50%, var(--paper-glow) 0%, transparent 74%);
-  opacity: 0.84;
+  inset: 14px;
+  background: radial-gradient(circle at 50% 50%, var(--graphite-900) 0%, transparent 70%);
+  opacity: 0.62;
 }
 
 /* ---------------------------------------------------------------- *
@@ -255,9 +389,10 @@
   flex-direction: column;
   align-items: center;
   gap: 1px;
+  /* Dark halo, not light: the readout now sits on a night-side globe. */
   text-shadow:
-    0 0 8px var(--paper-glow),
-    0 0 3px var(--paper-glow);
+    0 0 10px var(--graphite-900),
+    0 1px 3px var(--graphite-900);
 }
 
 .pulsewheel-period {
@@ -265,7 +400,7 @@
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.1em;
-  color: var(--ink-soft);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
 }
 
 .pulsewheel-year {
@@ -274,7 +409,7 @@
   font-weight: 700;
   line-height: 0.92;
   letter-spacing: 0.02em;
-  color: var(--ink);
+  color: var(--paper);
 }
 
 .pulsewheel-phase {
@@ -283,7 +418,7 @@
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: color-mix(in srgb, var(--cyan-bright) 82%, var(--paper));
 }
 
 /* ---------------------------------------------------------------- *

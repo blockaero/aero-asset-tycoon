@@ -279,6 +279,22 @@ export function App() {
         {view === "pbh" && <PbhDesk observation={observation} onCommand={command} />}
       </main>
 
+      <PulseWheel
+        calendar={observation.calendar}
+        progress={pulseProgress(snapshot)}
+        paused={snapshot.status !== "running"}
+        busy={busy}
+        pendingCount={observation.pendingCommands.length}
+        pace={snapshot.pace}
+        budget={observation.company.budget}
+        lastDelta={lastPulse?.delta ?? null}
+        onPulse={() => runAction("step")}
+        onPause={() => runAction(snapshot.status === "running" ? "pause" : "resume")}
+        onPace={async (pace) => {
+          setSnapshot(await setCampaignPace(snapshot.id, pace));
+        }}
+      />
+
       {inspect && (
         <InspectSheet
           target={inspect}
@@ -363,19 +379,6 @@ function LedgerHeader({
         <button disabled={busy} onClick={onSave}>Save</button>
         <MusicToggle />
       </div>
-      <PulseWheel
-        calendar={observation.calendar}
-        progress={pulseProgress(snapshot)}
-        paused={snapshot.status !== "running"}
-        busy={busy}
-        pendingCount={pendingCount}
-        pace={snapshot.pace}
-        budget={observation.company.budget}
-        lastDelta={pulse?.delta ?? null}
-        onPulse={() => onAction("step")}
-        onPause={() => onAction(snapshot.status === "running" ? "pause" : "resume")}
-        onPace={onPace}
-      />
     </header>
   );
 }

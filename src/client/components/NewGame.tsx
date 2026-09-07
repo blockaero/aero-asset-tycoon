@@ -11,6 +11,7 @@ import {
 import { Rng } from "../../sim/rng.ts";
 import type { LivePace } from "../../sim/types.ts";
 import "./NewGame.css";
+import { useArtSource } from "../art/ArtImage.tsx";
 
 /** One row of the save list the shell hands down. */
 export type NewGameSave = {
@@ -417,7 +418,7 @@ function PortraitCard({
   selected: boolean;
   onSelect: () => void;
 }): ReactNode {
-  const [missing, setMissing] = useState(false);
+  const art = useArtSource(portrait.id);
   return (
     <button
       className="newgame-portrait"
@@ -426,17 +427,12 @@ function PortraitCard({
       aria-label={`Select ${describePortrait(portrait)}`}
       onClick={onSelect}
     >
-      <span className="newgame-portrait-frame" data-missing={missing ? "true" : undefined}>
+      <span className="newgame-portrait-frame" data-missing={art.exhausted ? "true" : undefined}>
         <span className="newgame-portrait-fallback" aria-hidden="true">
           {index + 1}
         </span>
-        {missing ? null : (
-          <img
-            src={`${import.meta.env.BASE_URL}assets/gen/${portrait.id}.svg`}
-            alt=""
-            draggable={false}
-            onError={() => setMissing(true)}
-          />
+        {art.exhausted ? null : (
+          <img src={art.src} alt="" draggable={false} onError={art.onError} />
         )}
       </span>
       <span className="newgame-portrait-label">{portrait.label}</span>

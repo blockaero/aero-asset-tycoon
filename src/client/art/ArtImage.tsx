@@ -33,6 +33,35 @@ function sourcesFor(id: string): string[] {
   return [`${base}assets/gen/${id}.webp`, `${base}assets/gen/${id}.svg`];
 }
 
+/**
+ * The fallback ladder for components that draw their own <img> because they need
+ * their own sizing, masking or CSS fallback.
+ *
+ * Spread the returned props onto the image. When a source 404s the hook advances to
+ * the next one; once every source is exhausted `exhausted` goes true and the caller
+ * should render its own fallback instead.
+ *
+ * Components must never hardcode an extension. Doing so pins them to one format and
+ * a real render dropped in as .webp is then silently ignored.
+ */
+export function useArtSource(id: string): {
+  src: string;
+  onError: () => void;
+  exhausted: boolean;
+} {
+  const [attempt, setAttempt] = useState(0);
+  useEffect(() => {
+    setAttempt(0);
+  }, [id]);
+  const sources = sourcesFor(id);
+  const exhausted = attempt >= sources.length;
+  return {
+    src: exhausted ? "" : sources[attempt]!,
+    onError: () => setAttempt((current) => current + 1),
+    exhausted,
+  };
+}
+
 export type ArtImageProps = {
   /** Shot-list ID, e.g. "founder-asian-woman" or "hq-room". No extension, no path. */
   id: string;

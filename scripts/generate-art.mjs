@@ -20,7 +20,7 @@
  * Usage: node scripts/generate-art.mjs   (or: npm run art)
  */
 
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -3593,20 +3593,25 @@ function main() {
     const file = join(GEN_DIR, `${shot.id}.svg`);
     writeFileSync(file, markup, "utf8");
     bytes += Buffer.byteLength(markup, "utf8");
+    // A finished render supersedes its stand-in. The loader already prefers .webp,
+    // so the manifest has to say the same thing or the catalogue lies about what
+    // is actually shipping.
+    const rendered = existsSync(join(GEN_DIR, `${shot.id}.webp`));
     rows.push({
       id: shot.id,
-      file: `assets/gen/${shot.id}.svg`,
+      file: `assets/gen/${shot.id}.${rendered ? "webp" : "svg"}`,
       role: shot.role,
       ratio: shot.ratio,
       w: shot.w,
       h: shot.h,
-      generated: "procedural",
+      generated: rendered ? "gemini" : "procedural",
     });
   }
 
   rows.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
   writeFileSync(MANIFEST_PATH, `${JSON.stringify({ version: 1, assets: rows }, null, 2)}\n`, "utf8");
 
+  const renderedCount = rows.filter((row) => row.generated === "gemini").length;
   const byRole = rows.reduce((acc, row) => {
     acc[row.role] = (acc[row.role] ?? 0) + 1;
     return acc;
@@ -3616,7 +3621,8 @@ function main() {
       `${Object.entries(byRole)
         .map(([role, count]) => `  ${role}: ${count}`)
         .join("\n")}\n` +
-      `manifest: public/assets/manifest.json\n`,
+      `manifest: public/assets/manifest.json ` +
+        `(${renderedCount} rendered, ${rows.length - renderedCount} on stand-ins)\n`,
   );
 }
 
