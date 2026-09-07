@@ -46,6 +46,7 @@ import { calendarFor, seasonForPeriod, seasonLabel } from "../../sim/calendar.ts
 import type { GameObservation } from "../../sim/observation.ts";
 import type { MarketShock, Season } from "../../sim/types.ts";
 import "./IntelMonitor.css";
+import { AtaGlyph } from "../art/AtaGlyph.tsx";
 
 /* ---------------------------------------------------------------- *
  * Contract
@@ -1081,6 +1082,7 @@ function AtaStrip({ rows }: { rows: GameObservation["ataOpportunities"] }) {
         <ul className="intel-ata-chips">
           {head.map((row) => (
             <li className="intel-chip intel-chip--ata" key={row.code}>
+              <AtaGlyph code={row.code} />
               <span className="intel-chip-key">{ATA_GROUP_LABELS[ataGroupOf(row.code)]}</span>
               <span className="intel-chip-value">
                 ATA {row.code} · {truncate(ataTitle(row.code), 30)}

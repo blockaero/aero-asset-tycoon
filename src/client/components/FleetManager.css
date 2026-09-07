@@ -933,3 +933,14 @@
     width: 100%;
   }
 }
+
+/* The chapter glyph rides in the chip's top corner rather than joining the grid,
+   so a chapter with no render yet leaves the layout exactly as it was. */
+.fleetmgr-chip .ata-glyph {
+  position: absolute;
+  top: 8px;
+  right: 9px;
+  width: 26px;
+  height: 26px;
+  opacity: 0.8;
+}

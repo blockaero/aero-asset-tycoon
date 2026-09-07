@@ -36,6 +36,7 @@ import type {
   RegionCode,
 } from "../../sim/types.ts";
 import "./NetworkMapV2.css";
+import { AtaGlyph } from "../art/AtaGlyph.tsx";
 
 /* ---------------------------------------------------------------- *
  * Constants
@@ -735,6 +736,7 @@ export function NetworkMapV2({
                         title={ataTitle(row.code)}
                         onClick={() => setAtaFilter(active ? null : row.code)}
                       >
+                        <AtaGlyph code={row.code} />
                         <span className="netmapv2-chip-label">{ataLabel(row.code)}</span>
                         <span className="netmapv2-chip-count">{NUMBER_FORMAT.format(row.count)}</span>
                       </button>

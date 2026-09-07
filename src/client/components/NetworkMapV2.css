@@ -918,3 +918,9 @@
     stroke-dashoffset: -12;
   }
 }
+
+.netmapv2-chip .ata-glyph {
+  width: 18px;
+  height: 18px;
+  margin-left: -2px;
+}

@@ -3642,6 +3642,19 @@ const SHOTS = [
  * avatar until these arrive. OfficeHQ prefers hq-founder-<who> and falls back to
  * hq-founder-idle, so a render is picked up with no code change.
  */
+
+/**
+ * ATA chapters that carry a glyph. Mirrors the chapter codes in src/sim/ata.ts; the
+ * shot-manifest build is generated from the sim enum itself, and tests/art-registry
+ * fails if the two drift.
+ */
+const ATA_GLYPH_CODES = [
+  5, 6, 7, 10, 11, 12, 20, 21, 22, 23, 24, 25,
+  26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 38,
+  45, 46, 49, 51, 52, 53, 54, 55, 56, 57, 61, 71,
+  72, 73, 74, 75, 76, 77, 78, 79, 80, 82, 83,
+];
+
 const REGION_CODES = [
   "na", "carib", "latam", "euw", "eue", "cis", "mea",
   "afr", "sasia", "sea", "gchina", "neasia", "oce", "casia",
@@ -3673,6 +3686,17 @@ const AWAITED = [
     w: 1600,
     h: 1200,
     fallback: "netmapv2-region-plate",
+  })),
+).concat(
+  // One glyph per ATA chapter. Chapters without a render draw no mark at all, so a
+  // partial delivery reads as plain text chips rather than a half-illustrated row.
+  ATA_GLYPH_CODES.map((code) => ({
+    id: `ata-ch-${String(code).padStart(2, "0")}`,
+    role: "ata",
+    ratio: "1:1",
+    w: 512,
+    h: 512,
+    fallback: "none",
   })),
 );
 

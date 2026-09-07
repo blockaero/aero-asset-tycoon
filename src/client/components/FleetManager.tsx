@@ -52,6 +52,7 @@ import type {
 import { formatAcc, meetsCondition, serviceable } from "../../sim/util.ts";
 import "./FleetManager.css";
 import { useArtSource } from "../art/ArtImage.tsx";
+import { AtaGlyph } from "../art/AtaGlyph.tsx";
 
 /* ---------------------------------------------------------------- *
  * Constants
@@ -413,6 +414,7 @@ export function FleetManager({
                         }
                         onClick={() => openChipInner(chip.key)}
                       >
+                        <AtaGlyph code={chip.code} />
                         <span className="fleetmgr-chip-code">{chip.code.toString().padStart(2, "0")}</span>
                         <span className="fleetmgr-chip-title">{ataTitle(chip.code)}</span>
                         <span className="fleetmgr-chip-foot">

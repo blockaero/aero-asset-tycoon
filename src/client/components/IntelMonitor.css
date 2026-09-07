@@ -1527,3 +1527,17 @@
     transform: scaleX(1);
   }
 }
+
+/* Two columns only while the glyph is there: the mark on the left, the existing
+   key/value/count stack on the right. */
+.intel-chip--ata:has(.ata-glyph) {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 7px;
+}
+
+.intel-chip--ata .ata-glyph {
+  grid-row: 1 / -1;
+  width: 26px;
+  height: 26px;
+}
